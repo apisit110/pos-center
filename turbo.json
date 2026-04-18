@@ -12,6 +12,12 @@
     "lint": {},
     "clean": {
       "cache": false
+    },
+    "db:migrate": {
+      "cache": false
+    },
+    "db:seed": {
+      "cache": false
     }
   }
 }

@@ -1,0 +1,21 @@
+{
+  "name": "@lightning/models",
+  "version": "1.0.0",
+  "description": "Shared Drizzle ORM models",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc -w",
+    "lint": "eslint src/**/*.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.30.8"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.21.1",
+    "typescript": "^5.4.5"
+  }
+}
