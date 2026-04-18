@@ -211,13 +211,12 @@ export default function ProductsPage() {
 
   const columns = [
     { header: 'Barcode', accessor: 'barcode' as const, width: '150px' },
-    { header: 'Name', accessor: (p: Product) => p.name },
-    { header: 'Brand', accessor: (p: Product) => p.brand },
+    { header: 'Name', accessor: 'name' as const },
+    { header: 'Brand', accessor: 'brand' as const },
     { 
       header: 'Price', 
       accessor: (p: Product) => `${p.basePrice.toLocaleString()} ฿` 
     },
-    { header: 'Unit', accessor: 'unitName' as const },
   ];
 
   const brandOptions = metadata.brands.map(b => ({ value: b, label: b }));

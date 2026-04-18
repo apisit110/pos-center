@@ -262,13 +262,11 @@ export default function ProductDetailPage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   const handlePrevImage = () => {
-    if (!product || !product.imageUrl) return;
-    setActiveImageIndex((prev) => (prev > 0 ? prev - 1 : product.imageUrl.length - 1));
+    // Single image now, but keeping the logic in case we want to support multiple later
   };
 
   const handleNextImage = () => {
-    if (!product || !product.imageUrl) return;
-    setActiveImageIndex((prev) => (prev < product.imageUrl.length - 1 ? prev + 1 : 0));
+    // Single image now
   };
 
   useEffect(() => {
@@ -301,9 +299,9 @@ export default function ProductDetailPage() {
       <Grid>
         <ImageCard>
           <MainImageWrapper>
-            {product.imageUrl && product.imageUrl.length > 0 ? (
+            {product.imageUrl ? (
               <MainImage 
-                src={product.imageUrl[activeImageIndex].startsWith('http') ? product.imageUrl[activeImageIndex] : `/${product.imageUrl[activeImageIndex]}`} 
+                src={product.imageUrl.startsWith('http') ? product.imageUrl : `/${product.imageUrl}`} 
                 alt={product.name} 
               />
             ) : (
@@ -311,37 +309,6 @@ export default function ProductDetailPage() {
             )}
           </MainImageWrapper>
           
-          {product.imageUrl && product.imageUrl.length > 1 && (
-            <ThumbnailContainer>
-              <NavButton 
-                style={{ left: '0.5rem' }} 
-                onClick={handlePrevImage}
-                aria-label="Previous image"
-              >
-                <FiChevronLeft />
-              </NavButton>
-              
-              <ThumbnailList id="thumbnail-list">
-                {product.imageUrl.map((url, index) => (
-                  <Thumbnail 
-                    key={index} 
-                    $active={index === activeImageIndex}
-                    onClick={() => setActiveImageIndex(index)}
-                  >
-                    <ThumbnailImg src={url.startsWith('http') ? url : `/${url}`} alt={`${product.name} thumbnail ${index + 1}`} />
-                  </Thumbnail>
-                ))}
-              </ThumbnailList>
-
-              <NavButton 
-                style={{ right: '0.5rem' }} 
-                onClick={handleNextImage}
-                aria-label="Next image"
-              >
-                <FiChevronRight />
-              </NavButton>
-            </ThumbnailContainer>
-          )}
         </ImageCard>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -367,9 +334,6 @@ export default function ProductDetailPage() {
                 <PriceValue>{product.basePrice.toLocaleString()} ฿</PriceValue>
               </div>
             </InfoRow>
-            <div style={{ marginTop: '0.5rem' }}>
-              <Label>Unit: {product.unitName}</Label>
-            </div>
           </Card>
 
           <Card>
@@ -381,8 +345,12 @@ export default function ProductDetailPage() {
               </div>
             </InfoRow>
             <div style={{ marginTop: '1rem' }}>
-              <Label>Product UID</Label>
-              <Value style={{ fontSize: '0.8rem', opacity: 0.7 }}>{product.uid}</Value>
+              <Label>Product SKU</Label>
+              <Value style={{ fontSize: '0.8rem', opacity: 0.7 }}>{product.sku}</Value>
+            </div>
+            <div style={{ marginTop: '0.5rem' }}>
+              <Label>Product ID</Label>
+              <Value style={{ fontSize: '0.8rem', opacity: 0.7 }}>{product.id}</Value>
             </div>
           </Card>
         </div>
@@ -392,12 +360,12 @@ export default function ProductDetailPage() {
         <h3 style={{ margin: '0 0 1.5rem 0', color: 'var(--text-main)' }}>Additional Information</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
           <div>
-            <Label>Local Name (TH)</Label>
-            <Value>{product.nameTh}</Value>
+            <Label>Merchant ID</Label>
+            <Value>{product.merchantId}</Value>
           </div>
           <div>
-            <Label>English Name (EN)</Label>
-            <Value>{product.nameEn || '-'}</Value>
+            <Label>SKU</Label>
+            <Value>{product.sku}</Value>
           </div>
           <div>
             <Label>Company</Label>
