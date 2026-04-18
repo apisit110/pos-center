@@ -1,0 +1,26 @@
+[
+  {
+    "id": "S-001",
+    "merchant_id": 1,
+    "name": "Main Branch",
+    "address": "123 Sukhumvit, Bangkok",
+    "latitude": 13.7367,
+    "longitude": 100.5231
+  },
+  {
+    "id": "S-002",
+    "merchant_id": 1,
+    "name": "Siam Square",
+    "address": "Siam Square Soi 3, Bangkok",
+    "latitude": 13.7445,
+    "longitude": 100.5342
+  },
+  {
+    "id": "S-003",
+    "merchant_id": 2,
+    "name": "Bakery Corner",
+    "address": "Ari Soi 1, Bangkok",
+    "latitude": 13.7796,
+    "longitude": 100.5445
+  }
+]

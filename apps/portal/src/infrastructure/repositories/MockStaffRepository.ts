@@ -3,9 +3,9 @@ import { StaffRepository } from '../../application/repositories/StaffRepository'
 
 export class MockStaffRepository implements StaffRepository {
   private staffs: Staff[] = [
-    new Staff('ST-001', 'M-123', 'John Doe', 'Manager'),
-    new Staff('ST-002', 'M-123', 'Jane Smith', 'Staff'),
-    new Staff('ST-003', 'M-456', 'Bob Baker', 'Owner')
+    new Staff('ST-001', '1', 'John Doe', 'Manager'),
+    new Staff('ST-002', '1', 'Jane Smith', 'Staff'),
+    new Staff('ST-003', '2', 'Bob Baker', 'Owner')
   ];
 
   public async getStaffByMerchant(merchantId: string): Promise<Staff[]> {

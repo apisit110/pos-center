@@ -26,8 +26,7 @@ export default function StoresPage() {
   useEffect(() => {
     const fetchStores = async () => {
       const repository = new MockStoreRepository();
-      // Mocking fetch all stores (for M-123 as default)
-      const result = await repository.getStores('M-123');
+      const result = await repository.getStores('1');
       setStores(result);
       setLoading(false);
     };

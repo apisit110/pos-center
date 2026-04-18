@@ -1,0 +1,26 @@
+[
+  {
+    "id": "SP-001",
+    "store_id": "S-001",
+    "product_id": "P75Lx5mwPw8EC02yY2fnTt8iUhAhe7",
+    "stock": 100,
+    "price": 13,
+    "unit": "Bottle"
+  },
+  {
+    "id": "SP-002",
+    "store_id": "S-001",
+    "product_id": "rFSMHxCBcxmW53ecQFuvQzS8mqZcaW",
+    "stock": 50,
+    "price": 17,
+    "unit": "Bottle"
+  },
+  {
+    "id": "SP-003",
+    "store_id": "S-002",
+    "product_id": "P75Lx5mwPw8EC02yY2fnTt8iUhAhe7",
+    "stock": 30,
+    "price": 15,
+    "unit": "Bottle"
+  }
+]

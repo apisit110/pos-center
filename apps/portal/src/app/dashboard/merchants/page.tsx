@@ -26,13 +26,7 @@ export default function MerchantsPage() {
   useEffect(() => {
     const fetchMerchants = async () => {
       const repository = new MockMerchantRepository();
-      // Since we don't have a getMerchants method in the interface yet, 
-      // I'll assume we can list them or I'll add the method.
-      // For now, I'll mock the list as we have the data in the repository.
-      const result = [
-        new Merchant('M-123', 'Lightning Coffee'),
-        new Merchant('M-456', 'Super Bakery')
-      ];
+      const result = await repository.getMerchants();
       setMerchants(result);
       setLoading(false);
     };

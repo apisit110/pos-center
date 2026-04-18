@@ -26,8 +26,8 @@ export default function StaffPage() {
   useEffect(() => {
     const fetchStaff = async () => {
       const repository = new MockStaffRepository();
-      // Fetching staff for merchant M-123
-      const result = await repository.getStaffByMerchant('M-123');
+      // Fetching staff for merchant 1
+      const result = await repository.getStaffByMerchant('1');
       setStaff(result);
       setLoading(false);
     };

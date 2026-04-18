@@ -10,11 +10,11 @@ export class MockProductRepository implements ProductRepository {
     if (this.initialized) return;
     
     try {
-      const response = await axios.get('/constants/product_master.json');
+      const response = await axios.get('/constants/master_product.json');
       const data = response.data;
       this.products = data.map((item: any) => new Product(
         item.uid,
-        'M-123', // Mock merchantId
+        String(item.merchant_id || 1), // Use merchant_id from JSON
         item.name_th || item.name_en || 'Unnamed Product',
         item.uid, // Mock SKU
         item.barcode,
