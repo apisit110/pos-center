@@ -1,10 +1,14 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { GetProductsUseCase } from '../../../application/use-cases/GetProductsUseCase';
 import { GetProductFilterMetadataUseCase } from '../../../application/use-cases/GetProductFilterMetadataUseCase';
+import { GetMerchantsUseCase } from '../../../application/use-cases/GetMerchantsUseCase';
+import { GetStoresUseCase } from '../../../application/use-cases/GetStoresUseCase';
 import { MockProductRepository } from '../../../infrastructure/repositories/MockProductRepository';
+import { MockMerchantRepository } from '../../../infrastructure/repositories/MockMerchantRepository';
+import { MockStoreRepository } from '../../../infrastructure/repositories/MockStoreRepository';
 import { Product } from '../../../domain/entities/Product';
 import { ProductFilter } from '../../../application/repositories/ProductRepository';
 import { DataTable } from '../../../presentation/components/DataTable';
@@ -160,7 +164,9 @@ export default function ProductsPage() {
     name: '',
     brands: [],
     price: undefined,
-    units: []
+    units: [],
+    merchantId: undefined,
+    storeId: undefined
   });
   
   // Metadata for filters
@@ -168,6 +174,17 @@ export default function ProductsPage() {
     brands: [],
     units: []
   });
+
+  const [merchants, setMerchants] = useState<{ value: string, label: string }[]>([]);
+  const [stores, setStores] = useState<{ value: string, label: string }[]>([]);
+
+  const merchantMap = useMemo(() => {
+    const map: Record<string, string> = {};
+    merchants.forEach(m => {
+      map[m.value] = m.label;
+    });
+    return map;
+  }, [merchants]);
 
   const fetchProducts = useCallback(async (activeFilters: ProductFilter) => {
     const repository = new MockProductRepository();
@@ -183,9 +200,29 @@ export default function ProductsPage() {
       const useCase = new GetProductFilterMetadataUseCase(repository);
       const data = await useCase.execute();
       setMetadata(data);
+
+      const merchantRepo = new MockMerchantRepository();
+      const merchantUC = new GetMerchantsUseCase(merchantRepo);
+      const merchantData = await merchantUC.execute();
+      setMerchants(merchantData.map(m => ({ value: m.id, label: m.name })));
+
+      const storeRepo = new MockStoreRepository();
+      const storeUC = new GetStoresUseCase(storeRepo);
+      const storeData = await storeUC.execute();
+      setStores(storeData.map(s => ({ value: s.id, label: s.name })));
     };
     fetchMetadata();
   }, []);
+
+  const handleMerchantChange = async (selected: any) => {
+    const merchantId = selected ? selected.value : undefined;
+    setFilters(prev => ({ ...prev, merchantId, storeId: undefined }));
+    
+    const storeRepo = new MockStoreRepository();
+    const storeUC = new GetStoresUseCase(storeRepo);
+    const storeData = await storeUC.execute(merchantId);
+    setStores(storeData.map(s => ({ value: s.id, label: s.name })));
+  };
 
   useEffect(() => {
     fetchProducts(filters);
@@ -202,7 +239,9 @@ export default function ProductsPage() {
       name: '',
       brands: [],
       price: undefined,
-      units: []
+      units: [],
+      merchantId: undefined,
+      storeId: undefined
     };
     setFilters(clearedFilters);
     setPage(1);
@@ -213,6 +252,10 @@ export default function ProductsPage() {
     { header: 'Barcode', accessor: 'barcode' as const, width: '150px' },
     { header: 'Name', accessor: 'name' as const },
     { header: 'Brand', accessor: 'brand' as const },
+    { 
+      header: 'Merchant', 
+      accessor: (p: Product) => merchantMap[p.merchantId] || `ID: ${p.merchantId}` 
+    },
     { 
       header: 'Price', 
       accessor: (p: Product) => `${p.basePrice.toLocaleString()} ฿` 
@@ -281,6 +324,33 @@ export default function ProductsPage() {
               setFilters({ ...filters, units: (selected as any[]).map(s => s.value) });
             }}
             placeholder="Select units..."
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <Label>Merchant</Label>
+          <Select
+            isClearable
+            options={merchants}
+            styles={selectStyles}
+            value={merchants.find(opt => opt.value === filters.merchantId) || null}
+            onChange={handleMerchantChange}
+            placeholder="Filter by Merchant..."
+          />
+        </FormGroup>
+
+        <FormGroup>
+          <Label>Store</Label>
+          <Select
+            isClearable
+            options={stores}
+            styles={selectStyles}
+            value={stores.find(opt => opt.value === filters.storeId) || null}
+            onChange={(selected) => {
+              setFilters({ ...filters, storeId: selected ? (selected as any).value : undefined });
+            }}
+            placeholder="Filter by Store..."
+            isDisabled={!filters.merchantId && merchants.length > 0}
           />
         </FormGroup>
 

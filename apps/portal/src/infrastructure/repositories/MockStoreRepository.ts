@@ -25,8 +25,9 @@ export class MockStoreRepository implements StoreRepository {
     }
   }
 
-  public async getStores(merchantId: string): Promise<Store[]> {
+  public async getStores(merchantId?: string): Promise<Store[]> {
     await this.initialize();
+    if (!merchantId) return this.stores;
     return this.stores.filter(s => s.merchantId === merchantId);
   }
 

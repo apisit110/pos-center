@@ -6,6 +6,8 @@ export interface ProductFilter {
   brands?: string[];
   price?: number;
   units?: string[];
+  merchantId?: string;
+  storeId?: string;
 }
 
 export interface ProductRepository {

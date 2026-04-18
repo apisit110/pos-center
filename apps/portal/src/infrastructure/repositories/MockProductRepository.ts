@@ -4,14 +4,21 @@ import { ProductRepository, ProductFilter } from '../../application/repositories
 
 export class MockProductRepository implements ProductRepository {
   private products: Product[] = [];
+  private storeProducts: any[] = [];
   private initialized = false;
 
   private async initialize() {
     if (this.initialized) return;
     
     try {
-      const response = await axios.get('/constants/master_product.json');
-      const data = response.data;
+      const [productRes, storeProductRes] = await Promise.all([
+        axios.get('/constants/master_product.json'),
+        axios.get('/constants/master_store_product.json')
+      ]);
+      
+      const data = productRes.data;
+      this.storeProducts = storeProductRes.data;
+
       this.products = data.map((item: any) => new Product(
         item.uid,
         String(item.merchant_id || 1), // Use merchant_id from JSON
@@ -57,6 +64,16 @@ export class MockProductRepository implements ProductRepository {
       if (filters.units && filters.units.length > 0) {
         // unit is no longer in Product entity, it's in StoreProduct in the new model
         // For now, we'll skip unit filtering or assume it's part of the mock data if we had it
+      }
+      if (filters.merchantId) {
+        filteredProducts = filteredProducts.filter(p => p.merchantId === filters.merchantId);
+      }
+      if (filters.storeId) {
+        const productIdsInStore = this.storeProducts
+          .filter(sp => sp.store_id === filters.storeId)
+          .map(sp => sp.product_id);
+        
+        filteredProducts = filteredProducts.filter(p => productIdsInStore.includes(p.id));
       }
     }
 
