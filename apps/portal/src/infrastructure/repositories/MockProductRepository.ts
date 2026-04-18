@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Product } from '../../domain/entities/Product';
-import { ProductRepository } from '../../application/repositories/ProductRepository';
+import { ProductRepository, ProductFilter } from '../../application/repositories/ProductRepository';
 
 export class MockProductRepository implements ProductRepository {
   private products: Product[] = [];
@@ -30,18 +30,55 @@ export class MockProductRepository implements ProductRepository {
     }
   }
 
-  public async getProducts(page: number, limit: number): Promise<{ products: Product[], total: number }> {
+  public async getProducts(page: number, limit: number, filters?: ProductFilter): Promise<{ products: Product[], total: number }> {
     await this.initialize();
+    
+    let filteredProducts = this.products;
+
+    if (filters) {
+      if (filters.barcode) {
+        filteredProducts = filteredProducts.filter(p => 
+          p.barcode.toLowerCase().includes(filters.barcode!.toLowerCase())
+        );
+      }
+      if (filters.name) {
+        const nameFilter = filters.name.toLowerCase();
+        filteredProducts = filteredProducts.filter(p => 
+          p.nameEn?.toLowerCase().includes(nameFilter) || 
+          p.nameTh.toLowerCase().includes(nameFilter)
+        );
+      }
+      if (filters.brands && filters.brands.length > 0) {
+        filteredProducts = filteredProducts.filter(p => 
+          (p.brandEn && filters.brands!.includes(p.brandEn)) || 
+          (p.brandTh && filters.brands!.includes(p.brandTh))
+        );
+      }
+      if (filters.price !== undefined) {
+        filteredProducts = filteredProducts.filter(p => p.basePrice <= filters.price!);
+      }
+      if (filters.units && filters.units.length > 0) {
+        filteredProducts = filteredProducts.filter(p => filters.units!.includes(p.unitName));
+      }
+    }
+
     const start = (page - 1) * limit;
     const end = start + limit;
     return {
-      products: this.products.slice(start, end),
-      total: this.products.length
+      products: filteredProducts.slice(start, end),
+      total: filteredProducts.length
     };
   }
 
   public async getProductById(id: string): Promise<Product | null> {
     await this.initialize();
     return this.products.find(p => p.uid === id) || null;
+  }
+
+  public async getFilterMetadata(): Promise<{ brands: string[], units: string[] }> {
+    await this.initialize();
+    const brands = Array.from(new Set(this.products.map(p => p.brand).filter(b => b !== 'No Brand')));
+    const units = Array.from(new Set(this.products.map(p => p.unitName)));
+    return { brands, units };
   }
 }

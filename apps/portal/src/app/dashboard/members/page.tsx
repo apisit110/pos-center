@@ -2,11 +2,10 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { GetProductsUseCase } from '../../../application/use-cases/GetProductsUseCase';
-import { GetProductFilterMetadataUseCase } from '../../../application/use-cases/GetProductFilterMetadataUseCase';
-import { MockProductRepository } from '../../../infrastructure/repositories/MockProductRepository';
-import { Product } from '../../../domain/entities/Product';
-import { ProductFilter } from '../../../application/repositories/ProductRepository';
+import { GetMembersUseCase } from '../../../application/use-cases/GetMembersUseCase';
+import { MockMemberRepository } from '../../../infrastructure/repositories/MockMemberRepository';
+import { Member } from '../../../domain/entities/Member';
+import { MemberFilter } from '../../../application/repositories/MemberRepository';
 import { DataTable } from '../../../presentation/components/DataTable';
 import { Pagination } from '../../../presentation/components/Pagination';
 import { useRouter } from 'next/navigation';
@@ -52,20 +51,6 @@ const Input = styled.input`
   }
 `;
 
-const NativeSelect = styled.select`
-  width: 100%;
-  padding: 0.6rem 0.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border);
-  background: rgba(15, 23, 42, 0.5);
-  color: white;
-  font-size: 0.9rem;
-  &:focus {
-    outline: 2px solid var(--primary);
-    border-color: transparent;
-  }
-`;
-
 const ButtonGroup = styled.div`
   display: flex;
   gap: 0.75rem;
@@ -89,7 +74,21 @@ const ActionButton = styled.button<{ $variant?: 'secondary' | 'primary' }>`
   }
 `;
 
-
+const TierBadge = styled.span<{ $tier: string }>`
+  padding: 0.25rem 0.75rem;
+  border-radius: 2rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: ${props => {
+    switch (props.$tier) {
+      case 'Platinum': return 'linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%)';
+      case 'Gold': return 'linear-gradient(135deg, #fbbf24 0%, #d97706 100%)';
+      case 'Silver': return 'linear-gradient(135deg, #94a3b8 0%, #475569 100%)';
+      default: return 'linear-gradient(135deg, #92400e 0%, #78350f 100%)';
+    }
+  }};
+  color: ${props => props.$tier === 'Platinum' ? '#1e293b' : 'white'};
+`;
 
 const selectStyles = {
   control: (base: any) => ({
@@ -147,141 +146,105 @@ const selectStyles = {
   })
 };
 
-export default function ProductsPage() {
+const tierOptions = [
+  { value: 'Bronze', label: 'Bronze' },
+  { value: 'Silver', label: 'Silver' },
+  { value: 'Gold', label: 'Gold' },
+  { value: 'Platinum', label: 'Platinum' },
+];
+
+export default function MembersPage() {
   const router = useRouter();
-  const [products, setProducts] = useState<Product[]>([]);
+  const [members, setMembers] = useState<Member[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   
-  // Filter state
-  const [filters, setFilters] = useState<ProductFilter>({
-    barcode: '',
-    name: '',
-    brands: [],
-    price: undefined,
-    units: []
-  });
-  
-  // Metadata for filters
-  const [metadata, setMetadata] = useState<{ brands: string[], units: string[] }>({
-    brands: [],
-    units: []
+  const [filters, setFilters] = useState<MemberFilter>({
+    query: '',
+    tier: []
   });
 
-  const fetchProducts = useCallback(async (activeFilters: ProductFilter) => {
-    const repository = new MockProductRepository();
-    const useCase = new GetProductsUseCase(repository);
+  const fetchMembers = useCallback(async (activeFilters: MemberFilter) => {
+    const repository = new MockMemberRepository();
+    const useCase = new GetMembersUseCase(repository);
     const result = await useCase.execute(page, limit, activeFilters);
-    setProducts(result.products);
+    setMembers(result.members);
     setTotal(result.total);
   }, [page, limit]);
 
   useEffect(() => {
-    const fetchMetadata = async () => {
-      const repository = new MockProductRepository();
-      const useCase = new GetProductFilterMetadataUseCase(repository);
-      const data = await useCase.execute();
-      setMetadata(data);
-    };
-    fetchMetadata();
-  }, []);
-
-  useEffect(() => {
-    fetchProducts(filters);
-  }, [page, limit, fetchProducts]);
+    fetchMembers(filters);
+  }, [page, limit, fetchMembers]);
 
   const handleSearch = () => {
     setPage(1);
-    fetchProducts(filters);
+    fetchMembers(filters);
   };
 
   const handleClear = () => {
     const clearedFilters = {
-      barcode: '',
-      name: '',
-      brands: [],
-      price: undefined,
-      units: []
+      query: '',
+      tier: []
     };
     setFilters(clearedFilters);
     setPage(1);
-    fetchProducts(clearedFilters);
+    fetchMembers(clearedFilters);
   };
 
   const columns = [
-    { header: 'Barcode', accessor: 'barcode' as const, width: '150px' },
-    { header: 'Name', accessor: (p: Product) => p.name },
-    { header: 'Brand', accessor: (p: Product) => p.brand },
     { 
-      header: 'Price', 
-      accessor: (p: Product) => `${p.basePrice.toLocaleString()} ฿` 
+      header: 'Name', 
+      accessor: (m: Member) => (
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <span style={{ fontWeight: 600 }}>{m.fullName}</span>
+          <span style={{ fontSize: '0.8rem', color: 'var(--text-sub)' }}>{m.email}</span>
+        </div>
+      )
     },
-    { header: 'Unit', accessor: 'unitName' as const },
+    { header: 'Phone', accessor: 'phone' as const },
+    { 
+      header: 'Tier', 
+      accessor: (m: Member) => <TierBadge $tier={m.tier}>{m.tier}</TierBadge> 
+    },
+    { 
+      header: 'Points', 
+      accessor: (m: Member) => (
+        <span style={{ color: 'var(--primary)', fontWeight: 600 }}>
+          {m.points.toLocaleString()} pts
+        </span>
+      )
+    },
+    { 
+      header: 'Joined', 
+      accessor: (m: Member) => m.createdAt.toLocaleDateString() 
+    },
   ];
-
-  const brandOptions = metadata.brands.map(b => ({ value: b, label: b }));
-  const unitOptions = metadata.units.map(u => ({ value: u, label: u }));
 
   return (
     <PageContainer>
       <FilterSection>
-        <FormGroup>
-          <Label>Barcode</Label>
+        <FormGroup style={{ gridColumn: 'span 2' }}>
+          <Label>Search Member</Label>
           <Input 
-            placeholder="Search barcode..." 
-            value={filters.barcode}
-            onChange={(e) => setFilters({ ...filters, barcode: e.target.value })}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-          />
-        </FormGroup>
-        
-        <FormGroup>
-          <Label>Product Name</Label>
-          <Input 
-            placeholder="Search name..." 
-            value={filters.name}
-            onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+            placeholder="Search by name, email or phone..." 
+            value={filters.query}
+            onChange={(e) => setFilters({ ...filters, query: e.target.value })}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
           />
         </FormGroup>
 
         <FormGroup>
-          <Label>Max Price</Label>
-          <Input 
-            type="number"
-            placeholder="Max price..." 
-            value={filters.price === undefined ? '' : filters.price}
-            onChange={(e) => setFilters({ ...filters, price: e.target.value ? Number(e.target.value) : undefined })}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <Label>Brand</Label>
+          <Label>Tier</Label>
           <Select
             isMulti
-            options={brandOptions}
+            options={tierOptions}
             styles={selectStyles}
-            value={brandOptions.filter(opt => filters.brands?.includes(opt.value))}
+            value={tierOptions.filter(opt => filters.tier?.includes(opt.value))}
             onChange={(selected) => {
-              setFilters({ ...filters, brands: (selected as any[]).map(s => s.value) });
+              setFilters({ ...filters, tier: (selected as any[]).map(s => s.value) });
             }}
-            placeholder="Select brands..."
-          />
-        </FormGroup>
-
-        <FormGroup>
-          <Label>Unit</Label>
-          <Select
-            isMulti
-            options={unitOptions}
-            styles={selectStyles}
-            value={unitOptions.filter(opt => filters.units?.includes(opt.value))}
-            onChange={(selected) => {
-              setFilters({ ...filters, units: (selected as any[]).map(s => s.value) });
-            }}
-            placeholder="Select units..."
+            placeholder="Select tiers..."
           />
         </FormGroup>
 
@@ -293,8 +256,8 @@ export default function ProductsPage() {
 
       <DataTable 
         columns={columns} 
-        data={products} 
-        onRowClick={(product) => router.push(`/dashboard/products/${product.id}`)}
+        data={members} 
+        onRowClick={(member) => console.log('Member clicked:', member)}
         footer={
           <Pagination 
             total={total} 

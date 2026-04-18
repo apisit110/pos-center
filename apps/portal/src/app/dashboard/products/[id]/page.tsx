@@ -6,7 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { GetProductUseCase } from '../../../../application/use-cases/GetProductUseCase';
 import { MockProductRepository } from '../../../../infrastructure/repositories/MockProductRepository';
 import { Product } from '../../../../domain/entities/Product';
-import { FiArrowLeft, FiPackage, FiTag, FiDollarSign, FiBox } from 'react-icons/fi';
+import { FiArrowLeft, FiPackage, FiTag, FiDollarSign, FiBox, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(10px); }
@@ -155,10 +155,103 @@ const ProductImage = styled.img`
 
 const ImageCard = styled(Card)`
   padding: 0;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+`;
+
+const MainImageWrapper = styled.div`
+  width: 100%;
+  height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   background: white;
+  padding: 1rem;
+`;
+
+const MainImage = styled.img`
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+`;
+
+const ThumbnailContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-top: 1px solid var(--border);
+  position: relative;
+`;
+
+const ThumbnailList = styled.div`
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  padding: 2px;
+`;
+
+const Thumbnail = styled.div<{ $active: boolean }>`
+  min-width: 80px;
+  width: 80px;
+  height: 80px;
+  border-radius: 0.5rem;
+  border: 2px solid ${props => props.$active ? '#ef4444' : 'transparent'};
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: ${props => props.$active ? '#ef4444' : '#cbd5e1'};
+  }
+`;
+
+const ThumbnailImg = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+`;
+
+const NavButton = styled.button`
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #e2e8f0;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  color: #64748b;
+  position: absolute;
+  
+  &:hover {
+    background: white;
+    color: var(--primary);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 export default function ProductDetailPage() {
@@ -166,6 +259,17 @@ export default function ProductDetailPage() {
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+
+  const handlePrevImage = () => {
+    if (!product || !product.imageUrl) return;
+    setActiveImageIndex((prev) => (prev > 0 ? prev - 1 : product.imageUrl.length - 1));
+  };
+
+  const handleNextImage = () => {
+    if (!product || !product.imageUrl) return;
+    setActiveImageIndex((prev) => (prev < product.imageUrl.length - 1 ? prev + 1 : 0));
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -196,10 +300,47 @@ export default function ProductDetailPage() {
 
       <Grid>
         <ImageCard>
-          {product.imageUrl && product.imageUrl.length > 0 ? (
-            <ProductImage src={`/${product.imageUrl[0]}`} alt={product.name} />
-          ) : (
-            <div style={{ padding: '4rem', color: '#ccc' }}><FiPackage size={48} /></div>
+          <MainImageWrapper>
+            {product.imageUrl && product.imageUrl.length > 0 ? (
+              <MainImage 
+                src={product.imageUrl[activeImageIndex].startsWith('http') ? product.imageUrl[activeImageIndex] : `/${product.imageUrl[activeImageIndex]}`} 
+                alt={product.name} 
+              />
+            ) : (
+              <div style={{ padding: '4rem', color: '#ccc' }}><FiPackage size={48} /></div>
+            )}
+          </MainImageWrapper>
+          
+          {product.imageUrl && product.imageUrl.length > 1 && (
+            <ThumbnailContainer>
+              <NavButton 
+                style={{ left: '0.5rem' }} 
+                onClick={handlePrevImage}
+                aria-label="Previous image"
+              >
+                <FiChevronLeft />
+              </NavButton>
+              
+              <ThumbnailList id="thumbnail-list">
+                {product.imageUrl.map((url, index) => (
+                  <Thumbnail 
+                    key={index} 
+                    $active={index === activeImageIndex}
+                    onClick={() => setActiveImageIndex(index)}
+                  >
+                    <ThumbnailImg src={url.startsWith('http') ? url : `/${url}`} alt={`${product.name} thumbnail ${index + 1}`} />
+                  </Thumbnail>
+                ))}
+              </ThumbnailList>
+
+              <NavButton 
+                style={{ right: '0.5rem' }} 
+                onClick={handleNextImage}
+                aria-label="Next image"
+              >
+                <FiChevronRight />
+              </NavButton>
+            </ThumbnailContainer>
           )}
         </ImageCard>
 

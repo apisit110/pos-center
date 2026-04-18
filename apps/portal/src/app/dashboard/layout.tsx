@@ -35,9 +35,9 @@ export default function DashboardLayout({
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard' },
     { name: 'Products', path: '/dashboard/products' },
+    { name: 'Members', path: '/dashboard/members' },
     { name: 'Orders', path: '/dashboard/orders' },
     { name: 'Inventory', path: '/dashboard/inventory' },
-    { name: 'Customers', path: '/dashboard/customers' },
     { name: 'Settings', path: '/dashboard/settings' },
   ];
 
