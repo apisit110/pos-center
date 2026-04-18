@@ -33,9 +33,10 @@ const Td = styled.td`
   font-size: 0.95rem;
 `;
 
-const Tr = styled.tr`
+const Tr = styled.tr<{ $clickable?: boolean }>`
   border-bottom: 1px solid var(--border);
   transition: background 0.2s;
+  cursor: ${props => props.$clickable ? 'pointer' : 'default'};
 
   &:hover {
     background: rgba(255, 255, 255, 0.01);
@@ -56,9 +57,10 @@ interface DataTableProps<T> {
   columns: Column<T>[];
   data: T[];
   footer?: React.ReactNode;
+  onRowClick?: (item: T) => void;
 }
 
-export function DataTable<T extends { id: string | number }>({ columns, data, footer }: DataTableProps<T>) {
+export function DataTable<T extends { id: string | number }>({ columns, data, footer, onRowClick }: DataTableProps<T>) {
   return (
     <TableWrapper>
       <StyledTable>
@@ -71,7 +73,11 @@ export function DataTable<T extends { id: string | number }>({ columns, data, fo
         </THead>
         <tbody>
           {data.map((item) => (
-            <Tr key={item.id}>
+            <Tr 
+              key={item.id} 
+              $clickable={!!onRowClick} 
+              onClick={() => onRowClick?.(item)}
+            >
               {columns.map((col, idx) => (
                 <Td key={idx}>
                   {typeof col.accessor === 'function' 

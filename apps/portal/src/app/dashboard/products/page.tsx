@@ -7,6 +7,7 @@ import { MockProductRepository } from '../../../infrastructure/repositories/Mock
 import { Product } from '../../../domain/entities/Product';
 import { DataTable } from '../../../presentation/components/DataTable';
 import { Pagination } from '../../../presentation/components/Pagination';
+import { useRouter } from 'next/navigation';
 
 const CategoryBadge = styled.span`
   padding: 0.25rem 0.75rem;
@@ -21,6 +22,7 @@ const StockText = styled.span<{ $low: boolean }>`
 `;
 
 export default function ProductsPage() {
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -39,28 +41,21 @@ export default function ProductsPage() {
   }, [page, limit]);
 
   const columns = [
-    { header: 'ID', accessor: 'id' as const, width: '80px' },
-    { header: 'Name', accessor: 'name' as const },
-    { 
-      header: 'Category', 
-      accessor: (p: Product) => <CategoryBadge>{p.category}</CategoryBadge> 
-    },
+    { header: 'Barcode', accessor: 'barcode' as const, width: '150px' },
+    { header: 'Name', accessor: (p: Product) => p.name },
+    { header: 'Brand', accessor: (p: Product) => p.brand },
     { 
       header: 'Price', 
-      accessor: (p: Product) => `$${p.price.toLocaleString()}` 
+      accessor: (p: Product) => `${p.basePrice.toLocaleString()} ฿` 
     },
-    { 
-      header: 'Stock', 
-      accessor: (p: Product) => (
-        <StockText $low={p.stock < 20}>{p.stock}</StockText>
-      )
-    },
+    { header: 'Unit', accessor: 'unitName' as const },
   ];
 
   return (
     <DataTable 
       columns={columns} 
       data={products} 
+      onRowClick={(product) => router.push(`/dashboard/products/${product.id}`)}
       footer={
         <Pagination 
           total={total} 

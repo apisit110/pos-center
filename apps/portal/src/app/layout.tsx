@@ -1,5 +1,3 @@
-'use client';
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -15,8 +13,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-// Metadata is not allowed in Client Components. 
-// If you need SEO, keep the layout as a Server Component.
+export const metadata: Metadata = {
+  title: "Lightning POS",
+  description: "Advanced Service Center for POS",
+};
 
 export default function RootLayout({
   children,

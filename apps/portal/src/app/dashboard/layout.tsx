@@ -41,7 +41,7 @@ export default function DashboardLayout({
     { name: 'Settings', path: '/dashboard/settings' },
   ];
 
-  const currentTitle = menuItems.find(i => i.path === pathname)?.name || 'Dashboard';
+  const currentTitle = menuItems.find(i => pathname.startsWith(i.path) && (i.path !== '/dashboard' || pathname === '/dashboard'))?.name || 'Dashboard';
 
   return (
     <LayoutContainer>
