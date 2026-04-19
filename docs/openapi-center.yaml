@@ -7,7 +7,7 @@ info:
 servers:
   - url: http://localhost:3001
     description: Portal Service
-  - url: http://localhost:3005
+  - url: http://localhost:4001
     description: POS Sync Service
 
 tags:

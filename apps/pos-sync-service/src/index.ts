@@ -7,7 +7,7 @@ import { syncProductSchema } from './infrastructure/validation/SyncProductSchema
 import { ZodError } from 'zod';
 
 const app = express();
-const port = process.env.PORT || 3005;
+const port = process.env.PORT || 4001;
 
 app.use(cors());
 app.use(express.json());
