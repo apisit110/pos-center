@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { GetProductsUseCase } from '../../application/use-cases/GetProductsUseCase';
 import { GetProductDetailUseCase } from '../../application/use-cases/GetProductDetailUseCase';
 import { GetProductFilterMetadataUseCase } from '../../application/use-cases/GetProductFilterMetadataUseCase';
@@ -10,7 +10,7 @@ export class ProductController {
     private getProductFilterMetadataUseCase: GetProductFilterMetadataUseCase
   ) {}
 
-  async getAll(req: Request, res: Response) {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const page = req.query.page ? Number(req.query.page) : 1;
       const limit = req.query.limit ? Number(req.query.limit) : 10;
@@ -27,20 +27,20 @@ export class ProductController {
       const result = await this.getProductsUseCase.execute(page, limit, filters);
       res.json(result);
     } catch (error) {
-      res.status(500).json({ message: 'Internal server error' });
+      next(error);
     }
   }
 
-  async getMetadata(req: Request, res: Response) {
+  async getMetadata(req: Request, res: Response, next: NextFunction) {
     try {
       const metadata = await this.getProductFilterMetadataUseCase.execute();
       res.json(metadata);
     } catch (error) {
-      res.status(500).json({ message: 'Internal server error' });
+      next(error);
     }
   }
 
-  async getById(req: Request, res: Response) {
+  async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const product = await this.getProductDetailUseCase.execute(id);
@@ -49,7 +49,7 @@ export class ProductController {
       }
       res.json(product);
     } catch (error) {
-      res.status(500).json({ message: 'Internal server error' });
+      next(error);
     }
   }
 }

@@ -8,6 +8,13 @@
       "when": 1776573352110,
       "tag": "0000_gorgeous_ego",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1776585582421,
+      "tag": "0001_lame_talkback",
+      "breakpoints": true
     }
   ]
 }

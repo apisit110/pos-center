@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { GetMerchantsUseCase } from '../../application/use-cases/GetMerchantsUseCase';
 import { GetMerchantDetailUseCase } from '../../application/use-cases/GetMerchantDetailUseCase';
 
@@ -8,16 +8,16 @@ export class MerchantController {
     private getMerchantDetailUseCase: GetMerchantDetailUseCase
   ) {}
 
-  async getAll(req: Request, res: Response) {
+  async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const merchants = await this.getMerchantsUseCase.execute();
       res.json(merchants);
     } catch (error) {
-      res.status(500).json({ message: 'Internal server error' });
+      next(error);
     }
   }
 
-  async getById(req: Request, res: Response) {
+  async getById(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const merchant = await this.getMerchantDetailUseCase.execute(id);
@@ -26,7 +26,7 @@ export class MerchantController {
       }
       res.json(merchant);
     } catch (error) {
-      res.status(500).json({ message: 'Internal server error' });
+      next(error);
     }
   }
 }

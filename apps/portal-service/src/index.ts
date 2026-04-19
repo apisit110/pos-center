@@ -21,6 +21,9 @@ import { MerchantController } from './infrastructure/controllers/MerchantControl
 import { ProductController } from './infrastructure/controllers/ProductController';
 import { StoreController } from './infrastructure/controllers/StoreController';
 
+import { loggerMiddleware } from './infrastructure/middleware/LoggerMiddleware';
+import { errorMiddleware } from './infrastructure/middleware/ErrorMiddleware';
+
 const app = express();
 const port = process.env.PORT || 3001;
 const JWT_SECRET = 'your-secret-key';
@@ -44,6 +47,7 @@ const storeController = new StoreController(getStoresUseCase, getStoreDetailUseC
 
 app.use(cors());
 app.use(express.json());
+app.use(loggerMiddleware);
 
 app.post('/login', (req: Request, res: Response) => {
   const { username, password } = req.body;
@@ -57,21 +61,24 @@ app.post('/login', (req: Request, res: Response) => {
 });
 
 // Merchant Endpoints
-app.get('/merchants', (req, res) => merchantController.getAll(req, res));
-app.get('/merchants/:id', (req, res) => merchantController.getById(req, res));
+app.get('/merchants', (req, res, next) => merchantController.getAll(req, res, next));
+app.get('/merchants/:id', (req, res, next) => merchantController.getById(req, res, next));
 
 // Product Endpoints
-app.get('/products', (req, res) => productController.getAll(req, res));
-app.get('/products/metadata', (req, res) => productController.getMetadata(req, res));
-app.get('/products/:id', (req, res) => productController.getById(req, res));
+app.get('/products', (req, res, next) => productController.getAll(req, res, next));
+app.get('/products/metadata', (req, res, next) => productController.getMetadata(req, res, next));
+app.get('/products/:id', (req, res, next) => productController.getById(req, res, next));
 
 // Store Endpoints
-app.get('/stores', (req, res) => storeController.getAll(req, res));
-app.get('/stores/:id', (req, res) => storeController.getById(req, res));
+app.get('/stores', (req, res, next) => storeController.getAll(req, res, next));
+app.get('/stores/:id', (req, res, next) => storeController.getById(req, res, next));
 
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'ok' });
 });
+
+// Error Handling Middleware (must be after all routes)
+app.use(errorMiddleware);
 
 app.listen(port, () => {
   console.log(`[portal-service]: Server is running at http://localhost:${port}`);
