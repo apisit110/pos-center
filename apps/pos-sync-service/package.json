@@ -11,9 +11,12 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@lightning/database": "workspace:*",
+    "@lightning/models": "workspace:*",
+    "axios": "^1.6.8",
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "axios": "^1.6.8"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

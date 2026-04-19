@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import jwt from 'jsonwebtoken';
+import { loginSchema } from './infrastructure/validation/LoginSchema';
 
 // Repositories
 import { DrizzleMerchantRepository } from './infrastructure/repositories/DrizzleMerchantRepository';
@@ -66,7 +67,7 @@ app.use(express.json());
 app.use(loggerMiddleware);
 
 app.post('/login', (req: Request, res: Response) => {
-  const { username, password } = req.body;
+  const { username, password } = loginSchema.parse(req.body);
 
   if (username === 'admin' && password === 'admin') {
     const token = jwt.sign({ uid: 'admin-id-123' }, JWT_SECRET, { expiresIn: '1h' });

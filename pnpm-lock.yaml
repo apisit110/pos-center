@@ -84,6 +84,9 @@ importers:
       uuid:
         specifier: ^13.0.0
         version: 13.0.0
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@types/cors':
         specifier: ^2.8.17
@@ -112,6 +115,12 @@ importers:
 
   apps/pos-sync-service:
     dependencies:
+      '@lightning/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@lightning/models':
+        specifier: workspace:*
+        version: link:../../packages/models
       axios:
         specifier: ^1.6.8
         version: 1.15.0
@@ -121,6 +130,9 @@ importers:
       express:
         specifier: ^4.19.2
         version: 4.22.1
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@types/cors':
         specifier: ^2.8.17

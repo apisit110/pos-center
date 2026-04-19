@@ -1,29 +1,25 @@
-import { IPOSProductGateway } from '../repositories/IPOSProductGateway';
 import { IProductRepository } from '../repositories/IProductRepository';
+import { Product } from '../../domain/entities/Product';
 
 export class SyncPOSProductsUseCase {
   constructor(
-    private readonly posGateway: IPOSProductGateway,
     private readonly productRepository: IProductRepository
   ) {}
 
-  async execute(merchantId: string, storeId: string): Promise<{ success: boolean; count: number }> {
+  async execute(merchantId: string, storeId: string, lastSyncVersion: number = 0): Promise<{ success: boolean; products: Product[] }> {
     try {
-      // 1. Fetch products from external POS
-      const products = await this.posGateway.fetchProducts(merchantId, storeId);
-
-      // 2. Save products to our system
-      await this.productRepository.saveMany(products);
+      // Query products with version > lastSyncVersion
+      const products = await this.productRepository.findByVersion(merchantId, storeId, lastSyncVersion);
 
       return {
         success: true,
-        count: products.length,
+        products: products,
       };
     } catch (error) {
       console.error('[SyncPOSProductsUseCase] Error:', error);
       return {
         success: false,
-        count: 0,
+        products: [],
       };
     }
   }

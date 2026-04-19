@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { pino } from 'pino';
+import { ZodError } from 'zod';
 
 const LOGGER = pino({
   timestamp: () => `,"time":"${new Date().toISOString()}"`,
@@ -7,6 +8,14 @@ const LOGGER = pino({
 });
 
 export const errorMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {
+  if (err instanceof ZodError) {
+    return res.status(400).json({
+      message: 'Validation failed',
+      errors: err.issues.map(e => ({ path: e.path, message: e.message })),
+      request_id: req.requestId
+    });
+  }
+
   const statusCode = err.status || 500;
   
   LOGGER.error({

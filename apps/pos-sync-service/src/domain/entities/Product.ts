@@ -8,6 +8,7 @@ export class Product {
     public barcode: string,
     public basePrice: number,
     public imageUrl: string,
-    public brand: string
+    public brand: string,
+    public syncVersion: number = 0
   ) {}
 }

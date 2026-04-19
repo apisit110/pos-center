@@ -1,0 +1,608 @@
+openapi: 3.0.0
+info:
+  title: Lightning POS Service Center API
+  description: Centralized API documentation for Lightning POS Service Center services, including Portal Service and POS Sync Service.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3001
+    description: Portal Service
+  - url: http://localhost:3005
+    description: POS Sync Service
+
+tags:
+  - name: Portal Service
+    description: Endpoints for the merchant portal and administrative tasks.
+  - name: Sync Service
+    description: Endpoints for synchronizing data with POS clients.
+
+paths:
+  # Portal Service Endpoints
+  /login:
+    post:
+      tags:
+        - Portal Service
+      summary: User login
+      description: Authenticates a user and returns a JWT token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  example: "admin"
+                password:
+                  type: string
+                  example: "admin"
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /merchants:
+    get:
+      tags:
+        - Portal Service
+      summary: Get all merchants
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of merchants
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Merchant'
+
+  /merchants/{id}:
+    get:
+      tags:
+        - Portal Service
+      summary: Get merchant details
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Merchant details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Merchant'
+        '404':
+          description: Merchant not found
+
+  /products:
+    get:
+      tags:
+        - Portal Service
+      summary: Get all products
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: barcode
+          in: query
+          schema:
+            type: string
+        - name: name
+          in: query
+          schema:
+            type: string
+        - name: merchantId
+          in: query
+          schema:
+            type: string
+        - name: brands
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: price
+          in: query
+          schema:
+            type: number
+        - name: units
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+        - name: storeId
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated list of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PortalProduct'
+                  total:
+                    type: integer
+
+  /products/metadata:
+    get:
+      tags:
+        - Portal Service
+      summary: Get product filter metadata
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Filter metadata (brands, units)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  brands:
+                    type: array
+                    items:
+                      type: string
+                  units:
+                    type: array
+                    items:
+                      type: string
+
+  /products/{id}:
+    get:
+      tags:
+        - Portal Service
+      summary: Get product details
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortalProduct'
+        '404':
+          description: Product not found
+
+  /stores:
+    get:
+      tags:
+        - Portal Service
+      summary: Get all stores
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: List of stores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Store'
+
+  /stores/{id}:
+    get:
+      tags:
+        - Portal Service
+      summary: Get store details
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Store details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Store'
+        '404':
+          description: Store not found
+
+  /members:
+    get:
+      tags:
+        - Portal Service
+      summary: Get all members
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: query
+          in: query
+          description: Search by name, email or phone
+          schema:
+            type: string
+        - name: tier
+          in: query
+          schema:
+            type: string
+            enum: [Bronze, Silver, Gold, Platinum]
+      responses:
+        '200':
+          description: Paginated list of members
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  members:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Member'
+                  total:
+                    type: integer
+
+  /members/{id}:
+    get:
+      tags:
+        - Portal Service
+      summary: Get member details
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Member details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Member'
+        '404':
+          description: Member not found
+
+  /staff:
+    get:
+      tags:
+        - Portal Service
+      summary: Get all staff
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 10
+        - name: merchantId
+          in: query
+          schema:
+            type: string
+        - name: role
+          in: query
+          schema:
+            type: string
+        - name: query
+          in: query
+          description: Search by name
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated list of staff members
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  staff:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Staff'
+                  total:
+                    type: integer
+
+  /staff/{id}:
+    get:
+      tags:
+        - Portal Service
+      summary: Get staff details
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Staff details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Staff'
+        '404':
+          description: Staff member not found
+
+  # Sync Service Endpoints
+  /v1/sync/products:
+    post:
+      tags:
+        - Sync Service
+      summary: Download products for synchronization
+      description: Fetches products from the local database that have been updated since the provided sync version for a specific merchant and store.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - merchantId
+                - storeId
+                - syncVersion
+              properties:
+                merchantId:
+                  type: string
+                  format: uuid
+                  example: "fd1b2c4c-7372-4580-8017-1fff8ceb6169"
+                storeId:
+                  type: string
+                  example: "S-001"
+                syncVersion:
+                  type: integer
+                  description: The last sync version known by the client.
+                  example: 0
+      responses:
+        '200':
+          description: Products fetched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Sync completed successfully"
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SyncProduct'
+                  count:
+                    type: integer
+                    example: 3
+        '400':
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /health:
+    get:
+      summary: Health check
+      description: Returns the status of the service.
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  service:
+                    type: string
+                    example: "portal-service"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Merchant:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "fd1b2c4c-7372-4580-8017-1fff8ceb6169"
+        name:
+          type: string
+          example: "Mock Merchant"
+
+    PortalProduct:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "prod-1"
+        merchantId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        sku:
+          type: string
+        barcode:
+          type: string
+        basePrice:
+          type: number
+        imageUrl:
+          type: array
+          items:
+            type: string
+        brand:
+          type: string
+        unitName:
+          type: string
+
+    SyncProduct:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "prod-1"
+        merchantId:
+          type: string
+          format: uuid
+        storeId:
+          type: string
+        name:
+          type: string
+        sku:
+          type: string
+        barcode:
+          type: string
+        basePrice:
+          type: number
+        imageUrl:
+          type: string
+        brand:
+          type: string
+        syncVersion:
+          type: integer
+
+    Store:
+      type: object
+      properties:
+        id:
+          type: string
+        merchantId:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+        latitude:
+          type: number
+        longitude:
+          type: number
+
+    Member:
+      type: object
+      properties:
+        id:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        tier:
+          type: string
+          enum: [Bronze, Silver, Gold, Platinum]
+        points:
+          type: integer
+        createdAt:
+          type: string
+          format: date-time
+
+    Staff:
+      type: object
+      properties:
+        id:
+          type: string
+        merchantId:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Validation failed"
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              path:
+                type: array
+                items:
+                  type: string
+                example: ["merchantId"]
+              message:
+                type: string
+                example: "merchantId must be a valid UUID"
+        request_id:
+          type: string
+          example: "da8e72fa-34c7-419e-932a-c3436fdad704"
