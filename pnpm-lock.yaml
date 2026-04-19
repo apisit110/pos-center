@@ -66,6 +66,9 @@ importers:
 
   apps/portal-service:
     dependencies:
+      '@lightning/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       cors:
         specifier: ^2.8.5
         version: 2.8.6

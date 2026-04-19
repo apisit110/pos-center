@@ -13,3 +13,4 @@ const client = postgres(connectionString);
 export const db = drizzle(client, { schema });
 
 export * from '@lightning/models';
+export * from 'drizzle-orm';

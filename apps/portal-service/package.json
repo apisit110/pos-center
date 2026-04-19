@@ -13,7 +13,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "jsonwebtoken": "^9.0.3"
+    "jsonwebtoken": "^9.0.3",
+    "@lightning/database": "workspace:*"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
