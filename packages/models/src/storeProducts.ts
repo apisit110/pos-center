@@ -11,6 +11,7 @@ export const storeProducts = pgTable('store_products', {
   price: decimal('price', { precision: 10, scale: 2 }).notNull(),
   priceTiers: jsonb('price_tiers'),
   unit: varchar('unit', { length: 50 }),
+  rowVersion: integer('row_version').notNull().default(0),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

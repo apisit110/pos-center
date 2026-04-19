@@ -1,4 +1,4 @@
-import { db, products, merchants, storeProducts, stores, eq, ilike, and, inArray, lte, sql } from '@lightning/database';
+import { db, products, merchants, storeProducts, stores, eq, ilike, and, inArray, lte, sql, runningNumbers } from '@lightning/database';
 import { ProductRepository } from '../../application/repositories/ProductRepository';
 import { Product } from '../../domain/entities/Product';
 
@@ -135,26 +135,18 @@ export class DrizzleProductRepository implements ProductRepository {
   }
 
   async save(product: Product): Promise<void> {
-    // Need to find merchant internal ID first
-    const merchant = await db.query.merchants.findFirst({
-      where: eq(merchants.uid, product.merchantId)
-    });
+    await db.transaction(async (tx) => {
+      // 1. Find merchant internal ID
+      const merchant = await tx.query.merchants.findFirst({
+        where: eq(merchants.uid, product.merchantId)
+      });
 
-    if (!merchant) throw new Error('Merchant not found');
+      if (!merchant) throw new Error('Merchant not found');
 
-    await db.insert(products).values({
-      uid: product.id,
-      merchantId: merchant.id,
-      name: product.name,
-      sku: product.sku,
-      barcode: product.barcode,
-      basePrice: product.basePrice.toString(),
-      imageUrl: product.imageUrl,
-      brand: product.brand,
-      unitName: product.unitName
-    }).onConflictDoUpdate({
-      target: products.uid,
-      set: {
+      // 2. Insert/Update product
+      const inserted = await tx.insert(products).values({
+        uid: product.id,
+        merchantId: merchant.id,
         name: product.name,
         sku: product.sku,
         barcode: product.barcode,
@@ -162,6 +154,42 @@ export class DrizzleProductRepository implements ProductRepository {
         imageUrl: product.imageUrl,
         brand: product.brand,
         unitName: product.unitName
+      }).onConflictDoUpdate({
+        target: products.uid,
+        set: {
+          name: product.name,
+          sku: product.sku,
+          barcode: product.barcode,
+          basePrice: product.basePrice.toString(),
+          imageUrl: product.imageUrl,
+          brand: product.brand,
+          unitName: product.unitName,
+          updatedAt: new Date()
+        }
+      }).returning({ id: products.id });
+
+      const productId = inserted[0]?.id;
+      if (!productId) return;
+
+      // 3. Increment product_version and get new version
+      const versionResult = await tx.update(runningNumbers)
+        .set({ 
+          number: sql`${runningNumbers.number} + 1`,
+          updatedAt: new Date()
+        })
+        .where(eq(runningNumbers.type, 'product_version'))
+        .returning({ newVersion: runningNumbers.number });
+
+      const newVersion = versionResult[0]?.newVersion;
+
+      if (newVersion !== undefined) {
+        // 4. Update row_version for all store_products associated with this product
+        await tx.update(storeProducts)
+          .set({ 
+            rowVersion: newVersion,
+            updatedAt: new Date()
+          })
+          .where(eq(storeProducts.productId, productId));
       }
     });
   }

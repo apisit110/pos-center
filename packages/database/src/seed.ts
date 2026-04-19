@@ -1,5 +1,5 @@
 import { db } from './index';
-import { merchants, stores, products, storeProducts, members, staff } from '@lightning/models';
+import { merchants, stores, products, storeProducts, members, staff, runningNumbers, syncMetadata } from '@lightning/models';
 import { eq } from 'drizzle-orm';
 import fs from 'fs';
 import path from 'path';
@@ -166,6 +166,20 @@ async function seed() {
         });
       }
     }
+
+    // 7. Seed Running Numbers
+    console.log('📦 Seeding running numbers...');
+    await db.insert(runningNumbers).values({
+      type: 'product_version',
+      number: 0
+    }).onConflictDoNothing();
+
+    // 8. Seed Sync Metadata
+    console.log('📦 Seeding sync metadata...');
+    await db.insert(syncMetadata).values({
+      lastProductSyncVersion: 0,
+      status: 'IDLE'
+    }).onConflictDoNothing();
 
     console.log('✅ Seeding completed successfully!');
     process.exit(0);

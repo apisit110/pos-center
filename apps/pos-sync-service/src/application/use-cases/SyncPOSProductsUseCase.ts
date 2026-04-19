@@ -7,10 +7,10 @@ export class SyncPOSProductsUseCase {
     private readonly productRepository: IProductRepository
   ) {}
 
-  async execute(merchantId: string): Promise<{ success: boolean; count: number }> {
+  async execute(merchantId: string, storeId: string): Promise<{ success: boolean; count: number }> {
     try {
       // 1. Fetch products from external POS
-      const products = await this.posGateway.fetchProducts(merchantId);
+      const products = await this.posGateway.fetchProducts(merchantId, storeId);
 
       // 2. Save products to our system
       await this.productRepository.saveMany(products);

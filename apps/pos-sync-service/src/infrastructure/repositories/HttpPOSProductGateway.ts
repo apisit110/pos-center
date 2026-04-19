@@ -2,8 +2,8 @@ import { Product } from '../../domain/entities/Product';
 import { IPOSProductGateway } from '../../application/repositories/IPOSProductGateway';
 
 export class HttpPOSProductGateway implements IPOSProductGateway {
-  async fetchProducts(merchantId: string): Promise<Product[]> {
-    console.log(`[HttpPOSProductGateway] Fetching products for merchant: ${merchantId}`);
+  async fetchProducts(merchantId: string, storeId: string): Promise<Product[]> {
+    console.log(`[HttpPOSProductGateway] Fetching products for merchant: ${merchantId}, store: ${storeId}`);
     
     // Simulate API call delay
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -13,6 +13,7 @@ export class HttpPOSProductGateway implements IPOSProductGateway {
       new Product(
         'pos-prod-1',
         merchantId,
+        storeId,
         'POS Product A',
         'SKU-POS-A',
         'BAR-POS-A',
@@ -23,6 +24,7 @@ export class HttpPOSProductGateway implements IPOSProductGateway {
       new Product(
         'pos-prod-2',
         merchantId,
+        storeId,
         'POS Product B',
         'SKU-POS-B',
         'BAR-POS-B',

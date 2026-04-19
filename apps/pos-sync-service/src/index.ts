@@ -16,15 +16,19 @@ const productRepo = new MockProductRepository();
 const syncUseCase = new SyncPOSProductsUseCase(posGateway, productRepo);
 
 app.post('/v1/sync/products', async (req: Request, res: Response) => {
-  const { merchantId } = req.body;
+  const { merchantId, storeId } = req.body;
 
   if (!merchantId) {
     return res.status(400).json({ message: 'merchantId is required' });
   }
 
-  console.log(`[pos-sync-service] Triggering sync for merchant: ${merchantId}`);
+  if (!storeId) {
+    return res.status(400).json({ message: 'storeId is required' });
+  }
+
+  console.log(`[pos-sync-service] Triggering sync for merchant: ${merchantId}, store: ${storeId}`);
   
-  const result = await syncUseCase.execute(merchantId);
+  const result = await syncUseCase.execute(merchantId, storeId);
 
   if (result.success) {
     return res.status(200).json({
