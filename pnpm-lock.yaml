@@ -157,9 +157,6 @@ importers:
         specifier: ^0.30.8
         version: 0.30.10(@types/react@19.2.14)(postgres@3.4.9)(react@19.2.4)
     devDependencies:
-      '@types/node':
-        specifier: ^20.12.12
-        version: 20.19.39
       drizzle-kit:
         specifier: ^0.21.1
         version: 0.21.4

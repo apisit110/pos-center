@@ -5,7 +5,14 @@
     "product_id": "P75Lx5mwPw8EC02yY2fnTt8iUhAhe7",
     "stock": 100,
     "price": 13,
-    "unit": "Bottle"
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 13,
+        "tier": 1
+      }
+    ]
   },
   {
     "id": "SP-002",
@@ -13,7 +20,14 @@
     "product_id": "rFSMHxCBcxmW53ecQFuvQzS8mqZcaW",
     "stock": 50,
     "price": 17,
-    "unit": "Bottle"
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 17,
+        "tier": 1
+      }
+    ]
   },
   {
     "id": "SP-003",
@@ -21,6 +35,1573 @@
     "product_id": "P75Lx5mwPw8EC02yY2fnTt8iUhAhe7",
     "stock": 30,
     "price": 15,
-    "unit": "Bottle"
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-004",
+    "store_id": "S-001",
+    "product_id": "ANd6PwbLR6R3j6a4TBuvWQgpxQAM6R",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-005",
+    "store_id": "S-001",
+    "product_id": "HhaART8YKRC9bzbE4n7f2yS4wPvJF5",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-006",
+    "store_id": "S-001",
+    "product_id": "huPz9Jrg8C3GGbtcWFx01L34g7fR2n",
+    "stock": 100,
+    "price": 17,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 17,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-007",
+    "store_id": "S-001",
+    "product_id": "FGWgzXg18Gb444bWR0rYw1hrmF40R9",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-008",
+    "store_id": "S-001",
+    "product_id": "T8JfBrT0hiYgNNHApWRTuuRDcHFCZK",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-009",
+    "store_id": "S-001",
+    "product_id": "eGqaDhz5QAAHMF9zhy0H1uNbjFM0eF",
+    "stock": 100,
+    "price": 32,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 32,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-010",
+    "store_id": "S-001",
+    "product_id": "d2gCJYxnjyJ94jTfLQJwvKytAQ9J65",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-011",
+    "store_id": "S-001",
+    "product_id": "GGtrRVVZncbiJ9kJUW35wXaPKXkTiQ",
+    "stock": 100,
+    "price": 16,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 16,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-012",
+    "store_id": "S-001",
+    "product_id": "3GhF13dPMwCwdKUhzSxbcKpaHJ4cFi",
+    "stock": 100,
+    "price": 32,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 32,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-013",
+    "store_id": "S-001",
+    "product_id": "fvVMqSXcWzTFqHycemrJdP4VxthAUy",
+    "stock": 100,
+    "price": 16,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 16,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-014",
+    "store_id": "S-001",
+    "product_id": "ZHKWMA8WUmfFL94ihB27bwR7FiUjr4",
+    "stock": 100,
+    "price": 32,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 32,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-015",
+    "store_id": "S-001",
+    "product_id": "WxfeegFFaZ03XmFLrhR79w8KVKpiDc",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-016",
+    "store_id": "S-001",
+    "product_id": "HMJ2ZaKM5LtrD1RDr5awpvnD83ynBV",
+    "stock": 100,
+    "price": 16,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 16,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-017",
+    "store_id": "S-001",
+    "product_id": "t6ghFgFtuJq3wbyQTwfHtumGcj6Ynh",
+    "stock": 100,
+    "price": 32,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 32,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-018",
+    "store_id": "S-001",
+    "product_id": "9B3qac3fVjZCF2VYvd1gSGD8vqxQ2c",
+    "stock": 100,
+    "price": 16,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 16,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-019",
+    "store_id": "S-001",
+    "product_id": "dqVybw5WYVJgtFZGbpHjGh65u9iE5H",
+    "stock": 100,
+    "price": 32,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 32,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-020",
+    "store_id": "S-001",
+    "product_id": "F01RDvC7UAP1JLGNLCRXgRwkxqy5pM",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-021",
+    "store_id": "S-001",
+    "product_id": "2LYbvQPi3m9ZVAfBYri7jWpGFzNLw8",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-022",
+    "store_id": "S-001",
+    "product_id": "fBBTjeg9pGRttpYdhxPGairZqw5TUd",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-023",
+    "store_id": "S-001",
+    "product_id": "rJU2FXN367Xdyq75d4kkRNUE2WrYAe",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-024",
+    "store_id": "S-001",
+    "product_id": "TUj3eApadGcfALV5w9rMU7fbp0PTMV",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-025",
+    "store_id": "S-001",
+    "product_id": "XRbbS4UqhQZraXBP2jh5XxAETfJkjR",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-026",
+    "store_id": "S-001",
+    "product_id": "HP3GLu0WNxzzbAYWW0Y9EECQnKXj00",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-027",
+    "store_id": "S-001",
+    "product_id": "5taXpCGb9hEziqn2YiNRFGH7kDBLRM",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-028",
+    "store_id": "S-001",
+    "product_id": "VAWvP2naFhiZ9Gfdt3PdhJ25eK3ZQV",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-029",
+    "store_id": "S-001",
+    "product_id": "MLWMgypNqzdRpcSSQacjtWPJSBfpi7",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-030",
+    "store_id": "S-001",
+    "product_id": "yygWZqjXQFSCYd9fPrphgEMr3Ggaux",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-031",
+    "store_id": "S-001",
+    "product_id": "yn2xgCQP0cYCctpLQ0AnjVpdV8DATC",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-032",
+    "store_id": "S-001",
+    "product_id": "g8dHt846rzpntdBATXB4uAHRwR6LXf",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-033",
+    "store_id": "S-001",
+    "product_id": "Xi73x3VG3mGkwRbVnM1KXJFRf6CGDq",
+    "stock": 100,
+    "price": 12,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 12,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-034",
+    "store_id": "S-001",
+    "product_id": "BKavE4dUBMF9BdefCPiXE63HZqyHFv",
+    "stock": 100,
+    "price": 12,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 12,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-035",
+    "store_id": "S-001",
+    "product_id": "PkzzpzAP1CyQwv9JSE5R7zRQLrHFFT",
+    "stock": 100,
+    "price": 17,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 17,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-036",
+    "store_id": "S-001",
+    "product_id": "JdWPMgYd7bBRdzP0JS9JJMZBS85CkG",
+    "stock": 100,
+    "price": 17,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 17,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-037",
+    "store_id": "S-001",
+    "product_id": "wTNajB8d15wXkuC3Rn3Rj0wbjngFVh",
+    "stock": 100,
+    "price": 17,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 17,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-038",
+    "store_id": "S-001",
+    "product_id": "0bibncZm7BPXRU9hrQ87dSiLfBt1BU",
+    "stock": 100,
+    "price": 17,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 17,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-039",
+    "store_id": "S-001",
+    "product_id": "CWP4RmDrR8TreQatSdGf3uSpYQc55H",
+    "stock": 100,
+    "price": 17,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 17,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-040",
+    "store_id": "S-001",
+    "product_id": "cZ9H4D5YiPmffhmgjmLDLu2e4QcyFA",
+    "stock": 100,
+    "price": 17,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 17,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-041",
+    "store_id": "S-001",
+    "product_id": "3ufR4ygLBbUwWg7rta89Zwpb3XnXY6",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-042",
+    "store_id": "S-001",
+    "product_id": "Q1NeiPd56piGy6ak3SAHmRgb8BXGKr",
+    "stock": 100,
+    "price": 32,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 32,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-043",
+    "store_id": "S-001",
+    "product_id": "UBkaMx8vX5wipcRpGQjSx1w93Kr2zA",
+    "stock": 100,
+    "price": 59,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 59,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-044",
+    "store_id": "S-001",
+    "product_id": "pWVcyZUTYWh6MTHBxVN3NdkkP01GL3",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-045",
+    "store_id": "S-001",
+    "product_id": "3WMG90rUc61BXxV0nmW3ybtYkGRGv2",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-046",
+    "store_id": "S-001",
+    "product_id": "H6aBa5pKueTQk7ZTBb75SRj8zBeLyq",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-047",
+    "store_id": "S-001",
+    "product_id": "MEfKWm5074EXkJ3UjDdGvBBp6mHpRS",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-048",
+    "store_id": "S-001",
+    "product_id": "eY4Mwn7acYgmYcBDgLvXe16gnMcLwN",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-049",
+    "store_id": "S-001",
+    "product_id": "5Sgnz34hRMzJg5pPSNrxm4AWfr2rpD",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-050",
+    "store_id": "S-001",
+    "product_id": "uUHGhv1mAxvEetQG3ZMGAMEGtUK4Vz",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-051",
+    "store_id": "S-001",
+    "product_id": "tE4GSTm3Fqa8z282bAMDLtztiYiQ4m",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-052",
+    "store_id": "S-001",
+    "product_id": "qc8n36vwyhBDmEVJFA6rGiTz5W2XPM",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-053",
+    "store_id": "S-001",
+    "product_id": "byxz4Pj2txCdeL4ZWj1KMkbkvjJx5u",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-054",
+    "store_id": "S-001",
+    "product_id": "g7WpVNPhKtrM6BnZhNYzq5aZtyyNjQ",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-055",
+    "store_id": "S-001",
+    "product_id": "kcygfmTw63XMgDkXgLQAb80Cy6Fau5",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-056",
+    "store_id": "S-001",
+    "product_id": "bR77kUmf1wnkRqytWzFNrGcMvZiDRL",
+    "stock": 100,
+    "price": 12,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 12,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-057",
+    "store_id": "S-001",
+    "product_id": "RwyKExJgRCLa1JuXq7iemw39EaBDda",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-058",
+    "store_id": "S-001",
+    "product_id": "JnzC7RHr31gdMq7dxqgBRuKgKaMLt9",
+    "stock": 100,
+    "price": 17,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 17,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-059",
+    "store_id": "S-001",
+    "product_id": "K36jh5jy54efxcz4K0UVdauZN3vdVB",
+    "stock": 100,
+    "price": 17,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 17,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-060",
+    "store_id": "S-001",
+    "product_id": "49WVN4BZbvr4eUgLT1xbYG6yuucHCd",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-061",
+    "store_id": "S-001",
+    "product_id": "Ab2rSn2zdibhXD4tz2Lk8kKCXqFrCE",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-062",
+    "store_id": "S-001",
+    "product_id": "9UVZT5X2SYquGGzSfEeE0ftq03Gn0V",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-063",
+    "store_id": "S-001",
+    "product_id": "XvEyBhiHJjzwLzVcQyu6PYL1evcf8t",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-064",
+    "store_id": "S-001",
+    "product_id": "FCtT3xE6p65W9bpSGh2c7f1yNPWEhv",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-065",
+    "store_id": "S-001",
+    "product_id": "CbDFnXFY2nz4MjEW52gAwTbTjtcfvr",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-066",
+    "store_id": "S-001",
+    "product_id": "U642j8i9ibAFrESQj30hA9NVuww4k3",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-067",
+    "store_id": "S-001",
+    "product_id": "eb4TriQVC4XBy0MqhrXaArK6tSWrkD",
+    "stock": 100,
+    "price": 12,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 12,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-068",
+    "store_id": "S-001",
+    "product_id": "1viRJREr3JzbfqRJJVPci6mcQHfXHU",
+    "stock": 100,
+    "price": 12,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 12,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-069",
+    "store_id": "S-001",
+    "product_id": "qmT2CaymyVf8cPXYC1idSnBnF6RQf9",
+    "stock": 100,
+    "price": 12,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 12,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-070",
+    "store_id": "S-001",
+    "product_id": "zFdRX2BwEtcAvmtiiQZU7ER9cfvPn4",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-071",
+    "store_id": "S-001",
+    "product_id": "AqXNjWVyYKh6K0xfeqVG6qDrjBHb8z",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-072",
+    "store_id": "S-001",
+    "product_id": "NRNVbnXgdNdVAnRLcZLxiaPanjpYMq",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-073",
+    "store_id": "S-001",
+    "product_id": "XrNGZbivxrgMdJA4QYvzidFXqTVrr4",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-074",
+    "store_id": "S-001",
+    "product_id": "cGQ5f6uJA8aCSvcZt47MdqGDqWL4h4",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-075",
+    "store_id": "S-001",
+    "product_id": "tahdhDkYtHJEQGYPGBzfp9z8JcQwFC",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-076",
+    "store_id": "S-001",
+    "product_id": "mTyT7Djf5UJv64Lfiv7acHxCaghQz3",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-077",
+    "store_id": "S-001",
+    "product_id": "2cS4TTyh5rfgiAgQ0U0B1WJgJ3XPP8",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-078",
+    "store_id": "S-001",
+    "product_id": "gMeWuD67LdkMDudHQ2Mmxwtar2ikMk",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-079",
+    "store_id": "S-001",
+    "product_id": "01Ywk0NqiLXKXiELZdCi2NCfc7gnr7",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-080",
+    "store_id": "S-001",
+    "product_id": "a9D3gJ5bizBM6ZwKLSCFx1e3dWcCJD",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-081",
+    "store_id": "S-001",
+    "product_id": "CaKLaqw7nenPiC5eeccS4qtUjg19ZZ",
+    "stock": 100,
+    "price": 35,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 35,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-082",
+    "store_id": "S-001",
+    "product_id": "qR1envwPWneDnAEUf5aBS0zP4R1KG0",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-083",
+    "store_id": "S-001",
+    "product_id": "Kv2VbFyA8S7HaXLxN9VU5LtNiEHh4C",
+    "stock": 100,
+    "price": 16,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 16,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-084",
+    "store_id": "S-001",
+    "product_id": "88xEa1XWXGz9agZ9yhjGvVfSpD0QTR",
+    "stock": 100,
+    "price": 16,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 16,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-085",
+    "store_id": "S-001",
+    "product_id": "4d2K2XHxahKb6XdvKaNw0fExqDXSj4",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-086",
+    "store_id": "S-001",
+    "product_id": "zFY50eSrEnAGa9YzWEk8JypcjQMNCT",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-087",
+    "store_id": "S-001",
+    "product_id": "i8eANm8jVMMN2MvnPKHRVg1ieF9Txb",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-088",
+    "store_id": "S-001",
+    "product_id": "JigwxxZpekFS7KGugbZ0GpBfxtSL65",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-089",
+    "store_id": "S-001",
+    "product_id": "MF8vF3E42FmZ394DHuZKgx4Z0ASx2r",
+    "stock": 100,
+    "price": 50,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 50,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-090",
+    "store_id": "S-001",
+    "product_id": "LeT34vJaxM3k0eHMH3Nm5TPvMBxqLZ",
+    "stock": 100,
+    "price": 50,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 50,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-091",
+    "store_id": "S-001",
+    "product_id": "XxXrUpDvvC4L9HZirt8PySQtNrUSSt",
+    "stock": 100,
+    "price": 40,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 40,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-092",
+    "store_id": "S-001",
+    "product_id": "e5NeiGkHGVWjnJXHEG66SppH3aQRwn",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-093",
+    "store_id": "S-001",
+    "product_id": "FBSk06aQRgtFJtEZXbJLh6S5uwBuMv",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-094",
+    "store_id": "S-001",
+    "product_id": "ueUiwHRfz6hQYp9ggL2EjXEVXHhbnr",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-095",
+    "store_id": "S-001",
+    "product_id": "LHFS3qpgDpMaNHh3rv42MSySazrfmq",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-096",
+    "store_id": "S-001",
+    "product_id": "5ENg7b3gJYQRNUDxVA0rCJ2SN2eq6T",
+    "stock": 100,
+    "price": 12,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 12,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-097",
+    "store_id": "S-001",
+    "product_id": "YuawjryuCCtnfAe5WmzR6HGSYgRcYm",
+    "stock": 100,
+    "price": 40,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 40,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-098",
+    "store_id": "S-001",
+    "product_id": "1qmxqQcHyCk67tUZV1ykWXzE5XcdLv",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-099",
+    "store_id": "S-001",
+    "product_id": "9BS6zjBtkMBG5myNNUXMPrMgKgB9Z0",
+    "stock": 100,
+    "price": 40,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 40,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-100",
+    "store_id": "S-001",
+    "product_id": "qjyhW3TQWdaKw7wSaHrVuxq8JPfzW4",
+    "stock": 100,
+    "price": 40,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 40,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-101",
+    "store_id": "S-001",
+    "product_id": "KMMvSDCCXV4JbefKXUnwRN6Hi7TME4",
+    "stock": 100,
+    "price": 40,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 40,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-102",
+    "store_id": "S-001",
+    "product_id": "M9Aq2AGWAAvH8P6Ekxe1LGTdaZ2KfL",
+    "stock": 100,
+    "price": 38,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 38,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-103",
+    "store_id": "S-001",
+    "product_id": "t2rfCMgE3Z0fGtWd804vKGxLdRN73W",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-104",
+    "store_id": "S-001",
+    "product_id": "wVrNLy5Uqv1tuhCiuquw0VnNiXxTTa",
+    "stock": 100,
+    "price": 50,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 50,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-105",
+    "store_id": "S-001",
+    "product_id": "dUQgif31Fdkngv9TfLHhrhB9T9hw2u",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-106",
+    "store_id": "S-001",
+    "product_id": "MkpLzc0YmBzVcC2dE1R1RW6WUnCYNJ",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "id": "SP-107",
+    "store_id": "S-001",
+    "product_id": "UUIIDD",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
   }
 ]

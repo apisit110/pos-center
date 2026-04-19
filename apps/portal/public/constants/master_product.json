@@ -15,22 +15,6 @@
     "unit_name": "ขวด",
     "barcode": "8858998581221",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 13,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -49,22 +33,6 @@
     "unit_name": "ขวด",
     "barcode": "8858998581283",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 17,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -83,22 +51,6 @@
     "unit_name": "ขวด",
     "barcode": "8858998581238",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 30,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -117,22 +69,6 @@
     "unit_name": "ขวด",
     "barcode": "8851959127070",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -151,22 +87,6 @@
     "unit_name": "ขวด",
     "barcode": "8851959158012",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 17,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -185,22 +105,6 @@
     "unit_name": "ขวด",
     "barcode": "8851959144015",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 30,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -219,22 +123,6 @@
     "unit_name": "ขวด",
     "barcode": "XXXXXXXX",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -253,22 +141,6 @@
     "unit_name": "ขวด",
     "barcode": "8851959144176",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 32,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -287,22 +159,6 @@
     "unit_name": "กระป๋อง",
     "barcode": "8851959132180",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -321,22 +177,6 @@
     "unit_name": "ขวด",
     "barcode": "8851959158180",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 16,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -355,22 +195,6 @@
     "unit_name": "ขวด",
     "barcode": "8851959144183",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 32,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -389,22 +213,6 @@
     "unit_name": "ขวด",
     "barcode": "8851959158166",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 16,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -423,22 +231,6 @@
     "unit_name": "ขวด",
     "barcode": "8851959144169",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 32,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -457,22 +249,6 @@
     "unit_name": "กระป๋อง",
     "barcode": "8851959132197",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -491,22 +267,6 @@
     "unit_name": "ขวด",
     "barcode": "8851959158197",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 16,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -525,22 +285,6 @@
     "unit_name": "ขวด",
     "barcode": "8851959144190",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 32,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -559,22 +303,6 @@
     "unit_name": "ขวด",
     "barcode": "8851959158364",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 16,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -593,22 +321,6 @@
     "unit_name": "ขวด",
     "barcode": "8851959144367",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 32,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -627,22 +339,6 @@
     "unit_name": "กระป๋อง",
     "barcode": "8854698010672",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -661,22 +357,6 @@
     "unit_name": "กระป๋อง",
     "barcode": "8854698016933",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -695,22 +375,6 @@
     "unit_name": "ขวด",
     "barcode": "8851123237000",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -729,22 +393,6 @@
     "unit_name": "ขวด",
     "barcode": "8851123237031",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -763,22 +411,6 @@
     "unit_name": "ขวด",
     "barcode": "8851123237062",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -797,22 +429,6 @@
     "unit_name": "ขวด",
     "barcode": "8850999220000",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -831,22 +447,6 @@
     "unit_name": "กระป๋อง",
     "barcode": "8850999016863",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -865,22 +465,6 @@
     "unit_name": "กระป๋อง",
     "barcode": "8850999023175",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -900,22 +484,6 @@
     "unit_name": "ขวด",
     "barcode": "8851123233002",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -935,22 +503,6 @@
     "unit_name": "ขวด",
     "barcode": "8852742000099",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -970,22 +522,6 @@
     "unit_name": "ขวด",
     "barcode": "8855790000011",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1005,22 +541,6 @@
     "unit_name": "ขวด",
     "barcode": "8851123240758",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1040,22 +560,6 @@
     "unit_name": "ขวด",
     "barcode": "8851123212021",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1075,22 +579,6 @@
     "unit_name": "ขวด",
     "barcode": "8851123211024",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 12,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1110,22 +598,6 @@
     "unit_name": "ขวด",
     "barcode": "8850228000106",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 12,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1145,22 +617,6 @@
     "unit_name": "กระป๋อง",
     "barcode": "8850250006015",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 17,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1180,22 +636,6 @@
     "unit_name": "กระป๋อง",
     "barcode": "8850250000365",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 17,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1215,22 +655,6 @@
     "unit_name": "กระป๋อง",
     "barcode": "8850250000495",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 17,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1250,22 +674,6 @@
     "unit_name": "กระป๋อง",
     "barcode": "8851012103706",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 17,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1285,22 +693,6 @@
     "unit_name": "กระป๋อง",
     "barcode": "8850011060973",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 17,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1320,22 +712,6 @@
     "unit_name": "กระป๋อง",
     "barcode": "8850124025258",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 17,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1355,22 +731,6 @@
     "unit_name": "ซอง",
     "barcode": "8850250001669",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1390,22 +750,6 @@
     "unit_name": "ซอง",
     "barcode": "8850250014980",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 32,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1425,22 +769,6 @@
     "unit_name": "ซอง",
     "barcode": "8850250015017",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 59,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1460,22 +788,6 @@
     "unit_name": "ขวด",
     "barcode": "8850624340998",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1495,22 +807,6 @@
     "unit_name": "ขวด",
     "barcode": "8850624756355",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1530,22 +826,6 @@
     "unit_name": "ขวด",
     "barcode": "8850624144343",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1565,22 +845,6 @@
     "unit_name": "ขวด",
     "barcode": "8850624756478",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1600,22 +864,6 @@
     "unit_name": "ขวด",
     "barcode": "8850157111119",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1635,22 +883,6 @@
     "unit_name": "ขวด",
     "barcode": "8850624395240",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1670,22 +902,6 @@
     "unit_name": "ขวด",
     "barcode": "8857121972783",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 5,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1705,22 +921,6 @@
     "unit_name": "ขวด",
     "barcode": "8857121972653",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1740,22 +940,6 @@
     "unit_name": "ขวด",
     "barcode": "8858729400456",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 5,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1772,22 +956,6 @@
     "unit_name": "ขวด",
     "barcode": "XXXXXXXX",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1807,22 +975,6 @@
     "unit_name": "ขวด",
     "barcode": "8857200275224",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 5,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1842,22 +994,6 @@
     "unit_name": "ขวด",
     "barcode": "8854698017527",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1877,22 +1013,6 @@
     "unit_name": "ขวด",
     "barcode": "8850228000403",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 12,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1912,22 +1032,6 @@
     "unit_name": "ขวด",
     "barcode": "8858891302473",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1947,22 +1051,6 @@
     "unit_name": "ขวด",
     "barcode": "8851028140047",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 17,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -1982,22 +1070,6 @@
     "unit_name": "ขวด",
     "barcode": "8851028001423",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 17,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2017,22 +1089,6 @@
     "unit_name": "ขวด",
     "barcode": "8858891301872",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2052,22 +1108,6 @@
     "unit_name": "ขวด",
     "barcode": "8857121972134",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2087,22 +1127,6 @@
     "unit_name": "ขวด",
     "barcode": "8850952213636",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 5,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2122,22 +1146,6 @@
     "unit_name": "ขวด",
     "barcode": "8851717060014",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2157,22 +1165,6 @@
     "unit_name": "ขวด",
     "barcode": "8851717060076",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2192,22 +1184,6 @@
     "unit_name": "ขวด",
     "barcode": "8851717060052",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2227,22 +1203,6 @@
     "unit_name": "ขวด",
     "barcode": "8851717060205",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2262,22 +1222,6 @@
     "unit_name": "กล่อง",
     "barcode": "8850267112129",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 12,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2294,22 +1238,6 @@
     "unit_name": "กล่อง",
     "barcode": "XXXXXXXX",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 12,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2329,22 +1257,6 @@
     "unit_name": "กล่อง",
     "barcode": "8851028001447",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 12,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2364,22 +1276,6 @@
     "unit_name": "กล่อง",
     "barcode": "8850086141669",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2399,22 +1295,6 @@
     "unit_name": "กล่อง",
     "barcode": "8851012103058",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2434,22 +1314,6 @@
     "unit_name": "กล่อง",
     "barcode": "8850188800051",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2469,22 +1333,6 @@
     "unit_name": "กล่อง",
     "barcode": "8850188806435",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2504,22 +1352,6 @@
     "unit_name": "กล่อง",
     "barcode": "8858891300325",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2539,22 +1371,6 @@
     "unit_name": "กล่อง",
     "barcode": "8853002301857",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2574,22 +1390,6 @@
     "unit_name": "กล่อง",
     "barcode": "8853002080066",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2609,22 +1409,6 @@
     "unit_name": "กล่อง",
     "barcode": "8851717040030",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2644,22 +1428,6 @@
     "unit_name": "กล่อง",
     "barcode": "8851717040245",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2679,22 +1447,6 @@
     "unit_name": "กล่อง",
     "barcode": "8854698015431",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2714,22 +1466,6 @@
     "unit_name": "กล่อง",
     "barcode": "8853002300454",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2749,22 +1485,6 @@
     "unit_name": "กล่อง",
     "barcode": "8852001113522",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 35,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2781,22 +1501,6 @@
     "unit_name": "กล่อง",
     "barcode": "XXXXXXXX",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2816,22 +1520,6 @@
     "unit_name": "ถ้วย",
     "barcode": "8851717020148",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 16,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2850,22 +1538,6 @@
     "unit_name": "ถ้วย",
     "barcode": "8851717020124",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 16,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2884,22 +1556,6 @@
     "unit_name": "ถุง",
     "barcode": "XXXXXXXX",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2918,22 +1574,6 @@
     "unit_name": "ถุง",
     "barcode": "XXXXXXXX",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 30,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2952,22 +1592,6 @@
     "unit_name": "ถุง",
     "barcode": "XXXXXXXX",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 15,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -2986,22 +1610,6 @@
     "unit_name": "ถุง",
     "barcode": "XXXXXXXX",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 30,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3020,22 +1628,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8858667400457",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 50,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3054,22 +1646,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8858678301347",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 50,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3086,22 +1662,6 @@
     "unit_name": "แพ็ค",
     "barcode": "XXXXXXXX",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 40,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3120,22 +1680,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8858678310042",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 30,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3154,22 +1698,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8858678310035",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 20,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3188,22 +1716,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8859036100220",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 20,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3222,22 +1734,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8858667400280",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 20,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3256,22 +1752,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8858678310028",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 12,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3290,22 +1770,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8858678310011",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 40,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3324,22 +1788,6 @@
     "unit_name": "แพ็ค",
     "barcode": "XXXXXXXX",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 10,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3358,22 +1806,6 @@
     "unit_name": "แพ็ค",
     "barcode": "560100006901",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 40,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3392,22 +1824,6 @@
     "unit_name": "แพ็ค",
     "barcode": "XXXXXXXX",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 40,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3426,22 +1842,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8858667400204",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 40,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3460,22 +1860,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8859085904763",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 38,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3494,22 +1878,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8858667400082",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 20,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3528,22 +1896,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8859036100077",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 50,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3563,22 +1915,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8859640000343",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 20,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3597,22 +1933,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8857126206753",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 20,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   },
   {
@@ -3631,22 +1951,6 @@
     "unit_name": "แพ็ค",
     "barcode": "8857126206753",
     "qrcode": null,
-    "stores": [
-      {
-        "name_en": "HOME HQ",
-        "name_th": "โฮม สาขาใหญ่",
-        "brand_name_en": "HOME",
-        "brand_name_th": "โฮม",
-        "price_tiers": [
-          {
-            "min_qty": 1,
-            "max_qty": 1,
-            "unit_price": 20,
-            "tier": 1
-          }
-        ]
-      }
-    ],
     "merchant_id": 1
   }
 ]
