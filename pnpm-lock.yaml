@@ -147,6 +147,9 @@ importers:
       '@types/node':
         specifier: ^20.12.12
         version: 20.19.39
+      drizzle-kit:
+        specifier: ^0.21.1
+        version: 0.21.4
       tsx:
         specifier: ^4.11.0
         version: 4.21.0

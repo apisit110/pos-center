@@ -112,3 +112,22 @@ Edit Down
 การทำแบบนี้อาจจะดูขัดใจในช่วงแรกที่มาจาก Sequelize แต่ในระยะยาวมันจะช่วยให้การทำ **CI/CD** เสถียรมาก เพราะไม่มีการรันคำสั่งย้อนกลับที่อาจจะพังกลางคันครับ
 
 คุณพอจะเห็นภาพไหมครับว่าการ "เดินหน้าเพื่อแก้ไข" (Fix-forward) มันปลอดภัยกว่าการกด Undo ในระบบอัตโนมัติอย่างไร?
+
+---
+
+-- Create the user
+CREATE USER lightning WITH PASSWORD 'lightning';
+
+-- Give the user permission to create databases
+ALTER USER lightning CREATEDB;
+
+-- Create the database (if you haven't yet)
+CREATE DATABASE lightning_pos;
+
+-- Grant all permissions on the database to the new user
+GRANT ALL PRIVILEGES ON DATABASE lightning_pos TO lightning;
+
+-- Exit
+\q
+
+---

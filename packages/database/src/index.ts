@@ -4,7 +4,8 @@ import * as schema from '@lightning/models';
 import * as dotenv from 'dotenv';
 import path from 'path';
 
-// Load .env from root if exists
+// Load .env from current package or root
+dotenv.config({ path: path.join(__dirname, '../.env') });
 dotenv.config({ path: path.join(__dirname, '../../../.env') });
 
 const connectionString = process.env.DATABASE_URL || 'postgres://postgres:postgres@localhost:5432/lightning_pos';
