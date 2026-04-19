@@ -34,11 +34,11 @@ export default function DashboardLayout({
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard' },
-    { name: 'Merchants', path: '/dashboard/merchants' },
-    { name: 'Products', path: '/dashboard/products' },
-    { name: 'Stores', path: '/dashboard/stores' },
-    { name: 'Members', path: '/dashboard/members' },
-    { name: 'Staff', path: '/dashboard/staff' },
+    { name: 'Merchants', path: '/merchants' },
+    { name: 'Products', path: '/products' },
+    { name: 'Stores', path: '/stores' },
+    { name: 'Members', path: '/members' },
+    { name: 'Staff', path: '/staff' },
   ];
 
   const currentTitle = menuItems.find(i => pathname.startsWith(i.path) && (i.path !== '/dashboard' || pathname === '/dashboard'))?.name || 'Dashboard';

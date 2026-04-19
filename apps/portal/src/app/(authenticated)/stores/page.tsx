@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { MockStoreRepository } from '../../../infrastructure/repositories/MockStoreRepository';
+import { ApiStoreRepository } from '../../../infrastructure/repositories/ApiStoreRepository';
+import { GetStoresUseCase } from '../../../application/use-cases/GetStoresUseCase';
 import { Store } from '../../../domain/entities/Store';
 import { DataTable } from '../../../presentation/components/DataTable';
 
@@ -25,8 +26,9 @@ export default function StoresPage() {
 
   useEffect(() => {
     const fetchStores = async () => {
-      const repository = new MockStoreRepository();
-      const result = await repository.getStores('1');
+      const repository = new ApiStoreRepository();
+      const useCase = new GetStoresUseCase(repository);
+      const result = await useCase.execute();
       setStores(result);
       setLoading(false);
     };

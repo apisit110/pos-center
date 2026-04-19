@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { GetMembersUseCase } from '../../../application/use-cases/GetMembersUseCase';
-import { MockMemberRepository } from '../../../infrastructure/repositories/MockMemberRepository';
+import { ApiMemberRepository } from '../../../infrastructure/repositories/ApiMemberRepository';
 import { Member } from '../../../domain/entities/Member';
 import { MemberFilter } from '../../../application/repositories/MemberRepository';
 import { DataTable } from '../../../presentation/components/DataTable';
@@ -166,7 +166,7 @@ export default function MembersPage() {
   });
 
   const fetchMembers = useCallback(async (activeFilters: MemberFilter) => {
-    const repository = new MockMemberRepository();
+    const repository = new ApiMemberRepository();
     const useCase = new GetMembersUseCase(repository);
     const result = await useCase.execute(page, limit, activeFilters);
     setMembers(result.members);

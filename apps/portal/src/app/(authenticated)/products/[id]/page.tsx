@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useParams, useRouter } from 'next/navigation';
 import { GetProductUseCase } from '../../../../application/use-cases/GetProductUseCase';
-import { MockProductRepository } from '../../../../infrastructure/repositories/MockProductRepository';
+import { ApiProductRepository } from '../../../../infrastructure/repositories/ApiProductRepository';
 import { Product } from '../../../../domain/entities/Product';
 import { FiArrowLeft, FiPackage, FiTag, FiDollarSign, FiBox, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
@@ -273,7 +273,7 @@ export default function ProductDetailPage() {
     const fetchProduct = async () => {
       if (!params.id) return;
       
-      const repository = new MockProductRepository();
+      const repository = new ApiProductRepository();
       const useCase = new GetProductUseCase(repository);
       const result = await useCase.execute(params.id as string);
       

@@ -4,7 +4,7 @@ import { Product } from '../../domain/entities/Product';
 export class GetProductsUseCase {
   constructor(private productRepository: ProductRepository) {}
 
-  async execute(): Promise<Product[]> {
-    return this.productRepository.findAll();
+  async execute(page?: number, limit?: number, filters?: any): Promise<{ products: Product[], total: number }> {
+    return this.productRepository.findAll(page, limit, filters);
   }
 }

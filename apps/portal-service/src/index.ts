@@ -12,6 +12,7 @@ import { GetMerchantsUseCase } from './application/use-cases/GetMerchantsUseCase
 import { GetMerchantDetailUseCase } from './application/use-cases/GetMerchantDetailUseCase';
 import { GetProductsUseCase } from './application/use-cases/GetProductsUseCase';
 import { GetProductDetailUseCase } from './application/use-cases/GetProductDetailUseCase';
+import { GetProductFilterMetadataUseCase } from './application/use-cases/GetProductFilterMetadataUseCase';
 import { GetStoresUseCase } from './application/use-cases/GetStoresUseCase';
 import { GetStoreDetailUseCase } from './application/use-cases/GetStoreDetailUseCase';
 
@@ -33,11 +34,12 @@ const getMerchantsUseCase = new GetMerchantsUseCase(merchantRepository);
 const getMerchantDetailUseCase = new GetMerchantDetailUseCase(merchantRepository);
 const getProductsUseCase = new GetProductsUseCase(productRepository);
 const getProductDetailUseCase = new GetProductDetailUseCase(productRepository);
+const getProductFilterMetadataUseCase = new GetProductFilterMetadataUseCase(productRepository);
 const getStoresUseCase = new GetStoresUseCase(storeRepository);
 const getStoreDetailUseCase = new GetStoreDetailUseCase(storeRepository);
 
 const merchantController = new MerchantController(getMerchantsUseCase, getMerchantDetailUseCase);
-const productController = new ProductController(getProductsUseCase, getProductDetailUseCase);
+const productController = new ProductController(getProductsUseCase, getProductDetailUseCase, getProductFilterMetadataUseCase);
 const storeController = new StoreController(getStoresUseCase, getStoreDetailUseCase);
 
 app.use(cors());
@@ -60,6 +62,7 @@ app.get('/merchants/:id', (req, res) => merchantController.getById(req, res));
 
 // Product Endpoints
 app.get('/products', (req, res) => productController.getAll(req, res));
+app.get('/products/metadata', (req, res) => productController.getMetadata(req, res));
 app.get('/products/:id', (req, res) => productController.getById(req, res));
 
 // Store Endpoints

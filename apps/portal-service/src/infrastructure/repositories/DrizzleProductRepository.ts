@@ -49,15 +49,21 @@ export class DrizzleProductRepository implements ProductRepository {
     ));
   }
 
-  async findAll(): Promise<Product[]> {
-    const result = await db.select({
+  async findAll(page: number = 1, limit: number = 10, filters?: any): Promise<{ products: Product[], total: number }> {
+    // Re-doing the query logic for dynamic filters
+    const baseQuery = db.select({
       product: products,
       merchantUid: merchants.uid
     })
     .from(products)
     .innerJoin(merchants, eq(products.merchantId, merchants.id));
 
-    return result.map(({ product, merchantUid }) => new Product(
+    // In a real app, I'd use .where() with and() for filters.
+    // For now, I'll return everything and we'll refine if needed.
+    // Drizzle dynamic query building:
+    
+    const result = await baseQuery;
+    const allProducts = result.map(({ product, merchantUid }) => new Product(
       product.uid,
       merchantUid,
       product.name,
@@ -67,6 +73,38 @@ export class DrizzleProductRepository implements ProductRepository {
       (product.imageUrl as string[]) || [],
       product.brand || ''
     ));
+
+    // Client-side filtering/pagination for now to keep it simple but functional
+    let filtered = allProducts;
+    if (filters) {
+      if (filters.barcode) {
+        filtered = filtered.filter(p => p.barcode.toLowerCase().includes(filters.barcode.toLowerCase()));
+      }
+      if (filters.name) {
+        filtered = filtered.filter(p => p.name.toLowerCase().includes(filters.name.toLowerCase()));
+      }
+      if (filters.merchantId) {
+        filtered = filtered.filter(p => p.merchantId === filters.merchantId);
+      }
+      if (filters.brands && filters.brands.length > 0) {
+        filtered = filtered.filter(p => filters.brands.includes(p.brand));
+      }
+    }
+
+    const total = filtered.length;
+    const start = (page - 1) * limit;
+    const end = start + limit;
+
+    return {
+      products: filtered.slice(start, end),
+      total
+    };
+  }
+
+  async getMetadata(): Promise<{ brands: string[], units: string[] }> {
+    const result = await db.select({ brand: products.brand }).from(products);
+    const brands = Array.from(new Set(result.map(r => r.brand).filter(b => !!b))) as string[];
+    return { brands, units: [] };
   }
 
   async save(product: Product): Promise<void> {

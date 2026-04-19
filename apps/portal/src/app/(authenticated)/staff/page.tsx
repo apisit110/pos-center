@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { MockStaffRepository } from '../../../infrastructure/repositories/MockStaffRepository';
+import { ApiStaffRepository } from '../../../infrastructure/repositories/ApiStaffRepository';
 import { Staff } from '../../../domain/entities/Staff';
 import { DataTable } from '../../../presentation/components/DataTable';
 
@@ -25,7 +25,7 @@ export default function StaffPage() {
 
   useEffect(() => {
     const fetchStaff = async () => {
-      const repository = new MockStaffRepository();
+      const repository = new ApiStaffRepository();
       // Fetching staff for merchant 1
       const result = await repository.getStaffByMerchant('1');
       setStaff(result);

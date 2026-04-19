@@ -6,9 +6,9 @@ import { GetProductsUseCase } from '../../../application/use-cases/GetProductsUs
 import { GetProductFilterMetadataUseCase } from '../../../application/use-cases/GetProductFilterMetadataUseCase';
 import { GetMerchantsUseCase } from '../../../application/use-cases/GetMerchantsUseCase';
 import { GetStoresUseCase } from '../../../application/use-cases/GetStoresUseCase';
-import { MockProductRepository } from '../../../infrastructure/repositories/MockProductRepository';
-import { MockMerchantRepository } from '../../../infrastructure/repositories/MockMerchantRepository';
-import { MockStoreRepository } from '../../../infrastructure/repositories/MockStoreRepository';
+import { ApiProductRepository } from '../../../infrastructure/repositories/ApiProductRepository';
+import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiMerchantRepository';
+import { ApiStoreRepository } from '../../../infrastructure/repositories/ApiStoreRepository';
 import { Product } from '../../../domain/entities/Product';
 import { ProductFilter } from '../../../application/repositories/ProductRepository';
 import { DataTable } from '../../../presentation/components/DataTable';
@@ -187,7 +187,7 @@ export default function ProductsPage() {
   }, [merchants]);
 
   const fetchProducts = useCallback(async (activeFilters: ProductFilter) => {
-    const repository = new MockProductRepository();
+    const repository = new ApiProductRepository();
     const useCase = new GetProductsUseCase(repository);
     const result = await useCase.execute(page, limit, activeFilters);
     setProducts(result.products);
@@ -196,17 +196,17 @@ export default function ProductsPage() {
 
   useEffect(() => {
     const fetchMetadata = async () => {
-      const repository = new MockProductRepository();
+      const repository = new ApiProductRepository();
       const useCase = new GetProductFilterMetadataUseCase(repository);
       const data = await useCase.execute();
       setMetadata(data);
 
-      const merchantRepo = new MockMerchantRepository();
+      const merchantRepo = new ApiMerchantRepository();
       const merchantUC = new GetMerchantsUseCase(merchantRepo);
       const merchantData = await merchantUC.execute();
       setMerchants(merchantData.map(m => ({ value: m.id, label: m.name })));
 
-      const storeRepo = new MockStoreRepository();
+      const storeRepo = new ApiStoreRepository();
       const storeUC = new GetStoresUseCase(storeRepo);
       const storeData = await storeUC.execute();
       setStores(storeData.map(s => ({ value: s.id, label: s.name })));
@@ -218,7 +218,7 @@ export default function ProductsPage() {
     const merchantId = selected ? selected.value : undefined;
     setFilters(prev => ({ ...prev, merchantId, storeId: undefined }));
     
-    const storeRepo = new MockStoreRepository();
+    const storeRepo = new ApiStoreRepository();
     const storeUC = new GetStoresUseCase(storeRepo);
     const storeData = await storeUC.execute(merchantId);
     setStores(storeData.map(s => ({ value: s.id, label: s.name })));
@@ -367,7 +367,7 @@ export default function ProductsPage() {
       <DataTable 
         columns={columns} 
         data={products} 
-        onRowClick={(product) => router.push(`/dashboard/products/${product.id}`)}
+        onRowClick={(product) => router.push(`/products/${product.id}`)}
         footer={
           <Pagination 
             total={total} 

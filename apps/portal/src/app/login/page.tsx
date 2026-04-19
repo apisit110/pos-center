@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoginUseCase } from '../../application/use-cases/LoginUseCase';
-import { MockAuthRepository } from '../../infrastructure/repositories/MockAuthRepository';
+import { ApiAuthRepository } from '../../infrastructure/repositories/ApiAuthRepository';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -15,7 +15,7 @@ export default function LoginPage() {
     e.preventDefault();
     setError('');
 
-    const repository = new MockAuthRepository();
+    const repository = new ApiAuthRepository();
     const useCase = new LoginUseCase(repository);
 
     try {

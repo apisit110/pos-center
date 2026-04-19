@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { MockMerchantRepository } from '../../../infrastructure/repositories/MockMerchantRepository';
+import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiMerchantRepository';
+import { GetMerchantsUseCase } from '../../../application/use-cases/GetMerchantsUseCase';
 import { Merchant } from '../../../domain/entities/Merchant';
 import { DataTable } from '../../../presentation/components/DataTable';
 
@@ -25,8 +26,9 @@ export default function MerchantsPage() {
 
   useEffect(() => {
     const fetchMerchants = async () => {
-      const repository = new MockMerchantRepository();
-      const result = await repository.getMerchants();
+      const repository = new ApiMerchantRepository();
+      const useCase = new GetMerchantsUseCase(repository);
+      const result = await useCase.execute();
       setMerchants(result);
       setLoading(false);
     };
