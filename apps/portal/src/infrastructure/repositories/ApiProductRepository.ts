@@ -20,7 +20,8 @@ export class ApiProductRepository implements ProductRepository {
         p.barcode,
         p.basePrice,
         p.imageUrl,
-        p.brand
+        p.brand,
+        p.unitName
       )),
       total
     };
@@ -38,7 +39,8 @@ export class ApiProductRepository implements ProductRepository {
         p.barcode,
         p.basePrice,
         p.imageUrl,
-        p.brand
+        p.brand,
+        p.unitName
       );
     } catch (error) {
       return null;

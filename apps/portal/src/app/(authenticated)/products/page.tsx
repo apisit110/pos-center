@@ -252,6 +252,7 @@ export default function ProductsPage() {
     { header: 'Barcode', accessor: 'barcode' as const, width: '150px' },
     { header: 'Name', accessor: 'name' as const },
     { header: 'Brand', accessor: 'brand' as const },
+    { header: 'Unit', accessor: 'unitName' as const },
     { 
       header: 'Merchant', 
       accessor: (p: Product) => merchantMap[p.merchantId] || `ID: ${p.merchantId}` 

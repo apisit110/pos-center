@@ -7,6 +7,7 @@ export class Product {
     public barcode: string,
     public basePrice: number,
     public imageUrl: string | string[],
-    public brand: string
+    public brand: string,
+    public unitName: string
   ) {}
 }

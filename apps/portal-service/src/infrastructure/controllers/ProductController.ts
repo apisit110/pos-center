@@ -16,12 +16,15 @@ export class ProductController {
       const limit = req.query.limit ? Number(req.query.limit) : 10;
       
       // Extract filters
-      const { barcode, name, merchantId, brands } = req.query;
+      const { barcode, name, merchantId, brands, price, units, storeId } = req.query;
       const filters = {
         barcode: barcode as string,
         name: name as string,
         merchantId: merchantId as string,
-        brands: brands ? (Array.isArray(brands) ? brands : [brands]) as string[] : []
+        brands: brands ? (Array.isArray(brands) ? brands : [brands]) as string[] : [],
+        price: price ? Number(price) : undefined,
+        units: units ? (Array.isArray(units) ? units : [units]) as string[] : [],
+        storeId: storeId as string
       };
 
       const result = await this.getProductsUseCase.execute(page, limit, filters);

@@ -1,4 +1,4 @@
-import { db, products, merchants, eq } from '@lightning/database';
+import { db, products, merchants, storeProducts, stores, eq, ilike, and, inArray, lte, sql } from '@lightning/database';
 import { ProductRepository } from '../../application/repositories/ProductRepository';
 import { Product } from '../../domain/entities/Product';
 
@@ -24,7 +24,8 @@ export class DrizzleProductRepository implements ProductRepository {
       product.barcode || '',
       Number(product.basePrice),
       (product.imageUrl as string[]) || [],
-      product.brand || ''
+      product.brand || '',
+      product.unitName || ''
     );
   }
 
@@ -45,25 +46,67 @@ export class DrizzleProductRepository implements ProductRepository {
       product.barcode || '',
       Number(product.basePrice),
       (product.imageUrl as string[]) || [],
-      product.brand || ''
+      product.brand || '',
+      product.unitName || ''
     ));
   }
 
   async findAll(page: number = 1, limit: number = 10, filters?: any): Promise<{ products: Product[], total: number }> {
-    // Re-doing the query logic for dynamic filters
-    const baseQuery = db.select({
+    const whereConditions = [];
+
+    if (filters?.barcode) {
+      whereConditions.push(ilike(products.barcode, `%${filters.barcode}%`));
+    }
+    if (filters?.name) {
+      whereConditions.push(ilike(products.name, `%${filters.name}%`));
+    }
+    if (filters?.merchantId) {
+      whereConditions.push(eq(merchants.uid, filters.merchantId));
+    }
+    if (filters?.brands && filters.brands.length > 0) {
+      whereConditions.push(inArray(products.brand, filters.brands));
+    }
+    if (filters?.units && filters.units.length > 0) {
+      whereConditions.push(inArray(products.unitName, filters.units));
+    }
+    if (filters?.price !== undefined) {
+      whereConditions.push(lte(products.basePrice, filters.price.toString()));
+    }
+
+    let query = db.select({
       product: products,
       merchantUid: merchants.uid
     })
     .from(products)
     .innerJoin(merchants, eq(products.merchantId, merchants.id));
 
-    // In a real app, I'd use .where() with and() for filters.
-    // For now, I'll return everything and we'll refine if needed.
-    // Drizzle dynamic query building:
-    
-    const result = await baseQuery;
-    const allProducts = result.map(({ product, merchantUid }) => new Product(
+    if (filters?.storeId) {
+      query = query.innerJoin(storeProducts, eq(products.id, storeProducts.productId))
+                   .innerJoin(stores, eq(storeProducts.storeId, stores.id)) as any;
+      whereConditions.push(eq(stores.uid, filters.storeId));
+    }
+
+    const whereClause = whereConditions.length > 0 ? and(...whereConditions) : undefined;
+
+    // Get total count
+    const countResult = await db.select({ 
+      count: sql<number>`count(distinct ${products.id})` 
+    })
+    .from(products)
+    .innerJoin(merchants, eq(products.merchantId, merchants.id))
+    .leftJoin(storeProducts, eq(products.id, storeProducts.productId))
+    .leftJoin(stores, eq(storeProducts.storeId, stores.id))
+    .where(whereClause);
+
+    const total = Number(countResult[0]?.count || 0);
+
+    // Get paginated results
+    const result = await query
+      .where(whereClause)
+      .limit(limit)
+      .offset((page - 1) * limit);
+
+    const mappedProducts = result.map(({ product, merchantUid }: any) => new Product(
       product.uid,
       merchantUid,
       product.name,
@@ -71,40 +114,24 @@ export class DrizzleProductRepository implements ProductRepository {
       product.barcode || '',
       Number(product.basePrice),
       (product.imageUrl as string[]) || [],
-      product.brand || ''
+      product.brand || '',
+      product.unitName || ''
     ));
 
-    // Client-side filtering/pagination for now to keep it simple but functional
-    let filtered = allProducts;
-    if (filters) {
-      if (filters.barcode) {
-        filtered = filtered.filter(p => p.barcode.toLowerCase().includes(filters.barcode.toLowerCase()));
-      }
-      if (filters.name) {
-        filtered = filtered.filter(p => p.name.toLowerCase().includes(filters.name.toLowerCase()));
-      }
-      if (filters.merchantId) {
-        filtered = filtered.filter(p => p.merchantId === filters.merchantId);
-      }
-      if (filters.brands && filters.brands.length > 0) {
-        filtered = filtered.filter(p => filters.brands.includes(p.brand));
-      }
-    }
-
-    const total = filtered.length;
-    const start = (page - 1) * limit;
-    const end = start + limit;
-
     return {
-      products: filtered.slice(start, end),
+      products: mappedProducts,
       total
     };
   }
 
   async getMetadata(): Promise<{ brands: string[], units: string[] }> {
-    const result = await db.select({ brand: products.brand }).from(products);
-    const brands = Array.from(new Set(result.map(r => r.brand).filter(b => !!b))) as string[];
-    return { brands, units: [] };
+    const brandResult = await db.select({ brand: products.brand }).from(products);
+    const unitResult = await db.select({ unit: products.unitName }).from(products);
+    
+    const brands = Array.from(new Set(brandResult.map(r => r.brand).filter(b => !!b))) as string[];
+    const units = Array.from(new Set(unitResult.map(r => r.unit).filter(u => !!u))) as string[];
+    
+    return { brands, units };
   }
 
   async save(product: Product): Promise<void> {
@@ -123,7 +150,8 @@ export class DrizzleProductRepository implements ProductRepository {
       barcode: product.barcode,
       basePrice: product.basePrice.toString(),
       imageUrl: product.imageUrl,
-      brand: product.brand
+      brand: product.brand,
+      unitName: product.unitName
     }).onConflictDoUpdate({
       target: products.uid,
       set: {
@@ -132,7 +160,8 @@ export class DrizzleProductRepository implements ProductRepository {
         barcode: product.barcode,
         basePrice: product.basePrice.toString(),
         imageUrl: product.imageUrl,
-        brand: product.brand
+        brand: product.brand,
+        unitName: product.unitName
       }
     });
   }
