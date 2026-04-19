@@ -302,6 +302,7 @@ export default function ProductsPage() {
         <FormGroup>
           <Label>Brand</Label>
           <Select
+            instanceId="brand-select"
             isMulti
             options={brandOptions}
             styles={selectStyles}
@@ -316,6 +317,7 @@ export default function ProductsPage() {
         <FormGroup>
           <Label>Unit</Label>
           <Select
+            instanceId="unit-select"
             isMulti
             options={unitOptions}
             styles={selectStyles}
@@ -330,6 +332,7 @@ export default function ProductsPage() {
         <FormGroup>
           <Label>Merchant</Label>
           <Select
+            instanceId="merchant-select"
             isClearable
             options={merchants}
             styles={selectStyles}
@@ -342,6 +345,7 @@ export default function ProductsPage() {
         <FormGroup>
           <Label>Store</Label>
           <Select
+            instanceId="store-select"
             isClearable
             options={stores}
             styles={selectStyles}

@@ -238,11 +238,12 @@ export default function MembersPage() {
           <Label>Tier</Label>
           <Select
             isMulti
+            instanceId="tier-select"
             options={tierOptions}
             styles={selectStyles}
             value={tierOptions.filter(opt => filters.tier?.includes(opt.value))}
             onChange={(selected) => {
-              setFilters({ ...filters, tier: (selected as any[]).map(s => s.value) });
+              setFilters({ ...filters, tier: (selected as any[] || []).map(s => s.value) });
             }}
             placeholder="Select tiers..."
           />
