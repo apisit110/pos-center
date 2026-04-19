@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken';
 import { DrizzleMerchantRepository } from './infrastructure/repositories/DrizzleMerchantRepository';
 import { DrizzleProductRepository } from './infrastructure/repositories/DrizzleProductRepository';
 import { DrizzleStoreRepository } from './infrastructure/repositories/DrizzleStoreRepository';
+import { DrizzleMemberRepository } from './infrastructure/repositories/DrizzleMemberRepository';
+import { DrizzleStaffRepository } from './infrastructure/repositories/DrizzleStaffRepository';
 
 // Use Cases
 import { GetMerchantsUseCase } from './application/use-cases/GetMerchantsUseCase';
@@ -15,11 +17,17 @@ import { GetProductDetailUseCase } from './application/use-cases/GetProductDetai
 import { GetProductFilterMetadataUseCase } from './application/use-cases/GetProductFilterMetadataUseCase';
 import { GetStoresUseCase } from './application/use-cases/GetStoresUseCase';
 import { GetStoreDetailUseCase } from './application/use-cases/GetStoreDetailUseCase';
+import { GetMembersUseCase } from './application/use-cases/GetMembersUseCase';
+import { GetMemberDetailUseCase } from './application/use-cases/GetMemberDetailUseCase';
+import { GetStaffUseCase } from './application/use-cases/GetStaffUseCase';
+import { GetStaffDetailUseCase } from './application/use-cases/GetStaffDetailUseCase';
 
 // Controllers
 import { MerchantController } from './infrastructure/controllers/MerchantController';
 import { ProductController } from './infrastructure/controllers/ProductController';
 import { StoreController } from './infrastructure/controllers/StoreController';
+import { MemberController } from './infrastructure/controllers/MemberController';
+import { StaffController } from './infrastructure/controllers/StaffController';
 
 import { loggerMiddleware } from './infrastructure/middleware/LoggerMiddleware';
 import { errorMiddleware } from './infrastructure/middleware/ErrorMiddleware';
@@ -32,6 +40,8 @@ const JWT_SECRET = 'your-secret-key';
 const merchantRepository = new DrizzleMerchantRepository();
 const productRepository = new DrizzleProductRepository();
 const storeRepository = new DrizzleStoreRepository();
+const memberRepository = new DrizzleMemberRepository();
+const staffRepository = new DrizzleStaffRepository();
 
 const getMerchantsUseCase = new GetMerchantsUseCase(merchantRepository);
 const getMerchantDetailUseCase = new GetMerchantDetailUseCase(merchantRepository);
@@ -40,10 +50,16 @@ const getProductDetailUseCase = new GetProductDetailUseCase(productRepository);
 const getProductFilterMetadataUseCase = new GetProductFilterMetadataUseCase(productRepository);
 const getStoresUseCase = new GetStoresUseCase(storeRepository);
 const getStoreDetailUseCase = new GetStoreDetailUseCase(storeRepository);
+const getMembersUseCase = new GetMembersUseCase(memberRepository);
+const getMemberDetailUseCase = new GetMemberDetailUseCase(memberRepository);
+const getStaffUseCase = new GetStaffUseCase(staffRepository);
+const getStaffDetailUseCase = new GetStaffDetailUseCase(staffRepository);
 
 const merchantController = new MerchantController(getMerchantsUseCase, getMerchantDetailUseCase);
 const productController = new ProductController(getProductsUseCase, getProductDetailUseCase, getProductFilterMetadataUseCase);
 const storeController = new StoreController(getStoresUseCase, getStoreDetailUseCase);
+const memberController = new MemberController(getMembersUseCase, getMemberDetailUseCase);
+const staffController = new StaffController(getStaffUseCase, getStaffDetailUseCase);
 
 app.use(cors());
 app.use(express.json());
@@ -72,6 +88,14 @@ app.get('/products/:id', (req, res, next) => productController.getById(req, res,
 // Store Endpoints
 app.get('/stores', (req, res, next) => storeController.getAll(req, res, next));
 app.get('/stores/:id', (req, res, next) => storeController.getById(req, res, next));
+
+// Member Endpoints
+app.get('/members', (req, res, next) => memberController.getAll(req, res, next));
+app.get('/members/:id', (req, res, next) => memberController.getById(req, res, next));
+
+// Staff Endpoints
+app.get('/staff', (req, res, next) => staffController.getAll(req, res, next));
+app.get('/staff/:id', (req, res, next) => staffController.getById(req, res, next));
 
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'ok' });

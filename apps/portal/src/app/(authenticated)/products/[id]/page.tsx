@@ -261,12 +261,19 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
+
+  const images = Array.isArray(product?.imageUrl) 
+    ? product.imageUrl 
+    : product?.imageUrl 
+      ? [product.imageUrl] 
+      : [];
+
   const handlePrevImage = () => {
-    // Single image now, but keeping the logic in case we want to support multiple later
+    setActiveImageIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
   };
 
   const handleNextImage = () => {
-    // Single image now
+    setActiveImageIndex((prev) => (prev < images.length - 1 ? prev + 1 : 0));
   };
 
   useEffect(() => {
@@ -299,16 +306,52 @@ export default function ProductDetailPage() {
       <Grid>
         <ImageCard>
           <MainImageWrapper>
-            {product.imageUrl ? (
-              <MainImage 
-                src={product.imageUrl.startsWith('http') ? product.imageUrl : `/${product.imageUrl}`} 
-                alt={product.name} 
-              />
+            {images.length > 0 ? (
+              <>
+                <MainImage 
+                  src={images[activeImageIndex].startsWith('http') ? images[activeImageIndex] : `/${images[activeImageIndex]}`} 
+                  alt={product.name} 
+                />
+                {images.length > 1 && (
+                  <>
+                    <NavButton 
+                      style={{ left: '1rem' }} 
+                      onClick={handlePrevImage}
+                    >
+                      <FiChevronLeft />
+                    </NavButton>
+                    <NavButton 
+                      style={{ right: '1rem' }} 
+                      onClick={handleNextImage}
+                    >
+                      <FiChevronRight />
+                    </NavButton>
+                  </>
+                )}
+              </>
             ) : (
               <div style={{ padding: '4rem', color: '#ccc' }}><FiPackage size={48} /></div>
             )}
           </MainImageWrapper>
           
+          {images.length > 1 && (
+            <ThumbnailContainer>
+              <ThumbnailList>
+                {images.map((img, idx) => (
+                  <Thumbnail 
+                    key={idx} 
+                    $active={activeImageIndex === idx}
+                    onClick={() => setActiveImageIndex(idx)}
+                  >
+                    <ThumbnailImg 
+                      src={img.startsWith('http') ? img : `/${img}`} 
+                      alt={`${product.name} ${idx + 1}`} 
+                    />
+                  </Thumbnail>
+                ))}
+              </ThumbnailList>
+            </ThumbnailContainer>
+          )}
         </ImageCard>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
