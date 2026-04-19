@@ -34,7 +34,7 @@ import { loggerMiddleware } from './infrastructure/middleware/LoggerMiddleware';
 import { errorMiddleware } from './infrastructure/middleware/ErrorMiddleware';
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 4001;
 const JWT_SECRET = 'your-secret-key';
 
 // Initialize Dependencies

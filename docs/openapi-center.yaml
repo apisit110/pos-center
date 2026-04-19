@@ -5,9 +5,9 @@ info:
   version: 1.0.0
 
 servers:
-  - url: http://localhost:3001
-    description: Portal Service
   - url: http://localhost:4001
+    description: Portal Service
+  - url: http://localhost:4002
     description: POS Sync Service
 
 tags:
