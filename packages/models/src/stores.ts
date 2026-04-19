@@ -3,7 +3,7 @@ import { merchants } from './merchants';
 
 export const stores = pgTable('stores', {
   id: serial('id').primaryKey(),
-  uid: uuid('uid').defaultRandom().unique().notNull(),
+  uid: varchar('uid', { length: 255 }).unique().notNull(),
   merchantId: integer('merchant_id').references(() => merchants.id).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   address: text('address'),

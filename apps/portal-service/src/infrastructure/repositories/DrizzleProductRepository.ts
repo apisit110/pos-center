@@ -20,10 +20,10 @@ export class DrizzleProductRepository implements ProductRepository {
       product.uid,
       merchantUid,
       product.name,
-      product.sku,
+      product.sku || '',
       product.barcode || '',
       Number(product.basePrice),
-      product.imageUrl || '',
+      (product.imageUrl as string[]) || [],
       product.brand || ''
     );
   }
@@ -41,10 +41,10 @@ export class DrizzleProductRepository implements ProductRepository {
       product.uid,
       merchantUid,
       product.name,
-      product.sku,
+      product.sku || '',
       product.barcode || '',
       Number(product.basePrice),
-      product.imageUrl || '',
+      (product.imageUrl as string[]) || [],
       product.brand || ''
     ));
   }
@@ -61,10 +61,10 @@ export class DrizzleProductRepository implements ProductRepository {
       product.uid,
       merchantUid,
       product.name,
-      product.sku,
+      product.sku || '',
       product.barcode || '',
       Number(product.basePrice),
-      product.imageUrl || '',
+      (product.imageUrl as string[]) || [],
       product.brand || ''
     ));
   }
