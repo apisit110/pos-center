@@ -445,6 +445,38 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /v1/sync/users:
+    post:
+      tags:
+        - Sync Service
+      summary: Sync users from POS client
+      description: Uploads user data from the local POS client to the server center for synchronization.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncUserRequest'
+      responses:
+        '200':
+          description: User sync process completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncUserResponse'
+        '400':
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /health:
     get:
       summary: Health check
@@ -606,3 +638,75 @@ components:
         request_id:
           type: string
           example: "da8e72fa-34c7-419e-932a-c3436fdad704"
+
+    SyncUserRequest:
+      type: object
+      required:
+        - users
+      properties:
+        users:
+          type: array
+          items:
+            type: object
+            required:
+              - posTempId
+              - staffId
+              - fullName
+              - pinHash
+              - roleId
+              - branchIds
+              - status
+              - originBranchId
+            properties:
+              posTempId:
+                type: string
+                format: uuid
+                example: "550e8400-e29b-41d4-a716-446655440000"
+              staffId:
+                type: string
+                example: "STF26040001"
+              fullName:
+                type: string
+                example: "John Doe"
+              pinHash:
+                type: string
+                example: "$2b$10$..."
+              roleId:
+                type: integer
+                example: 1
+              branchIds:
+                type: array
+                items:
+                  type: integer
+                example: [1, 2]
+              status:
+                type: string
+                enum: [active, inactive]
+                example: "active"
+              originBranchId:
+                type: integer
+                example: 1
+
+    SyncUserResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "User sync process completed"
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              posTempId:
+                type: string
+                format: uuid
+                example: "550e8400-e29b-41d4-a716-446655440000"
+              globalUserId:
+                type: string
+                format: uuid
+                example: "da8e72fa-34c7-419e-932a-c3436fdad704"
+              status:
+                type: string
+                enum: [synced, already_synced, error]
+                example: "synced"

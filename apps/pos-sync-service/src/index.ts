@@ -1,9 +1,12 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { SyncPOSProductsUseCase } from './application/use-cases/SyncPOSProductsUseCase';
+import { SyncUsersUseCase } from './application/use-cases/SyncUsersUseCase';
 import { DrizzleProductRepository } from './infrastructure/repositories/DrizzleProductRepository';
+import { DrizzleUserRepository } from './infrastructure/repositories/DrizzleUserRepository';
 
 import { syncProductSchema } from './infrastructure/validation/SyncProductSchema';
+import { SyncUserSchema } from './infrastructure/validation/SyncUserSchema';
 import { ZodError } from 'zod';
 
 const app = express();
@@ -14,7 +17,9 @@ app.use(express.json());
 
 // Initialize Dependencies
 const productRepo = new DrizzleProductRepository();
+const userRepo = new DrizzleUserRepository();
 const syncUseCase = new SyncPOSProductsUseCase(productRepo);
+const syncUsersUseCase = new SyncUsersUseCase(userRepo);
 
 app.post('/v1/sync/products', async (req: Request, res: Response) => {
   try {
@@ -42,6 +47,29 @@ app.post('/v1/sync/products', async (req: Request, res: Response) => {
       });
     }
     console.error('[pos-sync-service] Error:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+app.post('/v1/sync/users', async (req: Request, res: Response) => {
+  try {
+    const validatedData = SyncUserSchema.parse(req.body);
+    console.log(`[pos-sync-service] Syncing ${validatedData.users.length} users from POS`);
+    
+    const results = await syncUsersUseCase.execute(validatedData.users as any);
+
+    return res.status(200).json({
+      message: 'User sync process completed',
+      results
+    });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return res.status(400).json({ 
+        message: 'Validation failed', 
+        errors: error.issues.map(e => ({ path: e.path, message: e.message })) 
+      });
+    }
+    console.error('[pos-sync-service] User Sync Error:', error);
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
