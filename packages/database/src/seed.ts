@@ -1,5 +1,5 @@
 import { db } from './index';
-import { merchants, stores, products, storeProducts, members, staff, runningNumbers, syncMetadata } from '@lightning/models';
+import { merchants, stores, products, storeProducts, members, staff, runningNumbers, syncMetadata, roles, branches } from '@lightning/models';
 import { eq } from 'drizzle-orm';
 import fs from 'fs';
 import path from 'path';
@@ -10,7 +10,6 @@ async function seed() {
   const dataPath = path.join(__dirname, '../../../apps/portal/public/constants');
 
   try {
-    // 1. Seed Merchants
     const merchantsData = JSON.parse(fs.readFileSync(path.join(dataPath, 'master_merchant.json'), 'utf8'));
     console.log(`📦 Seeding ${merchantsData.length} merchants...`);
     for (const merchant of merchantsData) {
@@ -174,12 +173,43 @@ async function seed() {
       number: 0
     }).onConflictDoNothing();
 
+    await db.insert(runningNumbers).values({
+      type: 'user_id',
+      number: 0
+    }).onConflictDoNothing();
+
     // 8. Seed Sync Metadata
     console.log('📦 Seeding sync metadata...');
     await db.insert(syncMetadata).values({
       lastProductSyncVersion: 0,
       status: 'IDLE'
     }).onConflictDoNothing();
+
+    // 9. Seed Roles
+    console.log('📦 Seeding roles...');
+    const defaultRoles = [
+      { id: 1, roleName: 'Manager', level: 1 },
+      { id: 2, roleName: 'Cashier', level: 2 },
+    ];
+    for (const role of defaultRoles) {
+      await db.insert(roles).values(role).onConflictDoUpdate({
+        target: roles.id,
+        set: { roleName: role.roleName, level: role.level }
+      });
+    }
+
+    // 10. Seed Branches
+    console.log('📦 Seeding branches...');
+    const defaultBranches = [
+      { id: 1, branchCode: 'B001', branchName: 'Main Branch' },
+      { id: 2, branchCode: 'B002', branchName: 'Second Branch' },
+    ];
+    for (const branch of defaultBranches) {
+      await db.insert(branches).values(branch).onConflictDoUpdate({
+        target: branches.id,
+        set: { branchCode: branch.branchCode, branchName: branch.branchName }
+      });
+    }
 
     console.log('✅ Seeding completed successfully!');
     process.exit(0);

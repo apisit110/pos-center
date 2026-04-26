@@ -650,7 +650,7 @@ components:
             type: object
             required:
               - posTempId
-              - staffId
+              - userId
               - fullName
               - pinHash
               - roleId
@@ -662,9 +662,10 @@ components:
                 type: string
                 format: uuid
                 example: "550e8400-e29b-41d4-a716-446655440000"
-              staffId:
+              userId:
                 type: string
-                example: "STF26040001"
+                example: "TEMP_550e8400"
+                description: The user ID from local POS. If it starts with 'TEMP_', the server will generate a permanent running number ID and return it.
               fullName:
                 type: string
                 example: "John Doe"
@@ -706,6 +707,9 @@ components:
                 type: string
                 format: uuid
                 example: "da8e72fa-34c7-419e-932a-c3436fdad704"
+              userId:
+                type: string
+                example: "U00001"
               status:
                 type: string
                 enum: [synced, already_synced, error]

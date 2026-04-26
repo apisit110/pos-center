@@ -4,6 +4,12 @@ EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."user_status" AS ENUM('active', 'inactive');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "merchants" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"uid" uuid DEFAULT gen_random_uuid() NOT NULL,
@@ -98,6 +104,48 @@ CREATE TABLE IF NOT EXISTS "sync_metadata" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "branches" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"branch_code" varchar(100) NOT NULL,
+	"branch_name" varchar(255) NOT NULL,
+	CONSTRAINT "branches_branch_code_unique" UNIQUE("branch_code")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "role_permissions" (
+	"role_id" integer NOT NULL,
+	"permission_key" varchar(255) NOT NULL,
+	"is_granted" boolean DEFAULT true NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "roles" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"role_name" varchar(255) NOT NULL,
+	"level" integer NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "user_branch_access" (
+	"user_id" uuid NOT NULL,
+	"branch_id" integer NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "user_sync_logs" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"pos_temp_id" uuid NOT NULL,
+	"origin_branch_id" integer NOT NULL,
+	"global_user_id" uuid NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "users" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" varchar(100) NOT NULL,
+	"full_name" varchar(255) NOT NULL,
+	"pin_hash" varchar(255) NOT NULL,
+	"role_id" integer NOT NULL,
+	"status" "user_status" DEFAULT 'active' NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "products" ADD CONSTRAINT "products_merchant_id_merchants_id_fk" FOREIGN KEY ("merchant_id") REFERENCES "public"."merchants"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
@@ -127,3 +175,41 @@ DO $$ BEGIN
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "role_permissions" ADD CONSTRAINT "role_permissions_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "user_branch_access" ADD CONSTRAINT "user_branch_access_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "user_branch_access" ADD CONSTRAINT "user_branch_access_branch_id_branches_id_fk" FOREIGN KEY ("branch_id") REFERENCES "public"."branches"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "user_sync_logs" ADD CONSTRAINT "user_sync_logs_origin_branch_id_branches_id_fk" FOREIGN KEY ("origin_branch_id") REFERENCES "public"."branches"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "user_sync_logs" ADD CONSTRAINT "user_sync_logs_global_user_id_users_id_fk" FOREIGN KEY ("global_user_id") REFERENCES "public"."users"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "users" ADD CONSTRAINT "users_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS "user_id_idx" ON "users" ("user_id");

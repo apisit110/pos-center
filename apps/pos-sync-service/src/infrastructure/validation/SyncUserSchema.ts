@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const SyncUserSchema = z.object({
   users: z.array(z.object({
     posTempId: z.string().uuid(),
-    staffId: z.string(),
+    userId: z.string(),
     fullName: z.string(),
     pinHash: z.string(),
     roleId: z.number(),

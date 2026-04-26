@@ -22,7 +22,7 @@ export const branches = pgTable('branches', {
 
 export const users = pgTable('users', {
   id: uuid('id').defaultRandom().primaryKey(),
-  staffId: varchar('staff_id', { length: 100 }).notNull(),
+  userId: varchar('user_id', { length: 100 }).notNull(),
   fullName: varchar('full_name', { length: 255 }).notNull(),
   pinHash: varchar('pin_hash', { length: 255 }).notNull(),
   roleId: integer('role_id').references(() => roles.id).notNull(),
@@ -30,7 +30,7 @@ export const users = pgTable('users', {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
-  staffIdIdx: uniqueIndex('staff_id_idx').on(table.staffId),
+  userIdIdx: uniqueIndex('user_id_idx').on(table.userId),
 }));
 
 export const userBranchAccess = pgTable('user_branch_access', {

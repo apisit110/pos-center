@@ -3,7 +3,7 @@ import { User, UserStatus } from '../../domain/entities/User';
 
 export interface SyncUserDTO {
   posTempId: string;
-  staffId: string;
+  userId: string;
   fullName: string;
   pinHash: string;
   roleId: number;
@@ -15,6 +15,7 @@ export interface SyncUserDTO {
 export interface SyncUserResponseDTO {
   posTempId: string;
   globalUserId: string;
+  userId: string;
   status: 'synced' | 'already_synced' | 'error';
 }
 
@@ -32,18 +33,26 @@ export class SyncUsersUseCase {
           results.push({
             posTempId: userData.posTempId,
             globalUserId: existingLog.globalUserId,
+            userId: '', // Client already has it for already_synced or can look it up
             status: 'already_synced',
           });
           continue;
         }
 
-        // 2. Upsert user
+        // 2. Provision real ID if needed
+        // If userData.userId starts with 'TEMP_', it's a local temp ID
+        let realUserId = userData.userId;
+        if (userData.userId.startsWith('TEMP_')) {
+          realUserId = await this.userRepository.generateNextUserId();
+        }
+
+        // 3. Upsert user
         // We use staffId to find existing user if any
-        let existingUser = await this.userRepository.findByStaffId(userData.staffId);
+        let existingUser = await this.userRepository.findByUserId(realUserId);
         
         const user = await this.userRepository.upsert({
           id: existingUser?.id,
-          staffId: userData.staffId,
+          userId: realUserId,
           fullName: userData.fullName,
           pinHash: userData.pinHash,
           roleId: userData.roleId,
@@ -66,13 +75,15 @@ export class SyncUsersUseCase {
         results.push({
           posTempId: userData.posTempId,
           globalUserId: user.id,
+          userId: user.userId,
           status: 'synced',
         });
       } catch (error) {
-        console.error(`Error syncing user ${userData.staffId}:`, error);
+        console.error(`Error syncing user ${userData.userId}:`, error);
         results.push({
           posTempId: userData.posTempId,
           globalUserId: '',
+          userId: '',
           status: 'error',
         });
       }

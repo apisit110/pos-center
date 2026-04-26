@@ -1,10 +1,10 @@
-import { db, users, userSyncLogs, userBranchAccess, eq, and } from '@lightning/database';
+import { db, users, userSyncLogs, userBranchAccess, runningNumbers, eq, and, sql } from '@lightning/database';
 import { User, UserSyncLog, UserStatus } from '../../domain/entities/User';
 import { UserRepository } from '../../domain/repositories/UserRepository';
 
 export class DrizzleUserRepository implements UserRepository {
-  async findByStaffId(staffId: string): Promise<User | null> {
-    const result = await db.select().from(users).where(eq(users.staffId, staffId)).limit(1);
+  async findByUserId(userId: string): Promise<User | null> {
+    const result = await db.select().from(users).where(eq(users.userId, userId)).limit(1);
     if (result.length === 0) return null;
     return this.mapToUserEntity(result[0]);
   }
@@ -31,7 +31,7 @@ export class DrizzleUserRepository implements UserRepository {
     } else {
       const result = await db.insert(users)
         .values({
-          staffId: userData.staffId,
+          userId: userData.userId,
           fullName: userData.fullName,
           pinHash: userData.pinHash,
           roleId: userData.roleId,
@@ -40,6 +40,23 @@ export class DrizzleUserRepository implements UserRepository {
         .returning();
       return this.mapToUserEntity(result[0]);
     }
+  }
+
+  async generateNextUserId(): Promise<string> {
+    const result = await db.update(runningNumbers)
+      .set({
+        number: sql`${runningNumbers.number} + 1`,
+        updatedAt: new Date(),
+      })
+      .where(eq(runningNumbers.type, 'user_id'))
+      .returning({ number: runningNumbers.number });
+
+    if (!result[0]) {
+      throw new Error('Could not generate next user_id: running number type not found');
+    }
+
+    const nextNumber = result[0].number;
+    return `U${nextNumber.toString().padStart(5, '0')}`; // e.g., U00001
   }
 
   async findSyncLogByPosTempId(posTempId: string): Promise<UserSyncLog | null> {
@@ -75,7 +92,7 @@ export class DrizzleUserRepository implements UserRepository {
   private mapToUserEntity(row: any): User {
     return new User(
       row.id,
-      row.staffId,
+      row.userId,
       row.fullName,
       row.pinHash,
       row.roleId,
