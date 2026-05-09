@@ -9,12 +9,12 @@ export class DrizzleProductRepository implements IProductRepository {
     console.log('[DrizzleProductRepository] saveMany not implemented - service acts as distributor');
   }
 
-  async findByVersion(merchantUid: string, storeUid: string, version: number): Promise<Product[]> {
+  async findByVersion(mid: string, sid: string, version: number): Promise<Product[]> {
     const result = await db.select({
       product: products,
       storeProduct: storeProducts,
-      merchantUid: merchants.uid,
-      storeUid: stores.uid
+      merchantUid: merchants.mid,
+      storeUid: stores.sid
     })
     .from(products)
     .innerJoin(storeProducts, eq(products.id, storeProducts.productId))
@@ -22,8 +22,8 @@ export class DrizzleProductRepository implements IProductRepository {
     .innerJoin(stores, eq(storeProducts.storeId, stores.id))
     .where(
       and(
-        eq(merchants.uid, merchantUid),
-        eq(stores.uid, storeUid),
+        eq(merchants.mid, mid),
+        eq(stores.sid, sid),
         gt(storeProducts.rowVersion, version)
       )
     );
