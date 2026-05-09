@@ -10,8 +10,20 @@ export interface ProductFilter {
   storeId?: string;
 }
 
+export interface CreateProductRequest {
+  merchantId: string;
+  name: string;
+  barcode: string;
+  basePrice: number;
+  imageUrl: string[];
+  brand: string;
+  unitName: string;
+}
+
 export interface ProductRepository {
   getProducts(page: number, limit: number, filters?: ProductFilter): Promise<{ products: Product[], total: number }>;
   getProductById(id: string): Promise<Product | null>;
   getFilterMetadata(): Promise<{ brands: string[], units: string[] }>;
+  createProduct(request: CreateProductRequest): Promise<Product>;
+  createProducts(requests: CreateProductRequest[]): Promise<{ created: number; errors: string[] }>;
 }

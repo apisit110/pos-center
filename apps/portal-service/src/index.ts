@@ -17,6 +17,7 @@ import { GetMerchantDetailUseCase } from './application/use-cases/GetMerchantDet
 import { GetProductsUseCase } from './application/use-cases/GetProductsUseCase';
 import { GetProductDetailUseCase } from './application/use-cases/GetProductDetailUseCase';
 import { GetProductFilterMetadataUseCase } from './application/use-cases/GetProductFilterMetadataUseCase';
+import { CreateProductUseCase } from './application/use-cases/CreateProductUseCase';
 import { GetStoresUseCase } from './application/use-cases/GetStoresUseCase';
 import { GetStoreDetailUseCase } from './application/use-cases/GetStoreDetailUseCase';
 import { GetMembersUseCase } from './application/use-cases/GetMembersUseCase';
@@ -53,6 +54,7 @@ const getMerchantDetailUseCase = new GetMerchantDetailUseCase(merchantRepository
 const getProductsUseCase = new GetProductsUseCase(productRepository);
 const getProductDetailUseCase = new GetProductDetailUseCase(productRepository);
 const getProductFilterMetadataUseCase = new GetProductFilterMetadataUseCase(productRepository);
+const createProductUseCase = new CreateProductUseCase(productRepository, merchantRepository);
 const getStoresUseCase = new GetStoresUseCase(storeRepository);
 const getStoreDetailUseCase = new GetStoreDetailUseCase(storeRepository);
 const getMembersUseCase = new GetMembersUseCase(memberRepository);
@@ -63,7 +65,7 @@ const registerMerchantUseCase = new RegisterMerchantUseCase(merchantRepository, 
 const getTerminalsByStoreUseCase = new GetTerminalsByStoreUseCase(terminalRepository);
 
 const merchantController = new MerchantController(getMerchantsUseCase, getMerchantDetailUseCase, registerMerchantUseCase);
-const productController = new ProductController(getProductsUseCase, getProductDetailUseCase, getProductFilterMetadataUseCase);
+const productController = new ProductController(getProductsUseCase, getProductDetailUseCase, getProductFilterMetadataUseCase, createProductUseCase);
 const storeController = new StoreController(getStoresUseCase, getStoreDetailUseCase, getTerminalsByStoreUseCase);
 const memberController = new MemberController(getMembersUseCase, getMemberDetailUseCase);
 const staffController = new StaffController(getStaffUseCase, getStaffDetailUseCase);
@@ -91,6 +93,8 @@ app.post('/merchants', (req, res, next) => merchantController.register(req, res,
 // Product Endpoints
 app.get('/products', (req, res, next) => productController.getAll(req, res, next));
 app.get('/products/metadata', (req, res, next) => productController.getMetadata(req, res, next));
+app.post('/products/batch', (req, res, next) => productController.batchCreate(req, res, next));
+app.post('/products', (req, res, next) => productController.create(req, res, next));
 app.get('/products/:id', (req, res, next) => productController.getById(req, res, next));
 
 // Store Endpoints

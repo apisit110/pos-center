@@ -1,5 +1,5 @@
 import { Product } from '../../domain/entities/Product';
-import { ProductRepository, ProductFilter } from '../../application/repositories/ProductRepository';
+import { ProductRepository, ProductFilter, CreateProductRequest } from '../../application/repositories/ProductRepository';
 import ApiClient from '../api/ApiClient';
 
 export class ApiProductRepository implements ProductRepository {
@@ -53,4 +53,27 @@ export class ApiProductRepository implements ProductRepository {
     const response = await ApiClient.get('/products/metadata');
     return response.data;
   }
+
+  public async createProduct(request: CreateProductRequest): Promise<Product> {
+    const response = await ApiClient.post('/products', request);
+    const p = response.data;
+    return new Product(
+      p.id,
+      p.merchantId,
+      p.mid,
+      p.name,
+      p.sku,
+      p.barcode,
+      p.basePrice,
+      p.imageUrl,
+      p.brand,
+      p.unitName
+    );
+  }
+
+  public async createProducts(requests: CreateProductRequest[]): Promise<{ created: number; errors: string[] }> {
+    const response = await ApiClient.post('/products/batch', { products: requests });
+    return response.data;
+  }
 }
+

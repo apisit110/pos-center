@@ -1,5 +1,6 @@
 import { Product } from '../../domain/entities/Product';
 import { IProductRepository } from '../repositories/IProductRepository';
+import { IMerchantRepository } from '../repositories/IMerchantRepository';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface CreateProductRequest {
@@ -14,14 +15,24 @@ export interface CreateProductRequest {
 }
 
 export class CreateProductUseCase {
-  constructor(private readonly productRepository: IProductRepository) {}
+  constructor(
+    private readonly productRepository: IProductRepository,
+    private readonly merchantRepository: IMerchantRepository
+  ) {}
 
   public async execute(request: CreateProductRequest): Promise<Product> {
     const id = uuidv4();
-    
+
+    // Resolve merchant to get mid
+    const merchant = await this.merchantRepository.getById(request.merchantId);
+    if (!merchant) {
+      throw new Error(`Merchant not found: ${request.merchantId}`);
+    }
+
     const product = new Product(
       id,
       request.merchantId,
+      merchant.mid,
       request.name,
       request.sku,
       request.barcode,
@@ -30,9 +41,9 @@ export class CreateProductUseCase {
       request.brand,
       request.unitName
     );
-    
+
     await this.productRepository.save(product);
-    
+
     return product;
   }
 }

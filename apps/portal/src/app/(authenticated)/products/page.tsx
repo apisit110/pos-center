@@ -204,12 +204,12 @@ export default function ProductsPage() {
       const merchantRepo = new ApiMerchantRepository();
       const merchantUC = new GetMerchantsUseCase(merchantRepo);
       const merchantData = await merchantUC.execute();
-      setMerchants(merchantData.map(m => ({ value: m.id, label: m.name })));
+      setMerchants(merchantData.map(m => ({ value: m.uid, label: m.name })));
 
       const storeRepo = new ApiStoreRepository();
       const storeUC = new GetStoresUseCase(storeRepo);
       const storeData = await storeUC.execute();
-      setStores(storeData.map(s => ({ value: s.id, label: s.name })));
+      setStores(storeData.map(s => ({ value: s.uid, label: s.name })));
     };
     fetchMetadata();
   }, []);
@@ -221,7 +221,7 @@ export default function ProductsPage() {
     const storeRepo = new ApiStoreRepository();
     const storeUC = new GetStoresUseCase(storeRepo);
     const storeData = await storeUC.execute(merchantId);
-    setStores(storeData.map(s => ({ value: s.id, label: s.name })));
+    setStores(storeData.map(s => ({ value: s.uid, label: s.name })));
   };
 
   useEffect(() => {
@@ -268,6 +268,9 @@ export default function ProductsPage() {
 
   return (
     <PageContainer>
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '-0.5rem' }}>
+        <ActionButton onClick={() => router.push('/products/new')}>+ Add Product</ActionButton>
+      </div>
       <FilterSection>
         <FormGroup>
           <Label>Barcode</Label>
