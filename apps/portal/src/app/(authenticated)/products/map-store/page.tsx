@@ -6,8 +6,10 @@ import { useRouter } from 'next/navigation';
 import Select from 'react-select';
 import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
 import { ApiStoreRepository } from '../../../../infrastructure/repositories/ApiStoreRepository';
+import { ApiStoreProductRepository } from '../../../../infrastructure/repositories/ApiStoreProductRepository';
 import { GetMerchantsUseCase } from '../../../../application/use-cases/GetMerchantsUseCase';
 import { GetStoresUseCase } from '../../../../application/use-cases/GetStoresUseCase';
+import { BatchUpsertStoreProductsUseCase } from '../../../../application/use-cases/BatchUpsertStoreProductsUseCase';
 import { Merchant } from '../../../../domain/entities/Merchant';
 import { Store } from '../../../../domain/entities/Store';
 
@@ -264,6 +266,7 @@ export default function MapProductStorePage() {
   const [importedData, setImportedData] = useState<any[] | null>(null);
   const [importError, setImportError] = useState<string>('');
   const [importSuccess, setImportSuccess] = useState<string>('');
+  const [isImporting, setIsImporting] = useState(false);
 
   const handleManualSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -300,7 +303,7 @@ export default function MapProductStorePage() {
         const store = stores.find(s => s.uid === selectedStore.value);
         const mappedData = json.map(item => ({
           ...item,
-          store_id: store?.sid || selectedStore.value,
+          store_uid: store?.uid || selectedStore.value,
         }));
 
         setImportedData(mappedData);
@@ -326,12 +329,46 @@ export default function MapProductStorePage() {
     }
   };
 
-  const handleImportSubmit = () => {
-    if (!importedData) return;
-    console.log('Submitting imported data:', importedData);
-    alert(`Successfully imported ${importedData.length} mappings! (Mock)`);
-    setImportedData(null);
+  const handleImportSubmit = async () => {
+    if (!importedData || importedData.length === 0) {
+      return;
+    }
+
+    setImportError('');
     setImportSuccess('');
+    setIsImporting(true);
+
+    try {
+      const mappings = importedData.map((item) => ({
+        store_uid: item.store_uid,
+        product_uid: item.product_uid,
+        stock: Number(item.stock),
+        price: Number(item.price),
+      }));
+
+      const repository = new ApiStoreProductRepository();
+      const useCase = new BatchUpsertStoreProductsUseCase(repository);
+      const response = await useCase.execute(mappings);
+      const createdCount = response.created ?? 0;
+      const updatedCount = response.updated ?? 0;
+
+      setImportSuccess(
+        `Successfully processed mappings. Created: ${createdCount}, Updated: ${updatedCount}.`
+      );
+      setImportedData(null);
+    } catch (err: unknown) {
+      const apiError = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
+      const message =
+        apiError.response?.data?.message ||
+        apiError.message ||
+        'Failed to import mappings. Please try again.';
+      setImportError(message);
+    } finally {
+      setIsImporting(false);
+    }
   };
 
   return (
@@ -482,8 +519,10 @@ export default function MapProductStorePage() {
                   {importedData.length > 3 && '\n\n  ... (preview limited to first 3 items)'}
                 </JsonPreview>
                 
-                <ActionButton onClick={handleImportSubmit}>
-                  Import {importedData.length} Mappings
+                <ActionButton onClick={handleImportSubmit} disabled={isImporting}>
+                  {isImporting
+                    ? `Importing ${importedData.length} Mapping(s)...`
+                    : `Import ${importedData.length} Mappings`}
                 </ActionButton>
               </>
             )}

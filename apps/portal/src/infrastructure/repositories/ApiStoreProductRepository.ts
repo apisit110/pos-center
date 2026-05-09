@@ -1,5 +1,9 @@
 import { StoreProduct } from '../../domain/entities/StoreProduct';
-import { StoreProductRepository } from '../../application/repositories/StoreProductRepository';
+import {
+  BatchStoreProductMappingRequest,
+  BatchStoreProductMappingResponse,
+  StoreProductRepository
+} from '../../application/repositories/StoreProductRepository';
 import ApiClient from '../api/ApiClient';
 
 export class ApiStoreProductRepository implements StoreProductRepository {
@@ -21,5 +25,12 @@ export class ApiStoreProductRepository implements StoreProductRepository {
 
   public async updatePrice(storeProductId: string, newPrice: number): Promise<void> {
     await ApiClient.patch(`/store-products/${storeProductId}/price`, { price: newPrice });
+  }
+
+  public async batchUpsertMappings(
+    mappings: BatchStoreProductMappingRequest[]
+  ): Promise<BatchStoreProductMappingResponse> {
+    const response = await ApiClient.post('/store-products/batch', { mappings });
+    return response.data;
   }
 }

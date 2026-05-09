@@ -26,6 +26,7 @@ import { GetStaffUseCase } from './application/use-cases/GetStaffUseCase';
 import { GetStaffDetailUseCase } from './application/use-cases/GetStaffDetailUseCase';
 import { RegisterMerchantUseCase } from './application/use-cases/RegisterMerchantUseCase';
 import { GetTerminalsByStoreUseCase } from './application/use-cases/GetTerminalsByStoreUseCase';
+import { BatchUpsertStoreProductsUseCase } from './application/use-cases/BatchUpsertStoreProductsUseCase';
 
 // Controllers
 import { MerchantController } from './infrastructure/controllers/MerchantController';
@@ -33,6 +34,8 @@ import { ProductController } from './infrastructure/controllers/ProductControlle
 import { StoreController } from './infrastructure/controllers/StoreController';
 import { MemberController } from './infrastructure/controllers/MemberController';
 import { StaffController } from './infrastructure/controllers/StaffController';
+import { StoreProductController } from './infrastructure/controllers/StoreProductController';
+import { DrizzleStoreProductRepository } from './infrastructure/repositories/DrizzleStoreProductRepository';
 
 import { loggerMiddleware } from './infrastructure/middleware/LoggerMiddleware';
 import { errorMiddleware } from './infrastructure/middleware/ErrorMiddleware';
@@ -48,6 +51,7 @@ const storeRepository = new DrizzleStoreRepository();
 const memberRepository = new DrizzleMemberRepository();
 const staffRepository = new DrizzleStaffRepository();
 const terminalRepository = new DrizzleTerminalRepository();
+const storeProductRepository = new DrizzleStoreProductRepository();
 
 const getMerchantsUseCase = new GetMerchantsUseCase(merchantRepository);
 const getMerchantDetailUseCase = new GetMerchantDetailUseCase(merchantRepository);
@@ -63,12 +67,14 @@ const getStaffUseCase = new GetStaffUseCase(staffRepository);
 const getStaffDetailUseCase = new GetStaffDetailUseCase(staffRepository);
 const registerMerchantUseCase = new RegisterMerchantUseCase(merchantRepository, storeRepository, terminalRepository);
 const getTerminalsByStoreUseCase = new GetTerminalsByStoreUseCase(terminalRepository);
+const batchUpsertStoreProductsUseCase = new BatchUpsertStoreProductsUseCase(storeProductRepository);
 
 const merchantController = new MerchantController(getMerchantsUseCase, getMerchantDetailUseCase, registerMerchantUseCase);
 const productController = new ProductController(getProductsUseCase, getProductDetailUseCase, getProductFilterMetadataUseCase, createProductUseCase);
 const storeController = new StoreController(getStoresUseCase, getStoreDetailUseCase, getTerminalsByStoreUseCase);
 const memberController = new MemberController(getMembersUseCase, getMemberDetailUseCase);
 const staffController = new StaffController(getStaffUseCase, getStaffDetailUseCase);
+const storeProductController = new StoreProductController(batchUpsertStoreProductsUseCase);
 
 app.use(cors());
 app.use(express.json());
@@ -96,6 +102,7 @@ app.get('/products/metadata', (req, res, next) => productController.getMetadata(
 app.post('/products/batch', (req, res, next) => productController.batchCreate(req, res, next));
 app.post('/products', (req, res, next) => productController.create(req, res, next));
 app.get('/products/:id', (req, res, next) => productController.getById(req, res, next));
+app.post('/store-products/batch', (req, res, next) => storeProductController.batchCreate(req, res, next));
 
 // Store Endpoints
 app.get('/stores', (req, res, next) => storeController.getAll(req, res, next));
