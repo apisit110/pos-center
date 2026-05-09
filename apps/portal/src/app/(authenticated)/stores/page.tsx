@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import { ApiStoreRepository } from '../../../infrastructure/repositories/ApiStoreRepository';
 import { GetStoresUseCase } from '../../../application/use-cases/GetStoresUseCase';
@@ -21,6 +22,7 @@ const Title = styled.h1`
 `;
 
 export default function StoresPage() {
+  const router = useRouter();
   const [stores, setStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,10 +38,10 @@ export default function StoresPage() {
   }, []);
 
   const columns = [
-    { header: 'ID', accessor: 'id' as const, width: '100px' },
+    { header: 'SID', accessor: 'sid' as const, width: '200px' },
     { header: 'Store Name', accessor: 'name' as const },
     { header: 'Address', accessor: 'address' as const },
-    { header: 'Merchant ID', accessor: 'merchantId' as const },
+    { header: 'MID', accessor: 'mid' as const, width: '200px' },
   ];
 
   if (loading) return <div>Loading...</div>;
@@ -50,7 +52,7 @@ export default function StoresPage() {
       <DataTable 
         columns={columns} 
         data={stores} 
-        onRowClick={(store) => console.log('Clicked', store)}
+        onRowClick={(store) => router.push(`/stores/${store.uid}`)}
       />
     </PageContainer>
   );

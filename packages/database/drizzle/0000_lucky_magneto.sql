@@ -13,10 +13,12 @@ END $$;
 CREATE TABLE IF NOT EXISTS "merchants" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"uid" uuid DEFAULT gen_random_uuid() NOT NULL,
+	"mid" varchar(50) NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
-	CONSTRAINT "merchants_uid_unique" UNIQUE("uid")
+	CONSTRAINT "merchants_uid_unique" UNIQUE("uid"),
+	CONSTRAINT "merchants_mid_unique" UNIQUE("mid")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "products" (
@@ -38,6 +40,7 @@ CREATE TABLE IF NOT EXISTS "products" (
 CREATE TABLE IF NOT EXISTS "stores" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"uid" varchar(255) NOT NULL,
+	"sid" varchar(50) NOT NULL,
 	"merchant_id" integer NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"address" text,
@@ -45,7 +48,8 @@ CREATE TABLE IF NOT EXISTS "stores" (
 	"longitude" numeric(11, 8),
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
-	CONSTRAINT "stores_uid_unique" UNIQUE("uid")
+	CONSTRAINT "stores_uid_unique" UNIQUE("uid"),
+	CONSTRAINT "stores_sid_unique" UNIQUE("sid")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "store_products" (
@@ -146,6 +150,17 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"updated_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "terminals" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"uid" varchar(255) NOT NULL,
+	"store_id" integer NOT NULL,
+	"tid" varchar(50) NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "terminals_uid_unique" UNIQUE("uid"),
+	CONSTRAINT "terminals_tid_unique" UNIQUE("tid")
+);
+--> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "products" ADD CONSTRAINT "products_merchant_id_merchants_id_fk" FOREIGN KEY ("merchant_id") REFERENCES "public"."merchants"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
@@ -208,6 +223,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "users" ADD CONSTRAINT "users_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "terminals" ADD CONSTRAINT "terminals_store_id_stores_id_fk" FOREIGN KEY ("store_id") REFERENCES "public"."stores"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

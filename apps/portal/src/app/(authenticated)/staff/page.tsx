@@ -35,7 +35,6 @@ export default function StaffPage() {
   }, []);
 
   const columns = [
-    { header: 'ID', accessor: 'id' as const, width: '100px' },
     { header: 'Name', accessor: 'name' as const },
     { header: 'Role', accessor: 'role' as const },
   ];

@@ -1,5 +1,5 @@
 {
-  "id": "2c015fc4-a469-4229-929f-b2c830ccdfa7",
+  "id": "2234d0e8-1e42-431e-8a90-0348e5292825",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
@@ -20,6 +20,12 @@
           "primaryKey": false,
           "notNull": true,
           "default": "gen_random_uuid()"
+        },
+        "mid": {
+          "name": "mid",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -51,6 +57,13 @@
           "nullsNotDistinct": false,
           "columns": [
             "uid"
+          ]
+        },
+        "merchants_mid_unique": {
+          "name": "merchants_mid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "mid"
           ]
         }
       }
@@ -177,6 +190,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "sid": {
+          "name": "sid",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
         "merchant_id": {
           "name": "merchant_id",
           "type": "integer",
@@ -245,6 +264,13 @@
           "nullsNotDistinct": false,
           "columns": [
             "uid"
+          ]
+        },
+        "stores_sid_unique": {
+          "name": "stores_sid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "sid"
           ]
         }
       }
@@ -912,6 +938,83 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
+    },
+    "public.terminals": {
+      "name": "terminals",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "uid": {
+          "name": "uid",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "store_id": {
+          "name": "store_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tid": {
+          "name": "tid",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "terminals_store_id_stores_id_fk": {
+          "name": "terminals_store_id_stores_id_fk",
+          "tableFrom": "terminals",
+          "tableTo": "stores",
+          "columnsFrom": [
+            "store_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "terminals_uid_unique": {
+          "name": "terminals_uid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "uid"
+          ]
+        },
+        "terminals_tid_unique": {
+          "name": "terminals_tid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "tid"
+          ]
+        }
+      }
     }
   },
   "enums": {

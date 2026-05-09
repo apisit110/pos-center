@@ -1,6 +1,7 @@
 export class Merchant {
   constructor(
-    public readonly id: string,
+    public readonly uid: string,
+    public readonly mid: string,
     public name: string
   ) {}
 }

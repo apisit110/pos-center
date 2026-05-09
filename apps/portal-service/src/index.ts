@@ -9,6 +9,7 @@ import { DrizzleProductRepository } from './infrastructure/repositories/DrizzleP
 import { DrizzleStoreRepository } from './infrastructure/repositories/DrizzleStoreRepository';
 import { DrizzleMemberRepository } from './infrastructure/repositories/DrizzleMemberRepository';
 import { DrizzleStaffRepository } from './infrastructure/repositories/DrizzleStaffRepository';
+import { DrizzleTerminalRepository } from './infrastructure/repositories/DrizzleTerminalRepository';
 
 // Use Cases
 import { GetMerchantsUseCase } from './application/use-cases/GetMerchantsUseCase';
@@ -22,6 +23,8 @@ import { GetMembersUseCase } from './application/use-cases/GetMembersUseCase';
 import { GetMemberDetailUseCase } from './application/use-cases/GetMemberDetailUseCase';
 import { GetStaffUseCase } from './application/use-cases/GetStaffUseCase';
 import { GetStaffDetailUseCase } from './application/use-cases/GetStaffDetailUseCase';
+import { RegisterMerchantUseCase } from './application/use-cases/RegisterMerchantUseCase';
+import { GetTerminalsByStoreUseCase } from './application/use-cases/GetTerminalsByStoreUseCase';
 
 // Controllers
 import { MerchantController } from './infrastructure/controllers/MerchantController';
@@ -43,6 +46,7 @@ const productRepository = new DrizzleProductRepository();
 const storeRepository = new DrizzleStoreRepository();
 const memberRepository = new DrizzleMemberRepository();
 const staffRepository = new DrizzleStaffRepository();
+const terminalRepository = new DrizzleTerminalRepository();
 
 const getMerchantsUseCase = new GetMerchantsUseCase(merchantRepository);
 const getMerchantDetailUseCase = new GetMerchantDetailUseCase(merchantRepository);
@@ -55,10 +59,12 @@ const getMembersUseCase = new GetMembersUseCase(memberRepository);
 const getMemberDetailUseCase = new GetMemberDetailUseCase(memberRepository);
 const getStaffUseCase = new GetStaffUseCase(staffRepository);
 const getStaffDetailUseCase = new GetStaffDetailUseCase(staffRepository);
+const registerMerchantUseCase = new RegisterMerchantUseCase(merchantRepository, storeRepository, terminalRepository);
+const getTerminalsByStoreUseCase = new GetTerminalsByStoreUseCase(terminalRepository);
 
-const merchantController = new MerchantController(getMerchantsUseCase, getMerchantDetailUseCase);
+const merchantController = new MerchantController(getMerchantsUseCase, getMerchantDetailUseCase, registerMerchantUseCase);
 const productController = new ProductController(getProductsUseCase, getProductDetailUseCase, getProductFilterMetadataUseCase);
-const storeController = new StoreController(getStoresUseCase, getStoreDetailUseCase);
+const storeController = new StoreController(getStoresUseCase, getStoreDetailUseCase, getTerminalsByStoreUseCase);
 const memberController = new MemberController(getMembersUseCase, getMemberDetailUseCase);
 const staffController = new StaffController(getStaffUseCase, getStaffDetailUseCase);
 
@@ -80,6 +86,7 @@ app.post('/login', (req: Request, res: Response) => {
 // Merchant Endpoints
 app.get('/merchants', (req, res, next) => merchantController.getAll(req, res, next));
 app.get('/merchants/:id', (req, res, next) => merchantController.getById(req, res, next));
+app.post('/merchants', (req, res, next) => merchantController.register(req, res, next));
 
 // Product Endpoints
 app.get('/products', (req, res, next) => productController.getAll(req, res, next));
@@ -89,6 +96,7 @@ app.get('/products/:id', (req, res, next) => productController.getById(req, res,
 // Store Endpoints
 app.get('/stores', (req, res, next) => storeController.getAll(req, res, next));
 app.get('/stores/:id', (req, res, next) => storeController.getById(req, res, next));
+app.get('/stores/:id/terminals', (req, res, next) => storeController.getTerminals(req, res, next));
 
 // Member Endpoints
 app.get('/members', (req, res, next) => memberController.getAll(req, res, next));

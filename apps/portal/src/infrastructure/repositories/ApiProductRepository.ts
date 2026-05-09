@@ -15,6 +15,7 @@ export class ApiProductRepository implements ProductRepository {
       products: products.map((p: any) => new Product(
         p.id,
         p.merchantId,
+        p.mid,
         p.name,
         p.sku,
         p.barcode,
@@ -34,6 +35,7 @@ export class ApiProductRepository implements ProductRepository {
       return new Product(
         p.id,
         p.merchantId,
+        p.mid,
         p.name,
         p.sku,
         p.barcode,

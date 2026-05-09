@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export interface CreateTerminalRequest {
   storeId: string;
-  name: string;
+  tid: string;
 }
 
 export class CreateTerminalUseCase {
@@ -16,7 +16,7 @@ export class CreateTerminalUseCase {
     const terminal = new Terminal(
       id,
       request.storeId,
-      request.name
+      request.tid
     );
     
     await this.terminalRepository.create(terminal);

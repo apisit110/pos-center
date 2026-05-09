@@ -60,7 +60,7 @@ interface DataTableProps<T> {
   onRowClick?: (item: T) => void;
 }
 
-export function DataTable<T extends { id: string | number }>({ columns, data, footer, onRowClick }: DataTableProps<T>) {
+export function DataTable<T extends { id?: string | number; uid?: string | number }>({ columns, data, footer, onRowClick }: DataTableProps<T>) {
   return (
     <TableWrapper>
       <StyledTable>
@@ -72,9 +72,9 @@ export function DataTable<T extends { id: string | number }>({ columns, data, fo
           </tr>
         </THead>
         <tbody>
-          {data.map((item) => (
+          {data.map((item, idx) => (
             <Tr 
-              key={item.id} 
+              key={item.uid || item.id || idx} 
               $clickable={!!onRowClick} 
               onClick={() => onRowClick?.(item)}
             >

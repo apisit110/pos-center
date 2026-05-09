@@ -255,7 +255,7 @@ export default function ProductsPage() {
     { header: 'Unit', accessor: 'unitName' as const },
     { 
       header: 'Merchant', 
-      accessor: (p: Product) => merchantMap[p.merchantId] || `ID: ${p.merchantId}` 
+      accessor: (p: Product) => merchantMap[p.merchantId] || p.mid 
     },
     { 
       header: 'Price', 

@@ -6,7 +6,8 @@ export class DrizzleProductRepository implements IProductRepository {
   async getById(id: string): Promise<Product | null> {
     const result = await db.select({
       product: products,
-      merchantUid: merchants.uid
+      merchantUid: merchants.uid,
+      mid: merchants.mid
     })
     .from(products)
     .innerJoin(merchants, eq(products.merchantId, merchants.id))
@@ -15,10 +16,11 @@ export class DrizzleProductRepository implements IProductRepository {
 
     if (result.length === 0) return null;
 
-    const { product, merchantUid } = result[0];
+    const { product, merchantUid, mid } = result[0];
     return new Product(
       product.uid,
       merchantUid,
+      mid,
       product.name,
       product.sku || '',
       product.barcode || '',
@@ -32,15 +34,17 @@ export class DrizzleProductRepository implements IProductRepository {
   async getByMerchantId(merchantId: string): Promise<Product[]> {
     const result = await db.select({
       product: products,
-      merchantUid: merchants.uid
+      merchantUid: merchants.uid,
+      mid: merchants.mid
     })
     .from(products)
     .innerJoin(merchants, eq(products.merchantId, merchants.id))
     .where(eq(merchants.uid, merchantId));
 
-    return result.map(({ product, merchantUid }) => new Product(
+    return result.map(({ product, merchantUid, mid }) => new Product(
       product.uid,
       merchantUid,
+      mid,
       product.name,
       product.sku || '',
       product.barcode || '',
@@ -75,7 +79,8 @@ export class DrizzleProductRepository implements IProductRepository {
 
     let query = db.select({
       product: products,
-      merchantUid: merchants.uid
+      merchantUid: merchants.uid,
+      mid: merchants.mid
     })
     .from(products)
     .innerJoin(merchants, eq(products.merchantId, merchants.id));
@@ -106,9 +111,10 @@ export class DrizzleProductRepository implements IProductRepository {
       .limit(limit)
       .offset((page - 1) * limit);
 
-    const mappedProducts = result.map(({ product, merchantUid }: any) => new Product(
+    const mappedProducts = result.map(({ product, merchantUid, mid }: any) => new Product(
       product.uid,
       merchantUid,
+      mid,
       product.name,
       product.sku || '',
       product.barcode || '',

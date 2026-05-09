@@ -39,7 +39,7 @@ export class DrizzleStaffRepository implements IStaffRepository {
         s.uid,
         s.merchantId.toString(),
         s.name,
-        s.role
+        s.role as any
       )),
       total: Number(totalCount[0].value)
     };
@@ -54,7 +54,28 @@ export class DrizzleStaffRepository implements IStaffRepository {
       s.uid,
       s.merchantId.toString(),
       s.name,
-      s.role
+      s.role as any
     );
+  }
+
+  async save(staffMember: Staff): Promise<void> {
+    const merchant = await db.query.merchants.findFirst({
+      where: eq(merchants.uid, staffMember.merchantId)
+    });
+
+    if (!merchant) throw new Error('Merchant not found');
+
+    await db.insert(staff).values({
+      uid: staffMember.id,
+      merchantId: merchant.id,
+      name: staffMember.name,
+      role: staffMember.role
+    }).onConflictDoUpdate({
+      target: staff.uid,
+      set: {
+        name: staffMember.name,
+        role: staffMember.role
+      }
+    });
   }
 }

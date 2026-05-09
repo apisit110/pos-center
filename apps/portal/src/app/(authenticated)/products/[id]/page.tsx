@@ -392,8 +392,6 @@ export default function ProductDetailPage() {
               <Value style={{ fontSize: '0.8rem', opacity: 0.7 }}>{product.sku}</Value>
             </div>
             <div style={{ marginTop: '0.5rem' }}>
-              <Label>Product ID</Label>
-              <Value style={{ fontSize: '0.8rem', opacity: 0.7 }}>{product.id}</Value>
             </div>
           </Card>
         </div>
@@ -403,8 +401,8 @@ export default function ProductDetailPage() {
         <h3 style={{ margin: '0 0 1.5rem 0', color: 'var(--text-main)' }}>Additional Information</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
           <div>
-            <Label>Merchant ID</Label>
-            <Value>{product.merchantId}</Value>
+            <Label>Merchant MID</Label>
+            <Value>{product.mid}</Value>
           </div>
           <div>
             <Label>SKU</Label>

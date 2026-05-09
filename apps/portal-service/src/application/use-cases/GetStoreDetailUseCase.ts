@@ -4,7 +4,7 @@ import { Store } from '../../domain/entities/Store';
 export class GetStoreDetailUseCase {
   constructor(private storeRepository: IStoreRepository) {}
 
-  async execute(id: string): Promise<Store | null> {
-    return this.storeRepository.getById(id);
+  async execute(uid: string): Promise<Store | null> {
+    return this.storeRepository.getById(uid);
   }
 }

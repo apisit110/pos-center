@@ -1,7 +1,21 @@
 import { Merchant } from '../../domain/entities/Merchant';
 
+export interface MerchantRegistrationRequest {
+  merchantName: string;
+  stores: {
+    name: string;
+    address: string;
+    latitude: number;
+    longitude: number;
+    terminals: {
+      tid: string;
+    }[];
+  }[];
+}
+
 export interface MerchantRepository {
-  getMerchant(id: string): Promise<Merchant | null>;
+  getMerchant(uid: string): Promise<Merchant | null>;
   getMerchants(): Promise<Merchant[]>;
   updateMerchant(merchant: Merchant): Promise<void>;
+  registerMerchant(request: MerchantRegistrationRequest): Promise<Merchant>;
 }
