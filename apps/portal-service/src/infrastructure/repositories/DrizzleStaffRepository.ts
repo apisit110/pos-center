@@ -1,9 +1,9 @@
 import { db, staff, merchants } from '@lightning/database';
 import { eq, or, like, sql, count } from 'drizzle-orm';
 import { Staff } from '../../domain/entities/Staff';
-import { StaffRepository, StaffFilter } from '../../application/repositories/StaffRepository';
+import { IStaffRepository, StaffFilter } from '../../application/repositories/IStaffRepository';
 
-export class DrizzleStaffRepository implements StaffRepository {
+export class DrizzleStaffRepository implements IStaffRepository {
   async getStaff(page: number, limit: number, filters?: StaffFilter): Promise<{ staff: Staff[], total: number }> {
     const offset = (page - 1) * limit;
     

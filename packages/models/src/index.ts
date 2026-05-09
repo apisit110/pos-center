@@ -7,3 +7,4 @@ export * from './staff';
 export * from './runningNumbers';
 export * from './syncMetadata';
 export * from './users';
+export * from './terminals';

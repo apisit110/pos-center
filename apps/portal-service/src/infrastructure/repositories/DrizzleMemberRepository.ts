@@ -1,9 +1,9 @@
 import { db, members } from '@lightning/database';
 import { eq, or, like, sql, count } from 'drizzle-orm';
 import { Member } from '../../domain/entities/Member';
-import { MemberRepository, MemberFilter } from '../../application/repositories/MemberRepository';
+import { IMemberRepository, MemberFilter } from '../../application/repositories/IMemberRepository';
 
-export class DrizzleMemberRepository implements MemberRepository {
+export class DrizzleMemberRepository implements IMemberRepository {
   async getMembers(page: number, limit: number, filters?: MemberFilter): Promise<{ members: Member[], total: number }> {
     const offset = (page - 1) * limit;
     

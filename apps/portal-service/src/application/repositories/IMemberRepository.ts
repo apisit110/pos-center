@@ -5,7 +5,7 @@ export interface MemberFilter {
   tier?: string;
 }
 
-export interface MemberRepository {
+export interface IMemberRepository {
   getMembers(page: number, limit: number, filters?: MemberFilter): Promise<{ members: Member[], total: number }>;
   getMemberById(id: string): Promise<Member | null>;
 }

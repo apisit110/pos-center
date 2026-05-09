@@ -1,8 +1,8 @@
 import { db, merchants, eq } from '@lightning/database';
-import { MerchantRepository } from '../../application/repositories/MerchantRepository';
+import { IMerchantRepository } from '../../application/repositories/IMerchantRepository';
 import { Merchant } from '../../domain/entities/Merchant';
 
-export class DrizzleMerchantRepository implements MerchantRepository {
+export class DrizzleMerchantRepository implements IMerchantRepository {
   async getById(id: string): Promise<Merchant | null> {
     const result = await db.query.merchants.findFirst({
       where: eq(merchants.uid, id),

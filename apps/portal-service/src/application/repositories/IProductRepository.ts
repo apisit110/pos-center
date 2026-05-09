@@ -1,6 +1,6 @@
 import { Product } from '../../domain/entities/Product';
 
-export interface ProductRepository {
+export interface IProductRepository {
   getById(id: string): Promise<Product | null>;
   getByMerchantId(merchantId: string): Promise<Product[]>;
   findAll(page?: number, limit?: number, filters?: any): Promise<{ products: Product[], total: number }>;

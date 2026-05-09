@@ -4,6 +4,7 @@ import { merchants } from './merchants';
 export const stores = pgTable('stores', {
   id: serial('id').primaryKey(),
   uid: varchar('uid', { length: 255 }).unique().notNull(),
+  sid: varchar('sid', { length: 50 }).unique().notNull(),
   merchantId: integer('merchant_id').references(() => merchants.id).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   address: text('address'),

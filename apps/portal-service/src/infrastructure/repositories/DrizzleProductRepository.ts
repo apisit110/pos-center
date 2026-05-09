@@ -1,8 +1,8 @@
 import { db, products, merchants, storeProducts, stores, eq, ilike, and, inArray, lte, sql, runningNumbers } from '@lightning/database';
-import { ProductRepository } from '../../application/repositories/ProductRepository';
+import { IProductRepository } from '../../application/repositories/IProductRepository';
 import { Product } from '../../domain/entities/Product';
 
-export class DrizzleProductRepository implements ProductRepository {
+export class DrizzleProductRepository implements IProductRepository {
   async getById(id: string): Promise<Product | null> {
     const result = await db.select({
       product: products,

@@ -6,7 +6,8 @@ export interface StaffFilter {
   query?: string;
 }
 
-export interface StaffRepository {
+export interface IStaffRepository {
   getStaff(page: number, limit: number, filters?: StaffFilter): Promise<{ staff: Staff[], total: number }>;
   getStaffById(id: string): Promise<Staff | null>;
+  save(staff: Staff): Promise<void>;
 }

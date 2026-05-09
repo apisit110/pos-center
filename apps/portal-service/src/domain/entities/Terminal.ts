@@ -1,7 +1,7 @@
-export class Merchant {
+export class Terminal {
   constructor(
     public readonly id: string,
-    public readonly mid: string,
+    public readonly storeId: string,
     public name: string
   ) {}
 }
