@@ -1,9 +1,15 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import Select from 'react-select';
+import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
+import { ApiStoreRepository } from '../../../../infrastructure/repositories/ApiStoreRepository';
+import { GetMerchantsUseCase } from '../../../../application/use-cases/GetMerchantsUseCase';
+import { GetStoresUseCase } from '../../../../application/use-cases/GetStoresUseCase';
+import { Merchant } from '../../../../domain/entities/Merchant';
+import { Store } from '../../../../domain/entities/Store';
 
 const PageContainer = styled.div`
   display: flex;
@@ -171,11 +177,80 @@ const SuccessText = styled.p`
   margin-top: 0.5rem;
 `;
 
+const selectStyles = {
+  control: (base: any) => ({
+    ...base,
+    background: 'rgba(15, 23, 42, 0.5)',
+    borderColor: 'var(--border)',
+    color: 'white',
+    padding: '0.2rem',
+    borderRadius: '0.5rem',
+  }),
+  menu: (base: any) => ({
+    ...base,
+    background: '#1e293b',
+    border: '1px solid var(--border)',
+    zIndex: 100,
+  }),
+  option: (base: any, state: any) => ({
+    ...base,
+    background: state.isFocused ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
+    color: 'white',
+    cursor: 'pointer',
+  }),
+  singleValue: (base: any) => ({
+    ...base,
+    color: 'white',
+  }),
+  input: (base: any) => ({
+    ...base,
+    color: 'white',
+  })
+};
+
 export default function MapProductStorePage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeTab, setActiveTab] = useState<'manual' | 'import'>('manual');
   const [dragActive, setDragActive] = useState(false);
+
+  // Data State
+  const [merchants, setMerchants] = useState<Merchant[]>([]);
+  const [stores, setStores] = useState<Store[]>([]);
+  const [selectedMerchant, setSelectedMerchant] = useState<{value: string, label: string} | null>(null);
+  const [selectedStore, setSelectedStore] = useState<{value: string, label: string} | null>(null);
+
+  useEffect(() => {
+    const fetchMerchants = async () => {
+      try {
+        const repo = new ApiMerchantRepository();
+        const useCase = new GetMerchantsUseCase(repo);
+        const data = await useCase.execute();
+        setMerchants(data);
+      } catch (err) {
+        console.error('Failed to fetch merchants', err);
+      }
+    };
+    fetchMerchants();
+  }, []);
+
+  useEffect(() => {
+    const fetchStores = async () => {
+      if (!selectedMerchant) {
+        setStores([]);
+        return;
+      }
+      try {
+        const repo = new ApiStoreRepository();
+        const useCase = new GetStoresUseCase(repo);
+        const data = await useCase.execute(selectedMerchant.value);
+        setStores(data);
+      } catch (err) {
+        console.error('Failed to fetch stores', err);
+      }
+    };
+    fetchStores();
+  }, [selectedMerchant]);
 
   // Manual Form State
   const [manualForm, setManualForm] = useState({
@@ -202,6 +277,11 @@ export default function MapProductStorePage() {
     setImportSuccess('');
     setImportedData(null);
 
+    if (!selectedStore) {
+      setImportError('Please select a merchant and store before importing.');
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
@@ -211,14 +291,20 @@ export default function MapProductStorePage() {
         }
         
         // Basic validation against the master_store_product.json structure
-        const isValid = json.every(item => item.store_id && item.product_id && typeof item.stock === 'number' && typeof item.price === 'number');
+        const isValid = json.every(item => item.product_uid && typeof item.stock === 'number' && typeof item.price === 'number');
         
         if (!isValid) {
-          throw new Error('Invalid JSON structure. Ensure store_id, product_id, stock, and price exist.');
+          throw new Error('Invalid JSON structure. Ensure product_uid, stock, and price exist.');
         }
 
-        setImportedData(json);
-        setImportSuccess(`Successfully parsed ${json.length} mappings.`);
+        const store = stores.find(s => s.uid === selectedStore.value);
+        const mappedData = json.map(item => ({
+          ...item,
+          store_id: store?.sid || selectedStore.value,
+        }));
+
+        setImportedData(mappedData);
+        setImportSuccess(`Successfully parsed ${json.length} mappings for ${store?.name || selectedStore.label}.`);
       } catch (err: any) {
         setImportError(err.message || 'Failed to parse JSON file.');
       }
@@ -256,6 +342,42 @@ export default function MapProductStorePage() {
           Back
         </ActionButton>
       </Header>
+
+      <Section style={{ padding: '1.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+          <FormGroup>
+            <Label>Select Merchant</Label>
+            <Select 
+              options={merchants.map(m => ({ value: m.uid, label: m.name }))}
+              value={selectedMerchant}
+              onChange={(val) => {
+                setSelectedMerchant(val);
+                setSelectedStore(null);
+                setManualForm(prev => ({ ...prev, storeId: '' }));
+              }}
+              placeholder="Select a merchant..."
+              styles={selectStyles}
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label>Select Store</Label>
+            <Select 
+              options={stores.map(s => ({ value: s.uid, label: s.name }))}
+              value={selectedStore}
+              onChange={(val) => {
+                setSelectedStore(val);
+                if (val) {
+                   const store = stores.find(s => s.uid === val?.value);
+                   setManualForm(prev => ({ ...prev, storeId: store?.sid || '' }));
+                }
+              }}
+              placeholder="Select a store..."
+              isDisabled={!selectedMerchant}
+              styles={selectStyles}
+            />
+          </FormGroup>
+        </div>
+      </Section>
 
       <TabContainer>
         <TabButton $active={activeTab === 'manual'} onClick={() => setActiveTab('manual')}>
