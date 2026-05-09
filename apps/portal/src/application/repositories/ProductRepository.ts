@@ -11,6 +11,7 @@ export interface ProductFilter {
 }
 
 export interface CreateProductRequest {
+  uid?: string;
   merchantId: string;
   name: string;
   barcode: string;

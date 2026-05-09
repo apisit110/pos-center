@@ -90,6 +90,7 @@ export class ProductController {
       for (const p of products) {
         try {
           await this.createProductUseCase.execute({
+            uid: p.uid,
             merchantId: p.merchantId,
             name: p.name,
             sku: p.barcode || '',

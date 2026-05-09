@@ -546,6 +546,7 @@ export default function AddProductPage() {
       const repo = new ApiProductRepository();
       const useCase = new BatchCreateProductsUseCase(repo);
       const requests = jsonProducts.map(p => ({
+        uid: p.uid,
         merchantId: selectedMerchant.value,
         name: p.name_th || p.name_en || '',
         barcode: p.barcode || '',

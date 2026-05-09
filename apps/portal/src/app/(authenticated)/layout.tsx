@@ -50,6 +50,7 @@ export default function DashboardLayout({
     { name: 'Merchants', path: '/merchants' },
     { name: 'Stores', path: '/stores' },
     { name: 'Products', path: '/products' },
+    { name: 'Map Store Products', path: '/products/map-store' },
     { name: 'Members', path: '/members' },
     { name: 'Staff', path: '/staff' },
   ];

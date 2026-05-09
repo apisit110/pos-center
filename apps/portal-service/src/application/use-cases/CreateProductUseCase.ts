@@ -4,6 +4,7 @@ import { IMerchantRepository } from '../repositories/IMerchantRepository';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface CreateProductRequest {
+  uid?: string;
   merchantId: string;
   name: string;
   sku: string;
@@ -21,7 +22,7 @@ export class CreateProductUseCase {
   ) {}
 
   public async execute(request: CreateProductRequest): Promise<Product> {
-    const id = uuidv4();
+    const uid = request.uid || uuidv4();
 
     // Resolve merchant to get mid
     const merchant = await this.merchantRepository.getById(request.merchantId);
@@ -30,7 +31,7 @@ export class CreateProductUseCase {
     }
 
     const product = new Product(
-      id,
+      uid,
       request.merchantId,
       merchant.mid,
       request.name,

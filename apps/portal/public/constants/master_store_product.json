@@ -1,8 +1,6 @@
 [
   {
-    "id": "SP-001",
-    "store_id": "S-001",
-    "product_id": "P75Lx5mwPw8EC02yY2fnTt8iUhAhe7",
+    "product_id": "e06f8b68-77cf-4bf9-8165-1197b4afda28",
     "stock": 100,
     "price": 13,
     "price_tiers": [
@@ -15,10 +13,8 @@
     ]
   },
   {
-    "id": "SP-002",
-    "store_id": "S-001",
-    "product_id": "rFSMHxCBcxmW53ecQFuvQzS8mqZcaW",
-    "stock": 50,
+    "product_id": "192a0b95-ca52-4077-8c44-78baf978d43c",
+    "stock": 100,
     "price": 17,
     "price_tiers": [
       {
@@ -30,24 +26,7 @@
     ]
   },
   {
-    "id": "SP-003",
-    "store_id": "S-002",
-    "product_id": "P75Lx5mwPw8EC02yY2fnTt8iUhAhe7",
-    "stock": 30,
-    "price": 15,
-    "price_tiers": [
-      {
-        "min_qty": 1,
-        "max_qty": 1,
-        "unit_price": 15,
-        "tier": 1
-      }
-    ]
-  },
-  {
-    "id": "SP-004",
-    "store_id": "S-001",
-    "product_id": "ANd6PwbLR6R3j6a4TBuvWQgpxQAM6R",
+    "product_id": "36be2764-dc90-4e65-8ed0-dea447404464",
     "stock": 100,
     "price": 30,
     "price_tiers": [
@@ -60,9 +39,7 @@
     ]
   },
   {
-    "id": "SP-005",
-    "store_id": "S-001",
-    "product_id": "HhaART8YKRC9bzbE4n7f2yS4wPvJF5",
+    "product_id": "edcabb86-02cd-401b-8d4f-808b4abc75e1",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -75,9 +52,7 @@
     ]
   },
   {
-    "id": "SP-006",
-    "store_id": "S-001",
-    "product_id": "huPz9Jrg8C3GGbtcWFx01L34g7fR2n",
+    "product_id": "28dabd95-3e99-4024-81b2-0d1ab0efe026",
     "stock": 100,
     "price": 17,
     "price_tiers": [
@@ -90,9 +65,7 @@
     ]
   },
   {
-    "id": "SP-007",
-    "store_id": "S-001",
-    "product_id": "FGWgzXg18Gb444bWR0rYw1hrmF40R9",
+    "product_id": "63462cf4-7ed1-494f-9ce8-b05517e65ea1",
     "stock": 100,
     "price": 30,
     "price_tiers": [
@@ -105,9 +78,7 @@
     ]
   },
   {
-    "id": "SP-008",
-    "store_id": "S-001",
-    "product_id": "T8JfBrT0hiYgNNHApWRTuuRDcHFCZK",
+    "product_id": "9e2e6a7d-3d1d-45d6-8ac9-ca91d0c7aca9",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -120,9 +91,7 @@
     ]
   },
   {
-    "id": "SP-009",
-    "store_id": "S-001",
-    "product_id": "eGqaDhz5QAAHMF9zhy0H1uNbjFM0eF",
+    "product_id": "c91387b0-3322-4e8a-92c4-cc1f4868a9e8",
     "stock": 100,
     "price": 32,
     "price_tiers": [
@@ -135,9 +104,7 @@
     ]
   },
   {
-    "id": "SP-010",
-    "store_id": "S-001",
-    "product_id": "d2gCJYxnjyJ94jTfLQJwvKytAQ9J65",
+    "product_id": "ad00b51e-8703-4a16-bd01-79255117884c",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -150,9 +117,7 @@
     ]
   },
   {
-    "id": "SP-011",
-    "store_id": "S-001",
-    "product_id": "GGtrRVVZncbiJ9kJUW35wXaPKXkTiQ",
+    "product_id": "81073479-8a1a-42f0-b852-fe5ea343e258",
     "stock": 100,
     "price": 16,
     "price_tiers": [
@@ -165,9 +130,7 @@
     ]
   },
   {
-    "id": "SP-012",
-    "store_id": "S-001",
-    "product_id": "3GhF13dPMwCwdKUhzSxbcKpaHJ4cFi",
+    "product_id": "14a17be8-4d65-4f03-9881-a905cac86592",
     "stock": 100,
     "price": 32,
     "price_tiers": [
@@ -180,9 +143,7 @@
     ]
   },
   {
-    "id": "SP-013",
-    "store_id": "S-001",
-    "product_id": "fvVMqSXcWzTFqHycemrJdP4VxthAUy",
+    "product_id": "5d360126-96b4-48f1-9337-b57ae0ed2ad5",
     "stock": 100,
     "price": 16,
     "price_tiers": [
@@ -195,9 +156,7 @@
     ]
   },
   {
-    "id": "SP-014",
-    "store_id": "S-001",
-    "product_id": "ZHKWMA8WUmfFL94ihB27bwR7FiUjr4",
+    "product_id": "31fcb856-54b9-44f3-8f2c-0cc4425406a7",
     "stock": 100,
     "price": 32,
     "price_tiers": [
@@ -210,9 +169,7 @@
     ]
   },
   {
-    "id": "SP-015",
-    "store_id": "S-001",
-    "product_id": "WxfeegFFaZ03XmFLrhR79w8KVKpiDc",
+    "product_id": "3fdb5188-b107-4156-b644-a15ace5fc37c",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -225,9 +182,7 @@
     ]
   },
   {
-    "id": "SP-016",
-    "store_id": "S-001",
-    "product_id": "HMJ2ZaKM5LtrD1RDr5awpvnD83ynBV",
+    "product_id": "5430e47d-49fd-409b-836d-975a52035a9c",
     "stock": 100,
     "price": 16,
     "price_tiers": [
@@ -240,9 +195,7 @@
     ]
   },
   {
-    "id": "SP-017",
-    "store_id": "S-001",
-    "product_id": "t6ghFgFtuJq3wbyQTwfHtumGcj6Ynh",
+    "product_id": "43d8ef1e-8030-440a-b39c-23c613549785",
     "stock": 100,
     "price": 32,
     "price_tiers": [
@@ -255,9 +208,7 @@
     ]
   },
   {
-    "id": "SP-018",
-    "store_id": "S-001",
-    "product_id": "9B3qac3fVjZCF2VYvd1gSGD8vqxQ2c",
+    "product_id": "5c4f1dd1-d5b8-4ab6-bb80-e9960b56f5c3",
     "stock": 100,
     "price": 16,
     "price_tiers": [
@@ -270,9 +221,7 @@
     ]
   },
   {
-    "id": "SP-019",
-    "store_id": "S-001",
-    "product_id": "dqVybw5WYVJgtFZGbpHjGh65u9iE5H",
+    "product_id": "3ce4de44-86b2-4d72-a753-75dbe7cd7e5f",
     "stock": 100,
     "price": 32,
     "price_tiers": [
@@ -285,9 +234,7 @@
     ]
   },
   {
-    "id": "SP-020",
-    "store_id": "S-001",
-    "product_id": "F01RDvC7UAP1JLGNLCRXgRwkxqy5pM",
+    "product_id": "57f9b6a6-4060-4612-afbf-d381b6619ab0",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -300,9 +247,7 @@
     ]
   },
   {
-    "id": "SP-021",
-    "store_id": "S-001",
-    "product_id": "2LYbvQPi3m9ZVAfBYri7jWpGFzNLw8",
+    "product_id": "38ed7eac-d9cd-49f7-8adc-c3f8e2a8cc04",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -315,9 +260,7 @@
     ]
   },
   {
-    "id": "SP-022",
-    "store_id": "S-001",
-    "product_id": "fBBTjeg9pGRttpYdhxPGairZqw5TUd",
+    "product_id": "48a26f5f-00f3-4647-bb6f-bac506c41342",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -330,9 +273,7 @@
     ]
   },
   {
-    "id": "SP-023",
-    "store_id": "S-001",
-    "product_id": "rJU2FXN367Xdyq75d4kkRNUE2WrYAe",
+    "product_id": "c0463ab2-a29c-4987-9248-d7fe135434bb",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -345,9 +286,7 @@
     ]
   },
   {
-    "id": "SP-024",
-    "store_id": "S-001",
-    "product_id": "TUj3eApadGcfALV5w9rMU7fbp0PTMV",
+    "product_id": "635cb91b-39f3-4490-a74e-83acc0b45127",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -360,9 +299,7 @@
     ]
   },
   {
-    "id": "SP-025",
-    "store_id": "S-001",
-    "product_id": "XRbbS4UqhQZraXBP2jh5XxAETfJkjR",
+    "product_id": "226213a0-56b9-489f-9688-6016cd1d0133",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -375,9 +312,7 @@
     ]
   },
   {
-    "id": "SP-026",
-    "store_id": "S-001",
-    "product_id": "HP3GLu0WNxzzbAYWW0Y9EECQnKXj00",
+    "product_id": "232bf89b-80a1-4b05-8dba-410ccec5d5fa",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -390,9 +325,7 @@
     ]
   },
   {
-    "id": "SP-027",
-    "store_id": "S-001",
-    "product_id": "5taXpCGb9hEziqn2YiNRFGH7kDBLRM",
+    "product_id": "d3577c0e-763a-4c18-8067-cdd5362f31ce",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -405,9 +338,7 @@
     ]
   },
   {
-    "id": "SP-028",
-    "store_id": "S-001",
-    "product_id": "VAWvP2naFhiZ9Gfdt3PdhJ25eK3ZQV",
+    "product_id": "e6ca5376-2f6b-4b78-9fb5-d2f12b11e32a",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -420,9 +351,7 @@
     ]
   },
   {
-    "id": "SP-029",
-    "store_id": "S-001",
-    "product_id": "MLWMgypNqzdRpcSSQacjtWPJSBfpi7",
+    "product_id": "247eda5a-c1cb-4147-8bef-94040bb7c242",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -435,9 +364,7 @@
     ]
   },
   {
-    "id": "SP-030",
-    "store_id": "S-001",
-    "product_id": "yygWZqjXQFSCYd9fPrphgEMr3Ggaux",
+    "product_id": "952f44a0-b8da-437d-9bcb-3dcfdb3494a1",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -450,9 +377,7 @@
     ]
   },
   {
-    "id": "SP-031",
-    "store_id": "S-001",
-    "product_id": "yn2xgCQP0cYCctpLQ0AnjVpdV8DATC",
+    "product_id": "8abd868a-b185-4869-86aa-45732767af4d",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -465,9 +390,7 @@
     ]
   },
   {
-    "id": "SP-032",
-    "store_id": "S-001",
-    "product_id": "g8dHt846rzpntdBATXB4uAHRwR6LXf",
+    "product_id": "58563f05-15b4-430b-a2ab-7b4ffa48188c",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -480,9 +403,7 @@
     ]
   },
   {
-    "id": "SP-033",
-    "store_id": "S-001",
-    "product_id": "Xi73x3VG3mGkwRbVnM1KXJFRf6CGDq",
+    "product_id": "114e9dd4-16d6-4a80-ae89-5ea91c039294",
     "stock": 100,
     "price": 12,
     "price_tiers": [
@@ -495,9 +416,7 @@
     ]
   },
   {
-    "id": "SP-034",
-    "store_id": "S-001",
-    "product_id": "BKavE4dUBMF9BdefCPiXE63HZqyHFv",
+    "product_id": "a6e5cbea-1655-4e3b-825d-64bf739e082c",
     "stock": 100,
     "price": 12,
     "price_tiers": [
@@ -510,9 +429,7 @@
     ]
   },
   {
-    "id": "SP-035",
-    "store_id": "S-001",
-    "product_id": "PkzzpzAP1CyQwv9JSE5R7zRQLrHFFT",
+    "product_id": "bd0c9f90-42f7-470f-b9e5-c1b67c0415a4",
     "stock": 100,
     "price": 17,
     "price_tiers": [
@@ -525,9 +442,7 @@
     ]
   },
   {
-    "id": "SP-036",
-    "store_id": "S-001",
-    "product_id": "JdWPMgYd7bBRdzP0JS9JJMZBS85CkG",
+    "product_id": "46d168a4-f979-4a40-b31b-b74f2286a1ea",
     "stock": 100,
     "price": 17,
     "price_tiers": [
@@ -540,9 +455,7 @@
     ]
   },
   {
-    "id": "SP-037",
-    "store_id": "S-001",
-    "product_id": "wTNajB8d15wXkuC3Rn3Rj0wbjngFVh",
+    "product_id": "72ff077c-68a1-4852-a1ed-4c76bfbe4e7b",
     "stock": 100,
     "price": 17,
     "price_tiers": [
@@ -555,9 +468,7 @@
     ]
   },
   {
-    "id": "SP-038",
-    "store_id": "S-001",
-    "product_id": "0bibncZm7BPXRU9hrQ87dSiLfBt1BU",
+    "product_id": "0d7898de-3df0-4447-83ee-85539be842a8",
     "stock": 100,
     "price": 17,
     "price_tiers": [
@@ -570,9 +481,7 @@
     ]
   },
   {
-    "id": "SP-039",
-    "store_id": "S-001",
-    "product_id": "CWP4RmDrR8TreQatSdGf3uSpYQc55H",
+    "product_id": "7b0f9d7e-1aef-4cf6-b91e-5b158e6b4993",
     "stock": 100,
     "price": 17,
     "price_tiers": [
@@ -585,9 +494,7 @@
     ]
   },
   {
-    "id": "SP-040",
-    "store_id": "S-001",
-    "product_id": "cZ9H4D5YiPmffhmgjmLDLu2e4QcyFA",
+    "product_id": "62b19e38-46e2-4fae-a878-c397dd70665a",
     "stock": 100,
     "price": 17,
     "price_tiers": [
@@ -600,9 +507,7 @@
     ]
   },
   {
-    "id": "SP-041",
-    "store_id": "S-001",
-    "product_id": "3ufR4ygLBbUwWg7rta89Zwpb3XnXY6",
+    "product_id": "1a0bab19-a113-43e2-b61a-a362a730dcd9",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -615,9 +520,7 @@
     ]
   },
   {
-    "id": "SP-042",
-    "store_id": "S-001",
-    "product_id": "Q1NeiPd56piGy6ak3SAHmRgb8BXGKr",
+    "product_id": "9e5fafdd-f2c2-4ae3-aa8b-df55c536818a",
     "stock": 100,
     "price": 32,
     "price_tiers": [
@@ -630,9 +533,7 @@
     ]
   },
   {
-    "id": "SP-043",
-    "store_id": "S-001",
-    "product_id": "UBkaMx8vX5wipcRpGQjSx1w93Kr2zA",
+    "product_id": "d6e78705-67a3-4f88-b5ad-82b77379fec0",
     "stock": 100,
     "price": 59,
     "price_tiers": [
@@ -645,9 +546,7 @@
     ]
   },
   {
-    "id": "SP-044",
-    "store_id": "S-001",
-    "product_id": "pWVcyZUTYWh6MTHBxVN3NdkkP01GL3",
+    "product_id": "669c1803-56d2-44e9-a1fe-863980d43711",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -660,9 +559,7 @@
     ]
   },
   {
-    "id": "SP-045",
-    "store_id": "S-001",
-    "product_id": "3WMG90rUc61BXxV0nmW3ybtYkGRGv2",
+    "product_id": "c7707398-828f-4ca2-8976-d8763687276a",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -675,9 +572,7 @@
     ]
   },
   {
-    "id": "SP-046",
-    "store_id": "S-001",
-    "product_id": "H6aBa5pKueTQk7ZTBb75SRj8zBeLyq",
+    "product_id": "102e5c2d-9539-4e46-91f9-0c92f069c143",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -690,9 +585,7 @@
     ]
   },
   {
-    "id": "SP-047",
-    "store_id": "S-001",
-    "product_id": "MEfKWm5074EXkJ3UjDdGvBBp6mHpRS",
+    "product_id": "ce300525-eda7-49d1-bfbe-08f3f575741a",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -705,9 +598,7 @@
     ]
   },
   {
-    "id": "SP-048",
-    "store_id": "S-001",
-    "product_id": "eY4Mwn7acYgmYcBDgLvXe16gnMcLwN",
+    "product_id": "023ba7e2-abd8-440a-9336-87d7e333b1f8",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -720,9 +611,7 @@
     ]
   },
   {
-    "id": "SP-049",
-    "store_id": "S-001",
-    "product_id": "5Sgnz34hRMzJg5pPSNrxm4AWfr2rpD",
+    "product_id": "d49a0599-7bb8-4f88-8dd8-7a38999f76dd",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -735,9 +624,7 @@
     ]
   },
   {
-    "id": "SP-050",
-    "store_id": "S-001",
-    "product_id": "uUHGhv1mAxvEetQG3ZMGAMEGtUK4Vz",
+    "product_id": "2ed7ef01-1393-413b-931b-4fc0949084a0",
     "stock": 100,
     "price": 5,
     "price_tiers": [
@@ -750,9 +637,7 @@
     ]
   },
   {
-    "id": "SP-051",
-    "store_id": "S-001",
-    "product_id": "tE4GSTm3Fqa8z282bAMDLtztiYiQ4m",
+    "product_id": "cd8c489a-8267-4e41-884b-fc6a802c2229",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -765,9 +650,7 @@
     ]
   },
   {
-    "id": "SP-052",
-    "store_id": "S-001",
-    "product_id": "qc8n36vwyhBDmEVJFA6rGiTz5W2XPM",
+    "product_id": "d8cf4189-d886-4887-9be8-8e1e3e7041f7",
     "stock": 100,
     "price": 5,
     "price_tiers": [
@@ -780,9 +663,7 @@
     ]
   },
   {
-    "id": "SP-053",
-    "store_id": "S-001",
-    "product_id": "byxz4Pj2txCdeL4ZWj1KMkbkvjJx5u",
+    "product_id": "f59be985-6820-4190-b941-cfc090d4cf8f",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -795,9 +676,7 @@
     ]
   },
   {
-    "id": "SP-054",
-    "store_id": "S-001",
-    "product_id": "g7WpVNPhKtrM6BnZhNYzq5aZtyyNjQ",
+    "product_id": "518102e9-b209-4f15-98cb-3f69945f9271",
     "stock": 100,
     "price": 5,
     "price_tiers": [
@@ -810,9 +689,7 @@
     ]
   },
   {
-    "id": "SP-055",
-    "store_id": "S-001",
-    "product_id": "kcygfmTw63XMgDkXgLQAb80Cy6Fau5",
+    "product_id": "ef29d172-7692-41b8-aeb8-cd42e64fbe6d",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -825,9 +702,7 @@
     ]
   },
   {
-    "id": "SP-056",
-    "store_id": "S-001",
-    "product_id": "bR77kUmf1wnkRqytWzFNrGcMvZiDRL",
+    "product_id": "4b72a297-6695-4159-ba62-bb3cada2252c",
     "stock": 100,
     "price": 12,
     "price_tiers": [
@@ -840,9 +715,7 @@
     ]
   },
   {
-    "id": "SP-057",
-    "store_id": "S-001",
-    "product_id": "RwyKExJgRCLa1JuXq7iemw39EaBDda",
+    "product_id": "0dff40dc-8ec0-4fa9-8269-28d8e37ad279",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -855,9 +728,7 @@
     ]
   },
   {
-    "id": "SP-058",
-    "store_id": "S-001",
-    "product_id": "JnzC7RHr31gdMq7dxqgBRuKgKaMLt9",
+    "product_id": "b4a15433-fd49-4535-88b1-1de833281b65",
     "stock": 100,
     "price": 17,
     "price_tiers": [
@@ -870,9 +741,7 @@
     ]
   },
   {
-    "id": "SP-059",
-    "store_id": "S-001",
-    "product_id": "K36jh5jy54efxcz4K0UVdauZN3vdVB",
+    "product_id": "ee41ee1f-5de0-4e03-b0c9-9e961986aa47",
     "stock": 100,
     "price": 17,
     "price_tiers": [
@@ -885,9 +754,7 @@
     ]
   },
   {
-    "id": "SP-060",
-    "store_id": "S-001",
-    "product_id": "49WVN4BZbvr4eUgLT1xbYG6yuucHCd",
+    "product_id": "50d932a9-7408-4706-8974-cf61aed3d5e9",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -900,9 +767,7 @@
     ]
   },
   {
-    "id": "SP-061",
-    "store_id": "S-001",
-    "product_id": "Ab2rSn2zdibhXD4tz2Lk8kKCXqFrCE",
+    "product_id": "f28f3834-5ddc-4956-bfcd-664ac1b622e8",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -915,9 +780,7 @@
     ]
   },
   {
-    "id": "SP-062",
-    "store_id": "S-001",
-    "product_id": "9UVZT5X2SYquGGzSfEeE0ftq03Gn0V",
+    "product_id": "f11478b2-09ca-4165-a955-425291b84505",
     "stock": 100,
     "price": 5,
     "price_tiers": [
@@ -930,9 +793,7 @@
     ]
   },
   {
-    "id": "SP-063",
-    "store_id": "S-001",
-    "product_id": "XvEyBhiHJjzwLzVcQyu6PYL1evcf8t",
+    "product_id": "015a1de9-cbe8-45e8-8f3f-f3a28ac32052",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -945,9 +806,7 @@
     ]
   },
   {
-    "id": "SP-064",
-    "store_id": "S-001",
-    "product_id": "FCtT3xE6p65W9bpSGh2c7f1yNPWEhv",
+    "product_id": "1712abda-a789-47e9-b247-a604154b883c",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -960,9 +819,7 @@
     ]
   },
   {
-    "id": "SP-065",
-    "store_id": "S-001",
-    "product_id": "CbDFnXFY2nz4MjEW52gAwTbTjtcfvr",
+    "product_id": "6cd6cf2f-88ff-40d3-b31c-b621f776399a",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -975,9 +832,7 @@
     ]
   },
   {
-    "id": "SP-066",
-    "store_id": "S-001",
-    "product_id": "U642j8i9ibAFrESQj30hA9NVuww4k3",
+    "product_id": "b4d876b4-8ae8-4088-8125-adc040654ad0",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -990,9 +845,7 @@
     ]
   },
   {
-    "id": "SP-067",
-    "store_id": "S-001",
-    "product_id": "eb4TriQVC4XBy0MqhrXaArK6tSWrkD",
+    "product_id": "e8006c47-52d0-442b-8237-4711f1be0a2b",
     "stock": 100,
     "price": 12,
     "price_tiers": [
@@ -1005,9 +858,7 @@
     ]
   },
   {
-    "id": "SP-068",
-    "store_id": "S-001",
-    "product_id": "1viRJREr3JzbfqRJJVPci6mcQHfXHU",
+    "product_id": "f754bd2d-3044-4f50-a28c-21ff9ae025b4",
     "stock": 100,
     "price": 12,
     "price_tiers": [
@@ -1020,9 +871,7 @@
     ]
   },
   {
-    "id": "SP-069",
-    "store_id": "S-001",
-    "product_id": "qmT2CaymyVf8cPXYC1idSnBnF6RQf9",
+    "product_id": "625bc7d8-89ab-41a3-9a3e-bd94dc77319f",
     "stock": 100,
     "price": 12,
     "price_tiers": [
@@ -1035,9 +884,7 @@
     ]
   },
   {
-    "id": "SP-070",
-    "store_id": "S-001",
-    "product_id": "zFdRX2BwEtcAvmtiiQZU7ER9cfvPn4",
+    "product_id": "1f46a1da-9e05-4c9c-b58f-c2781d9eed97",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -1050,9 +897,7 @@
     ]
   },
   {
-    "id": "SP-071",
-    "store_id": "S-001",
-    "product_id": "AqXNjWVyYKh6K0xfeqVG6qDrjBHb8z",
+    "product_id": "f5bc7e92-7b89-4cec-9991-51496dacf5bb",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -1065,9 +910,7 @@
     ]
   },
   {
-    "id": "SP-072",
-    "store_id": "S-001",
-    "product_id": "NRNVbnXgdNdVAnRLcZLxiaPanjpYMq",
+    "product_id": "a793f3f7-4981-4721-888e-e7170f2af32c",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -1080,9 +923,7 @@
     ]
   },
   {
-    "id": "SP-073",
-    "store_id": "S-001",
-    "product_id": "XrNGZbivxrgMdJA4QYvzidFXqTVrr4",
+    "product_id": "13310ac6-de14-4cdd-9b83-3fc14cf52b6d",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -1095,9 +936,7 @@
     ]
   },
   {
-    "id": "SP-074",
-    "store_id": "S-001",
-    "product_id": "cGQ5f6uJA8aCSvcZt47MdqGDqWL4h4",
+    "product_id": "42365d98-5e05-4b51-afae-6a3803ad64c2",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -1110,9 +949,7 @@
     ]
   },
   {
-    "id": "SP-075",
-    "store_id": "S-001",
-    "product_id": "tahdhDkYtHJEQGYPGBzfp9z8JcQwFC",
+    "product_id": "fa4fa652-4f1d-47a4-8c64-ce872ec7ea2b",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -1125,9 +962,7 @@
     ]
   },
   {
-    "id": "SP-076",
-    "store_id": "S-001",
-    "product_id": "mTyT7Djf5UJv64Lfiv7acHxCaghQz3",
+    "product_id": "0bff423c-6cf3-43d4-9eef-fd20714686ba",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -1140,9 +975,7 @@
     ]
   },
   {
-    "id": "SP-077",
-    "store_id": "S-001",
-    "product_id": "2cS4TTyh5rfgiAgQ0U0B1WJgJ3XPP8",
+    "product_id": "12233f04-f793-4a30-8a76-53a33d9798f3",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -1155,9 +988,7 @@
     ]
   },
   {
-    "id": "SP-078",
-    "store_id": "S-001",
-    "product_id": "gMeWuD67LdkMDudHQ2Mmxwtar2ikMk",
+    "product_id": "ec777bca-037f-4e0d-a921-eb77336da1ae",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -1170,9 +1001,7 @@
     ]
   },
   {
-    "id": "SP-079",
-    "store_id": "S-001",
-    "product_id": "01Ywk0NqiLXKXiELZdCi2NCfc7gnr7",
+    "product_id": "c1326516-f2e2-4751-a1be-456f68058cd4",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -1185,9 +1014,7 @@
     ]
   },
   {
-    "id": "SP-080",
-    "store_id": "S-001",
-    "product_id": "a9D3gJ5bizBM6ZwKLSCFx1e3dWcCJD",
+    "product_id": "5876b23b-1626-495a-8dc4-efeeb13c8fa5",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -1200,9 +1027,7 @@
     ]
   },
   {
-    "id": "SP-081",
-    "store_id": "S-001",
-    "product_id": "CaKLaqw7nenPiC5eeccS4qtUjg19ZZ",
+    "product_id": "d3adf781-9d46-4cc3-8fbc-b79dd5310b7b",
     "stock": 100,
     "price": 35,
     "price_tiers": [
@@ -1215,9 +1040,7 @@
     ]
   },
   {
-    "id": "SP-082",
-    "store_id": "S-001",
-    "product_id": "qR1envwPWneDnAEUf5aBS0zP4R1KG0",
+    "product_id": "850f41b2-9545-4fd0-985a-608f02e28f70",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -1230,9 +1053,7 @@
     ]
   },
   {
-    "id": "SP-083",
-    "store_id": "S-001",
-    "product_id": "Kv2VbFyA8S7HaXLxN9VU5LtNiEHh4C",
+    "product_id": "0002b182-c3c2-463a-a82d-ff2bf1df0543",
     "stock": 100,
     "price": 16,
     "price_tiers": [
@@ -1245,9 +1066,7 @@
     ]
   },
   {
-    "id": "SP-084",
-    "store_id": "S-001",
-    "product_id": "88xEa1XWXGz9agZ9yhjGvVfSpD0QTR",
+    "product_id": "30c3c03a-fad6-4c14-b37c-581b96f5c3a2",
     "stock": 100,
     "price": 16,
     "price_tiers": [
@@ -1260,9 +1079,7 @@
     ]
   },
   {
-    "id": "SP-085",
-    "store_id": "S-001",
-    "product_id": "4d2K2XHxahKb6XdvKaNw0fExqDXSj4",
+    "product_id": "c1259466-2ac7-405d-92a0-0dff8840307b",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -1275,9 +1092,7 @@
     ]
   },
   {
-    "id": "SP-086",
-    "store_id": "S-001",
-    "product_id": "zFY50eSrEnAGa9YzWEk8JypcjQMNCT",
+    "product_id": "a801b66c-750c-41b3-94e1-1437f44f9312",
     "stock": 100,
     "price": 30,
     "price_tiers": [
@@ -1290,9 +1105,7 @@
     ]
   },
   {
-    "id": "SP-087",
-    "store_id": "S-001",
-    "product_id": "i8eANm8jVMMN2MvnPKHRVg1ieF9Txb",
+    "product_id": "c156025d-092c-4b19-a2b4-d2ce2416ef33",
     "stock": 100,
     "price": 15,
     "price_tiers": [
@@ -1305,9 +1118,7 @@
     ]
   },
   {
-    "id": "SP-088",
-    "store_id": "S-001",
-    "product_id": "JigwxxZpekFS7KGugbZ0GpBfxtSL65",
+    "product_id": "5f9ad545-408f-4264-9e71-0bc27a87aa5f",
     "stock": 100,
     "price": 30,
     "price_tiers": [
@@ -1320,9 +1131,7 @@
     ]
   },
   {
-    "id": "SP-089",
-    "store_id": "S-001",
-    "product_id": "MF8vF3E42FmZ394DHuZKgx4Z0ASx2r",
+    "product_id": "973b4fcc-5435-4a04-81b9-0593a901cedc",
     "stock": 100,
     "price": 50,
     "price_tiers": [
@@ -1335,9 +1144,7 @@
     ]
   },
   {
-    "id": "SP-090",
-    "store_id": "S-001",
-    "product_id": "LeT34vJaxM3k0eHMH3Nm5TPvMBxqLZ",
+    "product_id": "72a347eb-8c77-42df-828f-71cf230d8c55",
     "stock": 100,
     "price": 50,
     "price_tiers": [
@@ -1350,9 +1157,7 @@
     ]
   },
   {
-    "id": "SP-091",
-    "store_id": "S-001",
-    "product_id": "XxXrUpDvvC4L9HZirt8PySQtNrUSSt",
+    "product_id": "c93170ef-d3a8-475d-a170-4101d57e5fbb",
     "stock": 100,
     "price": 40,
     "price_tiers": [
@@ -1365,9 +1170,7 @@
     ]
   },
   {
-    "id": "SP-092",
-    "store_id": "S-001",
-    "product_id": "e5NeiGkHGVWjnJXHEG66SppH3aQRwn",
+    "product_id": "a0b994c1-9ed8-4c01-b703-5fdee6db33dc",
     "stock": 100,
     "price": 30,
     "price_tiers": [
@@ -1380,9 +1183,7 @@
     ]
   },
   {
-    "id": "SP-093",
-    "store_id": "S-001",
-    "product_id": "FBSk06aQRgtFJtEZXbJLh6S5uwBuMv",
+    "product_id": "9adbbb04-9840-4b7e-b2f8-b7cdee1ccfc5",
     "stock": 100,
     "price": 20,
     "price_tiers": [
@@ -1395,9 +1196,7 @@
     ]
   },
   {
-    "id": "SP-094",
-    "store_id": "S-001",
-    "product_id": "ueUiwHRfz6hQYp9ggL2EjXEVXHhbnr",
+    "product_id": "aa7c25e2-7ce6-443a-8a23-dfba19d1f661",
     "stock": 100,
     "price": 20,
     "price_tiers": [
@@ -1410,9 +1209,7 @@
     ]
   },
   {
-    "id": "SP-095",
-    "store_id": "S-001",
-    "product_id": "LHFS3qpgDpMaNHh3rv42MSySazrfmq",
+    "product_id": "aaad8ba1-a93f-4669-ad0c-d40fba69a197",
     "stock": 100,
     "price": 20,
     "price_tiers": [
@@ -1425,9 +1222,7 @@
     ]
   },
   {
-    "id": "SP-096",
-    "store_id": "S-001",
-    "product_id": "5ENg7b3gJYQRNUDxVA0rCJ2SN2eq6T",
+    "product_id": "35ca41f4-6cf8-416d-b60d-3482fff24989",
     "stock": 100,
     "price": 12,
     "price_tiers": [
@@ -1440,9 +1235,7 @@
     ]
   },
   {
-    "id": "SP-097",
-    "store_id": "S-001",
-    "product_id": "YuawjryuCCtnfAe5WmzR6HGSYgRcYm",
+    "product_id": "edd291de-7e48-493d-a99a-e64c83ae813d",
     "stock": 100,
     "price": 40,
     "price_tiers": [
@@ -1455,9 +1248,7 @@
     ]
   },
   {
-    "id": "SP-098",
-    "store_id": "S-001",
-    "product_id": "1qmxqQcHyCk67tUZV1ykWXzE5XcdLv",
+    "product_id": "841e64b1-cbbd-43dc-9c05-25dd23ae505b",
     "stock": 100,
     "price": 10,
     "price_tiers": [
@@ -1470,9 +1261,7 @@
     ]
   },
   {
-    "id": "SP-099",
-    "store_id": "S-001",
-    "product_id": "9BS6zjBtkMBG5myNNUXMPrMgKgB9Z0",
+    "product_id": "56ca04de-cce0-472d-91b6-9ca88f9f4bf4",
     "stock": 100,
     "price": 40,
     "price_tiers": [
@@ -1485,9 +1274,7 @@
     ]
   },
   {
-    "id": "SP-100",
-    "store_id": "S-001",
-    "product_id": "qjyhW3TQWdaKw7wSaHrVuxq8JPfzW4",
+    "product_id": "efd68578-4b1d-4220-b742-49a81eb10076",
     "stock": 100,
     "price": 40,
     "price_tiers": [
@@ -1500,9 +1287,7 @@
     ]
   },
   {
-    "id": "SP-101",
-    "store_id": "S-001",
-    "product_id": "KMMvSDCCXV4JbefKXUnwRN6Hi7TME4",
+    "product_id": "c09b949e-f591-4a5b-926a-4a860c34ce57",
     "stock": 100,
     "price": 40,
     "price_tiers": [
@@ -1515,9 +1300,7 @@
     ]
   },
   {
-    "id": "SP-102",
-    "store_id": "S-001",
-    "product_id": "M9Aq2AGWAAvH8P6Ekxe1LGTdaZ2KfL",
+    "product_id": "6439d1fb-2f3f-4414-a49f-297859798fc7",
     "stock": 100,
     "price": 38,
     "price_tiers": [
@@ -1530,9 +1313,7 @@
     ]
   },
   {
-    "id": "SP-103",
-    "store_id": "S-001",
-    "product_id": "t2rfCMgE3Z0fGtWd804vKGxLdRN73W",
+    "product_id": "5023cdf0-50e4-4fd6-96d3-6a3f508830e0",
     "stock": 100,
     "price": 20,
     "price_tiers": [
@@ -1545,9 +1326,7 @@
     ]
   },
   {
-    "id": "SP-104",
-    "store_id": "S-001",
-    "product_id": "wVrNLy5Uqv1tuhCiuquw0VnNiXxTTa",
+    "product_id": "45789093-c006-40fa-b8eb-9d842712be14",
     "stock": 100,
     "price": 50,
     "price_tiers": [
@@ -1560,9 +1339,7 @@
     ]
   },
   {
-    "id": "SP-105",
-    "store_id": "S-001",
-    "product_id": "dUQgif31Fdkngv9TfLHhrhB9T9hw2u",
+    "product_id": "ac33f1bb-4d1c-4a92-96a2-9d88375f5057",
     "stock": 100,
     "price": 20,
     "price_tiers": [
@@ -1575,9 +1352,7 @@
     ]
   },
   {
-    "id": "SP-106",
-    "store_id": "S-001",
-    "product_id": "MkpLzc0YmBzVcC2dE1R1RW6WUnCYNJ",
+    "product_id": "e1cc70ee-12ed-4b13-9a17-29a71b53df0d",
     "stock": 100,
     "price": 20,
     "price_tiers": [
@@ -1590,9 +1365,7 @@
     ]
   },
   {
-    "id": "SP-107",
-    "store_id": "S-001",
-    "product_id": "UUIIDD",
+    "product_id": "e1cc70ee-12ed-4b13-9a17-29a71b53df0d",
     "stock": 100,
     "price": 20,
     "price_tiers": [
