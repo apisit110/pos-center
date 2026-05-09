@@ -399,15 +399,15 @@ paths:
             schema:
               type: object
               required:
-                - merchantId
-                - storeId
+                - merchantUid
+                - storeUid
                 - syncVersion
               properties:
-                merchantId:
+                merchantUid:
                   type: string
                   format: uuid
                   example: "fd1b2c4c-7372-4580-8017-1fff8ceb6169"
-                storeId:
+                storeUid:
                   type: string
                   example: "S-001"
                 syncVersion:
@@ -546,10 +546,10 @@ components:
         id:
           type: string
           example: "prod-1"
-        merchantId:
+        merchantUid:
           type: string
           format: uuid
-        storeId:
+        storeUid:
           type: string
         name:
           type: string

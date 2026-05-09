@@ -28,11 +28,11 @@ const syncUsersUseCase = new SyncUsersUseCase(userRepo);
 app.post('/v1/sync/products', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const validatedData = syncProductSchema.parse(req.body);
-    const { merchantId, storeId, syncVersion } = validatedData;
+    const { merchantUid, storeUid, syncVersion } = validatedData;
 
-    console.log(`[pos-sync-service] Triggering sync for merchant: ${merchantId}, store: ${storeId}, version: ${syncVersion}`);
+    console.log(`[pos-sync-service] Triggering sync for merchant: ${merchantUid}, store: ${storeUid}, version: ${syncVersion}`);
     
-    const result = await syncUseCase.execute(merchantId, storeId, syncVersion);
+    const result = await syncUseCase.execute(merchantUid, storeUid, syncVersion);
 
     if (result.success) {
       return res.status(200).json({

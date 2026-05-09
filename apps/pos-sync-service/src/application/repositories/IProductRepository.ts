@@ -2,5 +2,5 @@ import { Product } from '../../domain/entities/Product';
 
 export interface IProductRepository {
   saveMany(products: Product[]): Promise<void>;
-  findByVersion(merchantId: string, storeId: string, version: number): Promise<Product[]>;
+  findByVersion(merchantUid: string, storeUid: string, version: number): Promise<Product[]>;
 }
