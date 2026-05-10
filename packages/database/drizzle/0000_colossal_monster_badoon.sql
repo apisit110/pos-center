@@ -10,6 +10,12 @@ EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 --> statement-breakpoint
+DO $$ BEGIN
+ CREATE TYPE "public"."order_status" AS ENUM('PENDING', 'PAID', 'CANCELLED');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "merchants" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"uid" uuid DEFAULT gen_random_uuid() NOT NULL,
@@ -161,6 +167,61 @@ CREATE TABLE IF NOT EXISTS "terminals" (
 	CONSTRAINT "terminals_tid_unique" UNIQUE("tid")
 );
 --> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "order_items" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"order_id" integer NOT NULL,
+	"product_id" integer,
+	"product_uid" varchar(255),
+	"name" varchar(255) NOT NULL,
+	"quantity" integer NOT NULL,
+	"price" numeric(12, 2) NOT NULL,
+	"subtotal" numeric(12, 2) NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "order_sync_logs" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"pos_temp_id" varchar(255) NOT NULL,
+	"store_id" integer NOT NULL,
+	"global_order_id" integer NOT NULL,
+	"synced_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "orders" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"uid" varchar(255) NOT NULL,
+	"order_number" varchar(100) NOT NULL,
+	"merchant_id" integer NOT NULL,
+	"store_id" integer NOT NULL,
+	"terminal_id" integer,
+	"staff_id" integer,
+	"total_amount" numeric(12, 2) NOT NULL,
+	"status" "order_status" DEFAULT 'PENDING' NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "orders_uid_unique" UNIQUE("uid")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "transaction_sync_logs" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"pos_temp_id" varchar(255) NOT NULL,
+	"store_id" integer NOT NULL,
+	"global_transaction_id" integer NOT NULL,
+	"synced_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "transactions" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"uid" varchar(255) NOT NULL,
+	"order_id" integer NOT NULL,
+	"amount" numeric(12, 2) NOT NULL,
+	"payment_method" varchar(50) NOT NULL,
+	"status" varchar(50) NOT NULL,
+	"staff_name" varchar(255),
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now(),
+	CONSTRAINT "transactions_uid_unique" UNIQUE("uid")
+);
+--> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "products" ADD CONSTRAINT "products_merchant_id_merchants_id_fk" FOREIGN KEY ("merchant_id") REFERENCES "public"."merchants"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
@@ -229,6 +290,66 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "terminals" ADD CONSTRAINT "terminals_store_id_stores_id_fk" FOREIGN KEY ("store_id") REFERENCES "public"."stores"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "order_items" ADD CONSTRAINT "order_items_order_id_orders_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."orders"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "order_sync_logs" ADD CONSTRAINT "order_sync_logs_store_id_stores_id_fk" FOREIGN KEY ("store_id") REFERENCES "public"."stores"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "order_sync_logs" ADD CONSTRAINT "order_sync_logs_global_order_id_orders_id_fk" FOREIGN KEY ("global_order_id") REFERENCES "public"."orders"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "orders" ADD CONSTRAINT "orders_merchant_id_merchants_id_fk" FOREIGN KEY ("merchant_id") REFERENCES "public"."merchants"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "orders" ADD CONSTRAINT "orders_store_id_stores_id_fk" FOREIGN KEY ("store_id") REFERENCES "public"."stores"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "orders" ADD CONSTRAINT "orders_terminal_id_terminals_id_fk" FOREIGN KEY ("terminal_id") REFERENCES "public"."terminals"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "orders" ADD CONSTRAINT "orders_staff_id_staff_id_fk" FOREIGN KEY ("staff_id") REFERENCES "public"."staff"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "transaction_sync_logs" ADD CONSTRAINT "transaction_sync_logs_store_id_stores_id_fk" FOREIGN KEY ("store_id") REFERENCES "public"."stores"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "transaction_sync_logs" ADD CONSTRAINT "transaction_sync_logs_global_transaction_id_transactions_id_fk" FOREIGN KEY ("global_transaction_id") REFERENCES "public"."transactions"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "transactions" ADD CONSTRAINT "transactions_order_id_orders_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."orders"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

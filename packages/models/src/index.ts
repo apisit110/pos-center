@@ -8,3 +8,5 @@ export * from './runningNumbers';
 export * from './syncMetadata';
 export * from './users';
 export * from './terminals';
+export * from './orders';
+export * from './transactions';
