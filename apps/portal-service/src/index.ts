@@ -39,6 +39,7 @@ import { DrizzleStoreProductRepository } from './infrastructure/repositories/Dri
 
 import { loggerMiddleware } from './infrastructure/middleware/LoggerMiddleware';
 import { errorMiddleware } from './infrastructure/middleware/ErrorMiddleware';
+import { RunningNumberService } from './infrastructure/services/RunningNumberService';
 
 const app = express();
 const port = process.env.PORT || 4001;
@@ -52,6 +53,7 @@ const memberRepository = new DrizzleMemberRepository();
 const staffRepository = new DrizzleStaffRepository();
 const terminalRepository = new DrizzleTerminalRepository();
 const storeProductRepository = new DrizzleStoreProductRepository();
+const runningNumberService = new RunningNumberService();
 
 const getMerchantsUseCase = new GetMerchantsUseCase(merchantRepository);
 const getMerchantDetailUseCase = new GetMerchantDetailUseCase(merchantRepository);
@@ -65,7 +67,7 @@ const getMembersUseCase = new GetMembersUseCase(memberRepository);
 const getMemberDetailUseCase = new GetMemberDetailUseCase(memberRepository);
 const getStaffUseCase = new GetStaffUseCase(staffRepository);
 const getStaffDetailUseCase = new GetStaffDetailUseCase(staffRepository);
-const registerMerchantUseCase = new RegisterMerchantUseCase(merchantRepository, storeRepository, terminalRepository);
+const registerMerchantUseCase = new RegisterMerchantUseCase(merchantRepository, storeRepository, terminalRepository, runningNumberService);
 const getTerminalsByStoreUseCase = new GetTerminalsByStoreUseCase(terminalRepository);
 const batchUpsertStoreProductsUseCase = new BatchUpsertStoreProductsUseCase(storeProductRepository);
 
