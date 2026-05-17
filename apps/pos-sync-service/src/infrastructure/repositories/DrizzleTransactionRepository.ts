@@ -26,6 +26,9 @@ export class DrizzleTransactionRepository implements TransactionRepository {
     const [newTx] = await db.insert(dbTransactions).values({
       uid: transaction.uid,
       orderId: orderLog.globalOrderId,
+      merchantId: transaction.merchantId,
+      storeId: store.id,
+      terminalId: transaction.terminalId,
       amount: transaction.amount.toString(),
       paymentMethod: transaction.paymentMethod,
       status: transaction.status,
@@ -37,10 +40,12 @@ export class DrizzleTransactionRepository implements TransactionRepository {
       newTx.id.toString(),
       newTx.uid,
       transaction.orderId,
+      newTx.merchantId,
+      newTx.terminalId ?? null,
       Number(newTx.amount),
       newTx.paymentMethod,
       newTx.status,
-      newTx.staffName || '',
+      newTx.staffName,
       newTx.createdAt || transaction.createdAt
     );
   }

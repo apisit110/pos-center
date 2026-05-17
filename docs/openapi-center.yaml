@@ -477,6 +477,70 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /v1/sync/orders:
+    post:
+      tags:
+        - Sync Service
+      summary: Sync orders from POS client
+      description: Uploads order data from the local POS client to the service center. Uses posTempId for idempotency — already-synced orders are skipped.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncOrderRequest'
+      responses:
+        '200':
+          description: Order sync process completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncOrderResponse'
+        '400':
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /v1/sync/transactions:
+    post:
+      tags:
+        - Sync Service
+      summary: Sync transactions from POS client
+      description: Uploads transaction data from the local POS client to the service center. Uses posTempId for idempotency — already-synced transactions are skipped. The referenced order must be synced first.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncTransactionRequest'
+      responses:
+        '200':
+          description: Transaction sync process completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncTransactionResponse'
+        '400':
+          description: Validation failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
   /health:
     get:
       summary: Health check
@@ -639,6 +703,98 @@ components:
           type: string
           example: "da8e72fa-34c7-419e-932a-c3436fdad704"
 
+    SyncOrderRequest:
+      type: object
+      required:
+        - orders
+      properties:
+        orders:
+          type: array
+          items:
+            type: object
+            required:
+              - posTempId
+              - merchantId
+              - storeId
+              - staffId
+              - totalAmount
+              - status
+              - items
+              - createdAt
+            properties:
+              posTempId:
+                type: string
+                description: Client-side order ID used for idempotency and stored as the order identifier on the server.
+                example: "ord_550e8400-e29b-41d4-a716-446655440000"
+              merchantId:
+                type: string
+                example: "M-001"
+              storeId:
+                type: string
+                example: "S-001"
+              terminalId:
+                type: string
+                nullable: true
+                example: "T-001"
+              staffId:
+                type: string
+                example: "STF-001"
+              memberId:
+                type: string
+                nullable: true
+                example: "MEM-001"
+              totalAmount:
+                type: number
+                example: 250.00
+              status:
+                type: string
+                enum: [PENDING, PAID, CANCELLED]
+                example: "PAID"
+              items:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - productId
+                    - quantity
+                    - price
+                  properties:
+                    productId:
+                      type: integer
+                      example: 42
+                    quantity:
+                      type: integer
+                      example: 2
+                    price:
+                      type: number
+                      example: 125.00
+              createdAt:
+                type: string
+                format: date-time
+                example: "2026-05-17T10:30:00.000Z"
+
+    SyncOrderResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Order sync process completed"
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              posTempId:
+                type: string
+                example: "ord_550e8400-e29b-41d4-a716-446655440000"
+              globalOrderId:
+                type: string
+                example: "1024"
+              status:
+                type: string
+                enum: [synced, already_synced, error]
+                example: "synced"
+
     SyncUserRequest:
       type: object
       required:
@@ -710,6 +866,85 @@ components:
               userId:
                 type: string
                 example: "U00001"
+              status:
+                type: string
+                enum: [synced, already_synced, error]
+                example: "synced"
+
+    SyncTransactionRequest:
+      type: object
+      required:
+        - transactions
+      properties:
+        transactions:
+          type: array
+          items:
+            type: object
+            required:
+              - posTempId
+              - orderId
+              - merchantId
+              - storeId
+              - amount
+              - paymentMethod
+              - status
+              - staffName
+              - createdAt
+            properties:
+              posTempId:
+                type: string
+                description: Client-side transaction ID used for idempotency.
+                example: "txn_550e8400-e29b-41d4-a716-446655440000"
+              orderId:
+                type: string
+                description: Local order ID from POS. The order must be synced before the transaction.
+                example: "ord_550e8400-e29b-41d4-a716-446655440000"
+              merchantId:
+                type: string
+                example: "M-001"
+              storeId:
+                type: string
+                example: "S-001"
+              terminalId:
+                type: string
+                nullable: true
+                example: "T-001"
+              amount:
+                type: number
+                example: 250.00
+              paymentMethod:
+                type: string
+                enum: [cash, credit_card, qr_promptpay]
+                example: "cash"
+              status:
+                type: string
+                enum: [success, failed, refunded]
+                example: "success"
+              staffName:
+                type: string
+                example: "John Doe"
+              createdAt:
+                type: string
+                format: date-time
+                example: "2026-05-17T10:30:00.000Z"
+
+    SyncTransactionResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Transaction sync process completed"
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              posTempId:
+                type: string
+                example: "txn_550e8400-e29b-41d4-a716-446655440000"
+              globalTransactionId:
+                type: string
+                example: "2048"
               status:
                 type: string
                 enum: [synced, already_synced, error]

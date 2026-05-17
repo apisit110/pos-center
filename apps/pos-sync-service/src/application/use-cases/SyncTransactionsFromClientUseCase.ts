@@ -4,12 +4,14 @@ import { Transaction } from '../../domain/entities/Transaction';
 export interface SyncTransactionDTO {
   posTempId: string;
   orderId: string; // Local Order ID from POS
+  merchantId: string;
+  storeId: string;
+  terminalId?: string;
   amount: number;
   paymentMethod: string;
   status: string;
   staffName: string;
   createdAt: string;
-  storeId: string;
 }
 
 export interface SyncTransactionResponseDTO {
@@ -42,6 +44,8 @@ export class SyncTransactionsFromClientUseCase {
           '', // ID assigned by repo
           txData.posTempId, // Using POS ID as global UID
           txData.orderId,
+          txData.merchantId,
+          txData.terminalId ?? null,
           txData.amount,
           txData.paymentMethod,
           txData.status,

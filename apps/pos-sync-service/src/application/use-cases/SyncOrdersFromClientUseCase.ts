@@ -3,22 +3,19 @@ import { Order, OrderItem, OrderStatus } from '../../domain/entities/Order';
 
 export interface SyncOrderDTO {
   posTempId: string;
-  orderNumber: string;
   merchantId: string;
   storeId: string;
   terminalId: string | null;
-  staffId: string | null;
+  staffId: string;
+  memberId: string | null;
   totalAmount: number;
   status: OrderStatus;
   items: {
-    productId: string | null;
-    productUid: string | null;
-    name: string;
+    productId: number;
     quantity: number;
     price: number;
-    subtotal: number;
   }[];
-  createdAt?: string;
+  createdAt: string;
 }
 
 export interface SyncOrderResponseDTO {
@@ -49,26 +46,24 @@ export class SyncOrdersFromClientUseCase {
         // 2. Map items
         const items = orderData.items.map(item => new OrderItem(
           item.productId,
-          item.productUid,
-          item.name,
           item.quantity,
           item.price,
-          item.subtotal
         ));
 
-        // 3. Create order entity
+        // 3. Create order entity — posTempId is the client-side order ID stored as uid
         const order = new Order(
-          '', // New order, ID will be assigned by repo
-          '', // UID will be assigned by repo or generated
-          orderData.orderNumber,
+          '',
+          orderData.posTempId,
           orderData.merchantId,
           orderData.storeId,
           orderData.terminalId,
           orderData.staffId,
+          orderData.memberId,
           items,
           orderData.totalAmount,
           orderData.status,
-          orderData.createdAt ? new Date(orderData.createdAt) : undefined
+          false,
+          new Date(orderData.createdAt),
         );
 
         // 4. Save order
