@@ -161,6 +161,7 @@ CREATE TABLE IF NOT EXISTS "terminals" (
 	"uid" varchar(255) NOT NULL,
 	"store_id" integer NOT NULL,
 	"tid" varchar(50) NOT NULL,
+	"name" varchar(255) NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
 	CONSTRAINT "terminals_uid_unique" UNIQUE("uid"),
@@ -170,12 +171,9 @@ CREATE TABLE IF NOT EXISTS "terminals" (
 CREATE TABLE IF NOT EXISTS "order_items" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"order_id" integer NOT NULL,
-	"product_id" integer,
-	"product_uid" varchar(255),
-	"name" varchar(255) NOT NULL,
+	"product_id" integer NOT NULL,
 	"quantity" integer NOT NULL,
-	"price" numeric(12, 2) NOT NULL,
-	"subtotal" numeric(12, 2) NOT NULL
+	"price" numeric(12, 2) NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "order_sync_logs" (
@@ -188,17 +186,17 @@ CREATE TABLE IF NOT EXISTS "order_sync_logs" (
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "orders" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"uid" varchar(255) NOT NULL,
-	"order_number" varchar(100) NOT NULL,
+	"order_id" varchar(255) NOT NULL,
 	"merchant_id" integer NOT NULL,
 	"store_id" integer NOT NULL,
 	"terminal_id" integer,
-	"staff_id" integer,
+	"staff_id" integer NOT NULL,
+	"member_id" varchar(255),
 	"total_amount" numeric(12, 2) NOT NULL,
 	"status" "order_status" DEFAULT 'PENDING' NOT NULL,
-	"created_at" timestamp DEFAULT now(),
-	"updated_at" timestamp DEFAULT now(),
-	CONSTRAINT "orders_uid_unique" UNIQUE("uid")
+	"is_synced" boolean DEFAULT false NOT NULL,
+	"created_at" timestamp NOT NULL,
+	CONSTRAINT "orders_order_id_unique" UNIQUE("order_id")
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "transaction_sync_logs" (
@@ -213,12 +211,14 @@ CREATE TABLE IF NOT EXISTS "transactions" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"uid" varchar(255) NOT NULL,
 	"order_id" integer NOT NULL,
+	"merchant_id" varchar(255) NOT NULL,
+	"store_id" integer NOT NULL,
+	"terminal_id" varchar(255),
 	"amount" numeric(12, 2) NOT NULL,
 	"payment_method" varchar(50) NOT NULL,
 	"status" varchar(50) NOT NULL,
-	"staff_name" varchar(255),
+	"staff_name" varchar(255) NOT NULL,
 	"created_at" timestamp DEFAULT now(),
-	"updated_at" timestamp DEFAULT now(),
 	CONSTRAINT "transactions_uid_unique" UNIQUE("uid")
 );
 --> statement-breakpoint
@@ -350,6 +350,12 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "transactions" ADD CONSTRAINT "transactions_order_id_orders_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."orders"("id") ON DELETE no action ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
+DO $$ BEGIN
+ ALTER TABLE "transactions" ADD CONSTRAINT "transactions_store_id_stores_id_fk" FOREIGN KEY ("store_id") REFERENCES "public"."stores"("id") ON DELETE no action ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

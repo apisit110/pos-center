@@ -14,7 +14,7 @@ export interface RegisterMerchantRequest {
     address: string;
     latitude: number;
     longitude: number;
-    terminals: Record<string, never>[];
+    terminals: { name: string }[];
   }[];
 }
 
@@ -51,10 +51,10 @@ export class RegisterMerchantUseCase {
         await this.storeRepository.save(store);
 
         if (storeReq.terminals) {
-          for (const _ of storeReq.terminals) {
+          for (const terminalReq of storeReq.terminals) {
             const terminalUid = uuidv4();
             const tid = await this.runningNumberService.nextTid(sid);
-            const terminal = new Terminal(terminalUid, storeUid, tid);
+            const terminal = new Terminal(terminalUid, storeUid, tid, terminalReq.name);
             await this.terminalRepository.create(terminal);
           }
         }

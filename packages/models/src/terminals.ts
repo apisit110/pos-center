@@ -6,6 +6,7 @@ export const terminals = pgTable('terminals', {
   uid: varchar('uid', { length: 255 }).unique().notNull(),
   storeId: integer('store_id').references(() => stores.id).notNull(),
   tid: varchar('tid', { length: 50 }).unique().notNull(),
+  name: varchar('name', { length: 255 }).notNull(),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

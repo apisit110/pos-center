@@ -8,7 +8,7 @@ export interface MerchantRegistrationRequest {
     latitude: number;
     longitude: number;
     terminals: {
-      tid: string;
+      name: string;
     }[];
   }[];
 }

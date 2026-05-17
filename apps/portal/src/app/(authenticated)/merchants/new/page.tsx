@@ -124,10 +124,10 @@ const SubmitButton = styled.button`
 export default function CreateMerchantPage() {
   const router = useRouter();
   const [merchantName, setMerchantName] = useState('');
-  const [stores, setStores] = useState([{ name: '', address: '', latitude: 0, longitude: 0, terminals: [{ tid: '' }] }]);
+  const [stores, setStores] = useState([{ name: '', address: '', latitude: 0, longitude: 0, terminals: [{ name: '' }] }]);
 
   const addStore = () => {
-    setStores([...stores, { name: '', address: '', latitude: 0, longitude: 0, terminals: [{ tid: '' }] }]);
+    setStores([...stores, { name: '', address: '', latitude: 0, longitude: 0, terminals: [{ name: '' }] }]);
   };
 
   const removeStore = (index: number) => {
@@ -142,7 +142,7 @@ export default function CreateMerchantPage() {
 
   const addTerminal = (storeIndex: number) => {
     const newStores = [...stores];
-    newStores[storeIndex].terminals.push({ tid: '' });
+    newStores[storeIndex].terminals.push({ name: '' });
     setStores(newStores);
   };
 
@@ -154,7 +154,7 @@ export default function CreateMerchantPage() {
 
   const updateTerminal = (storeIndex: number, terminalIndex: number, value: string) => {
     const newStores = [...stores];
-    newStores[storeIndex].terminals[terminalIndex].tid = value;
+    newStores[storeIndex].terminals[terminalIndex].name = value;
     setStores(newStores);
   };
 
@@ -256,11 +256,11 @@ export default function CreateMerchantPage() {
                 </div>
                 {store.terminals.map((terminal, tIdx) => (
                   <TerminalRow key={tIdx}>
-                    <Input 
-                      required 
-                      value={terminal.tid} 
-                      onChange={(e) => updateTerminal(sIdx, tIdx, e.target.value)} 
-                      placeholder="Terminal ID"
+                    <Input
+                      required
+                      value={terminal.name}
+                      onChange={(e) => updateTerminal(sIdx, tIdx, e.target.value)}
+                      placeholder="Terminal Name"
                       style={{ marginBottom: 0 }}
                     />
                     {store.terminals.length > 1 && (

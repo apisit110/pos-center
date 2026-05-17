@@ -1,5 +1,5 @@
 {
-  "id": "e3bddd79-c52d-4814-b7d6-327e5d96b8af",
+  "id": "5d6c0710-deba-44a0-82f6-5c0e4be7c0fc",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
@@ -967,6 +967,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -1036,18 +1042,6 @@
           "name": "product_id",
           "type": "integer",
           "primaryKey": false,
-          "notNull": false
-        },
-        "product_uid": {
-          "name": "product_uid",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "primaryKey": false,
           "notNull": true
         },
         "quantity": {
@@ -1058,12 +1052,6 @@
         },
         "price": {
           "name": "price",
-          "type": "numeric(12, 2)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "subtotal": {
-          "name": "subtotal",
           "type": "numeric(12, 2)",
           "primaryKey": false,
           "notNull": true
@@ -1166,15 +1154,9 @@
           "primaryKey": true,
           "notNull": true
         },
-        "uid": {
-          "name": "uid",
+        "order_id": {
+          "name": "order_id",
           "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "order_number": {
-          "name": "order_number",
-          "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true
         },
@@ -1200,6 +1182,12 @@
           "name": "staff_id",
           "type": "integer",
           "primaryKey": false,
+          "notNull": true
+        },
+        "member_id": {
+          "name": "member_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
           "notNull": false
         },
         "total_amount": {
@@ -1216,19 +1204,18 @@
           "notNull": true,
           "default": "'PENDING'"
         },
+        "is_synced": {
+          "name": "is_synced",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
+          "notNull": true
         }
       },
       "indexes": {},
@@ -1288,11 +1275,11 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "orders_uid_unique": {
-          "name": "orders_uid_unique",
+        "orders_order_id_unique": {
+          "name": "orders_order_id_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "uid"
+            "order_id"
           ]
         }
       }
@@ -1387,6 +1374,24 @@
           "primaryKey": false,
           "notNull": true
         },
+        "merchant_id": {
+          "name": "merchant_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "store_id": {
+          "name": "store_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "terminal_id": {
+          "name": "terminal_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "amount": {
           "name": "amount",
           "type": "numeric(12, 2)",
@@ -1409,17 +1414,10 @@
           "name": "staff_name",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "created_at": {
           "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
@@ -1434,6 +1432,19 @@
           "tableTo": "orders",
           "columnsFrom": [
             "order_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "transactions_store_id_stores_id_fk": {
+          "name": "transactions_store_id_stores_id_fk",
+          "tableFrom": "transactions",
+          "tableTo": "stores",
+          "columnsFrom": [
+            "store_id"
           ],
           "columnsTo": [
             "id"

@@ -14,6 +14,7 @@ export class DrizzleTerminalRepository implements ITerminalRepository {
       uid: terminal.id,
       storeId: store.id,
       tid: terminal.tid,
+      name: terminal.name,
     });
   }
 
@@ -29,7 +30,7 @@ export class DrizzleTerminalRepository implements ITerminalRepository {
       where: eq(stores.id, result.storeId)
     });
 
-    return new Terminal(result.uid, store?.uid || '', result.tid);
+    return new Terminal(result.uid, store?.uid || '', result.tid, result.name);
   }
 
   async findByStoreId(storeId: string): Promise<Terminal[]> {
@@ -41,6 +42,6 @@ export class DrizzleTerminalRepository implements ITerminalRepository {
 
     const results = await db.select().from(terminals).where(eq(terminals.storeId, store.id));
     
-    return results.map(r => new Terminal(r.uid, storeId, r.tid));
+    return results.map(r => new Terminal(r.uid, storeId, r.tid, r.name));
   }
 }

@@ -133,6 +133,7 @@ GRANT ALL PRIVILEGES ON DATABASE lightning_pos TO lightning;
 ---
 
 drop db ใน pgadmin4
+create db lightning_pos ใน pgadmin4
 rm -rf packages/database/drizzle
 pnpm --filter @lightning/database db:generate
 pnpm --filter @lightning/database db:migrate
