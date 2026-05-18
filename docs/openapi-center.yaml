@@ -482,7 +482,7 @@ paths:
       tags:
         - Sync Service
       summary: Sync orders from POS client
-      description: Uploads order data from the local POS client to the service center. Uses posTempId for idempotency — already-synced orders are skipped.
+      description: Uploads order data from the local POS client to the service center. Already-synced orders are skipped.
       requestBody:
         required: true
         content:
@@ -713,37 +713,37 @@ components:
           items:
             type: object
             required:
-              - posTempId
-              - merchantId
-              - storeId
-              - staffId
-              - totalAmount
+              - order_id
+              - merchant_id
+              - store_id
+              - staff_id
+              - total_amount
               - status
               - items
-              - createdAt
+              - created_at
             properties:
-              posTempId:
+              order_id:
                 type: string
-                description: Client-side order ID used for idempotency and stored as the order identifier on the server.
+                description: Client-side order ID from POS.
                 example: "ord_550e8400-e29b-41d4-a716-446655440000"
-              merchantId:
+              merchant_id:
                 type: string
                 example: "M-001"
-              storeId:
+              store_id:
                 type: string
                 example: "S-001"
-              terminalId:
+              terminal_id:
                 type: string
                 nullable: true
                 example: "T-001"
-              staffId:
+              staff_id:
                 type: string
                 example: "STF-001"
-              memberId:
+              member_id:
                 type: string
                 nullable: true
                 example: "MEM-001"
-              totalAmount:
+              total_amount:
                 type: number
                 example: 250.00
               status:
@@ -755,11 +755,11 @@ components:
                 items:
                   type: object
                   required:
-                    - productId
+                    - product_id
                     - quantity
                     - price
                   properties:
-                    productId:
+                    product_id:
                       type: integer
                       example: 42
                     quantity:
@@ -768,7 +768,7 @@ components:
                     price:
                       type: number
                       example: 125.00
-              createdAt:
+              created_at:
                 type: string
                 format: date-time
                 example: "2026-05-17T10:30:00.000Z"
@@ -784,10 +784,7 @@ components:
           items:
             type: object
             properties:
-              posTempId:
-                type: string
-                example: "ord_550e8400-e29b-41d4-a716-446655440000"
-              globalOrderId:
+              global_order_id:
                 type: string
                 example: "1024"
               status:
@@ -881,49 +878,44 @@ components:
           items:
             type: object
             required:
-              - posTempId
-              - orderId
-              - merchantId
-              - storeId
+              - order_id
+              - merchant_id
+              - store_id
               - amount
-              - paymentMethod
+              - payment_method
               - status
-              - staffName
-              - createdAt
+              - staff_name
+              - created_at
             properties:
-              posTempId:
-                type: string
-                description: Client-side transaction ID used for idempotency.
-                example: "txn_550e8400-e29b-41d4-a716-446655440000"
-              orderId:
+              order_id:
                 type: string
                 description: Local order ID from POS. The order must be synced before the transaction.
                 example: "ord_550e8400-e29b-41d4-a716-446655440000"
-              merchantId:
+              merchant_id:
                 type: string
                 example: "M-001"
-              storeId:
+              store_id:
                 type: string
                 example: "S-001"
-              terminalId:
+              terminal_id:
                 type: string
                 nullable: true
                 example: "T-001"
               amount:
                 type: number
                 example: 250.00
-              paymentMethod:
+              payment_method:
                 type: string
-                enum: [cash, credit_card, qr_promptpay]
-                example: "cash"
+                enum: [CASH, CREDIT_CARD, QR_PROMPTPAY]
+                example: "CASH"
               status:
                 type: string
-                enum: [success, failed, refunded]
-                example: "success"
-              staffName:
+                enum: [SUCCESS, FAILED, REFUNDED]
+                example: "SUCCESS"
+              staff_name:
                 type: string
                 example: "John Doe"
-              createdAt:
+              created_at:
                 type: string
                 format: date-time
                 example: "2026-05-17T10:30:00.000Z"
@@ -939,10 +931,7 @@ components:
           items:
             type: object
             properties:
-              posTempId:
-                type: string
-                example: "txn_550e8400-e29b-41d4-a716-446655440000"
-              globalTransactionId:
+              global_transaction_id:
                 type: string
                 example: "2048"
               status:

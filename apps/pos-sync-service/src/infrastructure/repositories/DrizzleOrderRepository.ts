@@ -1,4 +1,4 @@
-import { db, orders as dbOrders, orderItems as dbOrderItems, orderSyncLogs as dbOrderSyncLogs, merchants, stores, terminals, staff, eq, and } from '@lightning/database';
+import { db, orders as dbOrders, orderItems as dbOrderItems, orderSyncLogs as dbOrderSyncLogs, merchants, stores, terminals, staff, products, eq, and } from '@lightning/database';
 import { Order, OrderStatus } from '../../domain/entities/Order';
 import { OrderRepository, OrderSyncLog } from '../../domain/repositories/OrderRepository';
 
@@ -34,12 +34,23 @@ export class DrizzleOrderRepository implements OrderRepository {
       }).returning();
 
       if (order.items.length > 0) {
-        await tx.insert(dbOrderItems).values(order.items.map(item => ({
-          orderId: newOrder.id,
-          productId: item.productId,
-          quantity: item.quantity,
-          price: item.price.toString(),
-        })));
+        const productIds = await Promise.all(order.items.map(async item => {
+          const [product] = await db.select({ id: products.id }).from(products).where(eq(products.uid, item.productId));
+          return product?.id ?? null;
+        }));
+
+        const itemsWithResolvedIds = order.items
+          .map((item, i) => ({ item, resolvedId: productIds[i] }))
+          .filter(({ resolvedId }) => resolvedId !== null);
+
+        if (itemsWithResolvedIds.length > 0) {
+          await tx.insert(dbOrderItems).values(itemsWithResolvedIds.map(({ item, resolvedId }) => ({
+            orderId: newOrder.id,
+            productId: resolvedId!,
+            quantity: item.quantity,
+            price: item.price.toString(),
+          })));
+        }
       }
 
       return newOrder;
@@ -61,7 +72,7 @@ export class DrizzleOrderRepository implements OrderRepository {
     );
   }
 
-  async findSyncLogByPosTempId(posTempId: string, storeSid: string): Promise<OrderSyncLog | null> {
+  async findSyncLogByOrderId(orderId: string, storeSid: string): Promise<OrderSyncLog | null> {
     const [store] = await db.select({ id: stores.id }).from(stores).where(eq(stores.sid, storeSid));
     if (!store) return null;
 
@@ -69,7 +80,7 @@ export class DrizzleOrderRepository implements OrderRepository {
       .from(dbOrderSyncLogs)
       .where(
         and(
-          eq(dbOrderSyncLogs.posTempId, posTempId),
+          eq(dbOrderSyncLogs.posTempId, orderId),
           eq(dbOrderSyncLogs.storeId, store.id)
         )
       );
@@ -77,7 +88,7 @@ export class DrizzleOrderRepository implements OrderRepository {
     if (!log) return null;
 
     return {
-      posTempId: log.posTempId,
+      orderId: log.posTempId,
       storeId: storeSid,
       globalOrderId: log.globalOrderId.toString(),
     };
@@ -88,7 +99,7 @@ export class DrizzleOrderRepository implements OrderRepository {
     if (!store) throw new Error(`Store not found: ${log.storeId}`);
 
     await db.insert(dbOrderSyncLogs).values({
-      posTempId: log.posTempId,
+      posTempId: log.orderId,
       storeId: store.id,
       globalOrderId: parseInt(log.globalOrderId),
     });

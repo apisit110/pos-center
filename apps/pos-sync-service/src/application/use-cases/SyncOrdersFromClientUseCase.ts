@@ -2,7 +2,7 @@ import { OrderRepository } from '../../domain/repositories/OrderRepository';
 import { Order, OrderItem, OrderStatus } from '../../domain/entities/Order';
 
 export interface SyncOrderDTO {
-  posTempId: string;
+  orderId: string;
   merchantId: string;
   storeId: string;
   terminalId: string | null;
@@ -11,7 +11,7 @@ export interface SyncOrderDTO {
   totalAmount: number;
   status: OrderStatus;
   items: {
-    productId: number;
+    productId: string;
     quantity: number;
     price: number;
   }[];
@@ -19,7 +19,7 @@ export interface SyncOrderDTO {
 }
 
 export interface SyncOrderResponseDTO {
-  posTempId: string;
+  orderId: string;
   globalOrderId: string;
   status: 'synced' | 'already_synced' | 'error';
 }
@@ -33,10 +33,10 @@ export class SyncOrdersFromClientUseCase {
     for (const orderData of ordersToSync) {
       try {
         // 1. Check idempotency
-        const existingLog = await this.orderRepository.findSyncLogByPosTempId(orderData.posTempId, orderData.storeId);
+        const existingLog = await this.orderRepository.findSyncLogByOrderId(orderData.orderId, orderData.storeId);
         if (existingLog) {
           results.push({
-            posTempId: orderData.posTempId,
+            orderId: orderData.orderId,
             globalOrderId: existingLog.globalOrderId,
             status: 'already_synced',
           });
@@ -50,10 +50,10 @@ export class SyncOrdersFromClientUseCase {
           item.price,
         ));
 
-        // 3. Create order entity — posTempId is the client-side order ID stored as uid
+        // 3. Create order entity
         const order = new Order(
           '',
-          orderData.posTempId,
+          orderData.orderId,
           orderData.merchantId,
           orderData.storeId,
           orderData.terminalId,
@@ -71,20 +71,20 @@ export class SyncOrdersFromClientUseCase {
 
         // 5. Create sync log
         await this.orderRepository.createSyncLog({
-          posTempId: orderData.posTempId,
+          orderId: orderData.orderId,
           storeId: orderData.storeId,
           globalOrderId: savedOrder.id,
         });
 
         results.push({
-          posTempId: orderData.posTempId,
+          orderId: orderData.orderId,
           globalOrderId: savedOrder.id,
           status: 'synced',
         });
       } catch (error) {
-        console.error(`Error syncing order ${orderData.posTempId}:`, error);
+        console.error(`Error syncing order ${orderData.orderId}:`, error);
         results.push({
-          posTempId: orderData.posTempId,
+          orderId: orderData.orderId,
           globalOrderId: '',
           status: 'error',
         });

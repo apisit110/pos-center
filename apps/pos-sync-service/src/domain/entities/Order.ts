@@ -6,7 +6,7 @@ export enum OrderStatus {
 
 export class OrderItem {
   constructor(
-    public readonly productId: number,
+    public readonly productId: string,
     public readonly quantity: number,
     public readonly price: number,
   ) {}

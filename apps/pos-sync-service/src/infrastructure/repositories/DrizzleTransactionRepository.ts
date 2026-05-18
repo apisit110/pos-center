@@ -1,31 +1,28 @@
-import { db, transactions as dbTransactions, transactionSyncLogs as dbTransactionSyncLogs, orderSyncLogs as dbOrderSyncLogs, stores, eq, and } from '@lightning/database';
+import { db, transactions as dbTransactions, orders as dbOrders, stores, eq, and } from '@lightning/database';
 import { Transaction } from '../../domain/entities/Transaction';
-import { TransactionRepository, TransactionSyncLog } from '../../domain/repositories/TransactionRepository';
+import { TransactionRepository } from '../../domain/repositories/TransactionRepository';
 
 export class DrizzleTransactionRepository implements TransactionRepository {
   async save(transaction: Transaction, storeSid: string): Promise<Transaction> {
-    // 1. Look up the global order ID using the local order ID (orderId) and store ID
-    // We look into orderSyncLogs to find which global order this local order refers to.
-    
     const [store] = await db.select({ id: stores.id }).from(stores).where(eq(stores.sid, storeSid));
     if (!store) throw new Error(`Store not found: ${storeSid}`);
 
-    const [orderLog] = await db.select({ globalOrderId: dbOrderSyncLogs.globalOrderId })
-      .from(dbOrderSyncLogs)
+    const [order] = await db.select({ id: dbOrders.id })
+      .from(dbOrders)
       .where(
         and(
-          eq(dbOrderSyncLogs.posTempId, transaction.orderId),
-          eq(dbOrderSyncLogs.storeId, store.id)
+          eq(dbOrders.orderId, transaction.orderId),
+          eq(dbOrders.storeId, store.id)
         )
       );
 
-    if (!orderLog) {
-      throw new Error(`Global order not found for local order ID: ${transaction.orderId} in store: ${storeSid}. Sync order first.`);
+    if (!order) {
+      throw new Error(`Order not found for local order ID: ${transaction.orderId} in store: ${storeSid}. Sync order first.`);
     }
 
     const [newTx] = await db.insert(dbTransactions).values({
       uid: transaction.uid,
-      orderId: orderLog.globalOrderId,
+      orderId: order.id,
       merchantId: transaction.merchantId,
       storeId: store.id,
       terminalId: transaction.terminalId,
@@ -50,36 +47,12 @@ export class DrizzleTransactionRepository implements TransactionRepository {
     );
   }
 
-  async findSyncLogByPosTempId(posTempId: string, storeSid: string): Promise<TransactionSyncLog | null> {
-    const [store] = await db.select({ id: stores.id }).from(stores).where(eq(stores.sid, storeSid));
-    if (!store) return null;
+  async findByUid(uid: string): Promise<{ id: string } | null> {
+    const [tx] = await db.select({ id: dbTransactions.id })
+      .from(dbTransactions)
+      .where(eq(dbTransactions.uid, uid));
 
-    const [log] = await db.select()
-      .from(dbTransactionSyncLogs)
-      .where(
-        and(
-          eq(dbTransactionSyncLogs.posTempId, posTempId),
-          eq(dbTransactionSyncLogs.storeId, store.id)
-        )
-      );
-    
-    if (!log) return null;
-    
-    return {
-      posTempId: log.posTempId,
-      storeId: storeSid,
-      globalTransactionId: log.globalTransactionId.toString(),
-    };
-  }
-
-  async createSyncLog(log: TransactionSyncLog): Promise<void> {
-    const [store] = await db.select({ id: stores.id }).from(stores).where(eq(stores.sid, log.storeId));
-    if (!store) throw new Error(`Store not found: ${log.storeId}`);
-
-    await db.insert(dbTransactionSyncLogs).values({
-      posTempId: log.posTempId,
-      storeId: store.id,
-      globalTransactionId: parseInt(log.globalTransactionId),
-    });
+    if (!tx) return null;
+    return { id: tx.id.toString() };
   }
 }
