@@ -1,14 +1,23 @@
+import { createHash } from 'crypto';
 import { Merchant } from '../../domain/entities/Merchant';
 import { Store } from '../../domain/entities/Store';
+import { Staff } from '../../domain/entities/Staff';
 import { Terminal } from '../../domain/entities/Terminal';
 import { IMerchantRepository } from '../repositories/IMerchantRepository';
 import { IStoreRepository } from '../repositories/IStoreRepository';
+import { IStaffRepository } from '../repositories/IStaffRepository';
 import { ITerminalRepository } from '../repositories/ITerminalRepository';
 import { RunningNumberService } from '../../infrastructure/services/RunningNumberService';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface RegisterMerchantRequest {
   merchantName: string;
+  staffMembers: {
+    username: string;
+    fullName: string;
+    pin: string;
+    role: 'manager' | 'cashier';
+  }[];
   stores: {
     name: string;
     address: string;
@@ -23,7 +32,8 @@ export class RegisterMerchantUseCase {
     private readonly merchantRepository: IMerchantRepository,
     private readonly storeRepository: IStoreRepository,
     private readonly terminalRepository: ITerminalRepository,
-    private readonly runningNumberService: RunningNumberService
+    private readonly runningNumberService: RunningNumberService,
+    private readonly staffRepository: IStaffRepository
   ) {}
 
   public async execute(request: RegisterMerchantRequest): Promise<Merchant> {
@@ -32,6 +42,20 @@ export class RegisterMerchantUseCase {
 
     const merchant = new Merchant(merchantUid, mid, request.merchantName);
     await this.merchantRepository.save(merchant);
+
+    for (const staffReq of request.staffMembers) {
+      const pinHash = createHash('sha256').update(staffReq.pin).digest('hex');
+      const staff = new Staff(
+        uuidv4(),
+        merchantUid,
+        staffReq.fullName,
+        staffReq.role,
+        staffReq.username,
+        pinHash,
+        'active'
+      );
+      await this.staffRepository.save(staff);
+    }
 
     if (request.stores) {
       for (const storeReq of request.stores) {

@@ -31,10 +31,12 @@ export class RunningNumberService {
   }
 
   async nextSid(mid: string): Promise<string> {
-    return this.next(`sid:${mid}`, DIGITS.sid);
+    const num = await this.next(`sid:${mid}`, DIGITS.sid);
+    return `${mid}${num}`;
   }
 
   async nextTid(sid: string): Promise<string> {
-    return this.next(`tid:${sid}`, DIGITS.tid);
+    const num = await this.next(`tid:${sid}`, DIGITS.tid);
+    return `${sid}${num}`;
   }
 }

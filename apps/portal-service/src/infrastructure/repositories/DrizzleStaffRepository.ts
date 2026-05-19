@@ -69,12 +69,18 @@ export class DrizzleStaffRepository implements IStaffRepository {
       uid: staffMember.id,
       merchantId: merchant.id,
       name: staffMember.name,
-      role: staffMember.role
+      role: staffMember.role,
+      username: staffMember.username,
+      pinHash: staffMember.pinHash,
+      status: staffMember.status,
     }).onConflictDoUpdate({
       target: staff.uid,
       set: {
         name: staffMember.name,
-        role: staffMember.role
+        role: staffMember.role,
+        username: staffMember.username,
+        pinHash: staffMember.pinHash,
+        status: staffMember.status,
       }
     });
   }

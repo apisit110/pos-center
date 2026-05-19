@@ -67,7 +67,7 @@ const getMembersUseCase = new GetMembersUseCase(memberRepository);
 const getMemberDetailUseCase = new GetMemberDetailUseCase(memberRepository);
 const getStaffUseCase = new GetStaffUseCase(staffRepository);
 const getStaffDetailUseCase = new GetStaffDetailUseCase(staffRepository);
-const registerMerchantUseCase = new RegisterMerchantUseCase(merchantRepository, storeRepository, terminalRepository, runningNumberService);
+const registerMerchantUseCase = new RegisterMerchantUseCase(merchantRepository, storeRepository, terminalRepository, runningNumberService, staffRepository);
 const getTerminalsByStoreUseCase = new GetTerminalsByStoreUseCase(terminalRepository);
 const batchUpsertStoreProductsUseCase = new BatchUpsertStoreProductsUseCase(storeProductRepository);
 

@@ -75,6 +75,29 @@ const Input = styled.input`
   }
 `;
 
+const Select = styled.select`
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: rgba(15, 23, 42, 0.5);
+  color: white;
+  font-size: 1rem;
+  transition: all 0.2s;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  }
+
+  option {
+    background: #1e293b;
+    color: white;
+  }
+`;
+
 const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'danger' }>`
   width: auto;
   padding: 0.6rem 1.2rem;
@@ -88,7 +111,7 @@ const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'dange
   }};
   color: white;
   border: ${props => props.$variant === 'secondary' ? '1px solid var(--border)' : 'none'};
-  
+
   &:hover {
     background: ${props => {
       if (props.$variant === 'danger') return '#dc2626';
@@ -121,10 +144,37 @@ const SubmitButton = styled.button`
   margin-top: 1rem;
 `;
 
+type StaffRole = 'manager' | 'cashier';
+
+interface StaffEntry {
+  username: string;
+  fullName: string;
+  pin: string;
+  confirmPin: string;
+  role: StaffRole;
+}
+
 export default function CreateMerchantPage() {
   const router = useRouter();
   const [merchantName, setMerchantName] = useState('');
+  const [staffMembers, setStaffMembers] = useState<StaffEntry[]>([
+    { username: '', fullName: '', pin: '', confirmPin: '', role: 'manager' },
+  ]);
   const [stores, setStores] = useState([{ name: '', address: '', latitude: 0, longitude: 0, terminals: [{ name: '' }] }]);
+
+  const addStaff = () => {
+    setStaffMembers([...staffMembers, { username: '', fullName: '', pin: '', confirmPin: '', role: 'cashier' }]);
+  };
+
+  const removeStaff = (index: number) => {
+    setStaffMembers(staffMembers.filter((_, i) => i !== index));
+  };
+
+  const updateStaff = (index: number, field: keyof StaffEntry, value: string) => {
+    const updated = [...staffMembers];
+    (updated[index] as any)[field] = value;
+    setStaffMembers(updated);
+  };
 
   const addStore = () => {
     setStores([...stores, { name: '', address: '', latitude: 0, longitude: 0, terminals: [{ name: '' }] }]);
@@ -160,12 +210,26 @@ export default function CreateMerchantPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    for (const staff of staffMembers) {
+      if (staff.pin !== staff.confirmPin) {
+        alert(`PIN and Confirm PIN do not match for "${staff.username || 'a staff member'}"`);
+        return;
+      }
+    }
+
+    if (!staffMembers.some(s => s.role === 'manager')) {
+      alert('At least one staff member must have the Manager role');
+      return;
+    }
+
     try {
       const repository = new ApiMerchantRepository();
       const useCase = new RegisterMerchantUseCase(repository);
       await useCase.execute({
         merchantName,
-        stores
+        staffMembers: staffMembers.map(({ confirmPin, ...s }) => s),
+        stores,
       });
       router.push('/merchants');
       router.refresh();
@@ -186,13 +250,83 @@ export default function CreateMerchantPage() {
         <form onSubmit={handleSubmit}>
           <FormGroup>
             <Label>Merchant Name</Label>
-            <Input 
-              required 
-              value={merchantName} 
-              onChange={(e) => setMerchantName(e.target.value)} 
+            <Input
+              required
+              value={merchantName}
+              onChange={(e) => setMerchantName(e.target.value)}
               placeholder="Enter merchant name"
             />
           </FormGroup>
+
+          <SectionTitle>
+            Staff
+            <ActionButton type="button" $variant="secondary" onClick={addStaff}>+ Add Staff</ActionButton>
+          </SectionTitle>
+
+          {staffMembers.map((staff, sIdx) => (
+            <StoreCard key={sIdx}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                <h4 style={{ margin: 0 }}>Staff #{sIdx + 1}</h4>
+                {staffMembers.length > 1 && (
+                  <ActionButton type="button" $variant="danger" onClick={() => removeStaff(sIdx)}>Remove</ActionButton>
+                )}
+              </div>
+
+              <FormGroup>
+                <Label>Role</Label>
+                <Select
+                  value={staff.role}
+                  onChange={(e) => updateStaff(sIdx, 'role', e.target.value)}
+                >
+                  <option value="manager">Manager</option>
+                  <option value="cashier">Cashier</option>
+                </Select>
+              </FormGroup>
+
+              <FormGroup>
+                <Label>Username</Label>
+                <Input
+                  required
+                  value={staff.username}
+                  onChange={(e) => updateStaff(sIdx, 'username', e.target.value)}
+                  placeholder="Login username"
+                />
+              </FormGroup>
+
+              <FormGroup>
+                <Label>Full Name</Label>
+                <Input
+                  required
+                  value={staff.fullName}
+                  onChange={(e) => updateStaff(sIdx, 'fullName', e.target.value)}
+                  placeholder="Full name"
+                />
+              </FormGroup>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <FormGroup>
+                  <Label>PIN</Label>
+                  <Input
+                    required
+                    type="password"
+                    value={staff.pin}
+                    onChange={(e) => updateStaff(sIdx, 'pin', e.target.value)}
+                    placeholder="Enter PIN"
+                  />
+                </FormGroup>
+                <FormGroup>
+                  <Label>Confirm PIN</Label>
+                  <Input
+                    required
+                    type="password"
+                    value={staff.confirmPin}
+                    onChange={(e) => updateStaff(sIdx, 'confirmPin', e.target.value)}
+                    placeholder="Confirm PIN"
+                  />
+                </FormGroup>
+              </div>
+            </StoreCard>
+          ))}
 
           <SectionTitle>
             Stores
@@ -207,23 +341,23 @@ export default function CreateMerchantPage() {
                   <ActionButton type="button" $variant="danger" onClick={() => removeStore(sIdx)}>Remove</ActionButton>
                 )}
               </div>
-              
+
               <FormGroup>
                 <Label>Store Name</Label>
-                <Input 
-                  required 
-                  value={store.name} 
-                  onChange={(e) => updateStore(sIdx, 'name', e.target.value)} 
+                <Input
+                  required
+                  value={store.name}
+                  onChange={(e) => updateStore(sIdx, 'name', e.target.value)}
                   placeholder="Store name"
                 />
               </FormGroup>
 
               <FormGroup>
                 <Label>Address</Label>
-                <Input 
-                  required 
-                  value={store.address} 
-                  onChange={(e) => updateStore(sIdx, 'address', e.target.value)} 
+                <Input
+                  required
+                  value={store.address}
+                  onChange={(e) => updateStore(sIdx, 'address', e.target.value)}
                   placeholder="Store address"
                 />
               </FormGroup>
@@ -231,20 +365,20 @@ export default function CreateMerchantPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <FormGroup>
                   <Label>Latitude</Label>
-                  <Input 
-                    type="number" 
+                  <Input
+                    type="number"
                     step="any"
-                    value={store.latitude} 
-                    onChange={(e) => updateStore(sIdx, 'latitude', parseFloat(e.target.value))} 
+                    value={store.latitude}
+                    onChange={(e) => updateStore(sIdx, 'latitude', parseFloat(e.target.value))}
                   />
                 </FormGroup>
                 <FormGroup>
                   <Label>Longitude</Label>
-                  <Input 
-                    type="number" 
+                  <Input
+                    type="number"
                     step="any"
-                    value={store.longitude} 
-                    onChange={(e) => updateStore(sIdx, 'longitude', parseFloat(e.target.value))} 
+                    value={store.longitude}
+                    onChange={(e) => updateStore(sIdx, 'longitude', parseFloat(e.target.value))}
                   />
                 </FormGroup>
               </div>

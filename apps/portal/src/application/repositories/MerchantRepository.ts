@@ -1,7 +1,15 @@
 import { Merchant } from '../../domain/entities/Merchant';
 
+export interface StaffRequest {
+  username: string;
+  fullName: string;
+  pin: string;
+  role: 'manager' | 'cashier';
+}
+
 export interface MerchantRegistrationRequest {
   merchantName: string;
+  staffMembers: StaffRequest[];
   stores: {
     name: string;
     address: string;

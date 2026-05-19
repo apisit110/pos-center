@@ -30,10 +30,13 @@ export class SyncOrdersFromClientUseCase {
   async execute(ordersToSync: SyncOrderDTO[]): Promise<SyncOrderResponseDTO[]> {
     const results: SyncOrderResponseDTO[] = [];
 
+    console.log('111-1 ordersToSync:', ordersToSync)
+
     for (const orderData of ordersToSync) {
       try {
         // 1. Check idempotency
         const existingLog = await this.orderRepository.findSyncLogByOrderId(orderData.orderId, orderData.storeId);
+        console.log('111-2 existingLog:', existingLog)
         if (existingLog) {
           results.push({
             orderId: orderData.orderId,
@@ -49,6 +52,7 @@ export class SyncOrdersFromClientUseCase {
           item.quantity,
           item.price,
         ));
+        console.log('111-3 items:', items)
 
         // 3. Create order entity
         const order = new Order(
@@ -65,9 +69,11 @@ export class SyncOrdersFromClientUseCase {
           false,
           new Date(orderData.createdAt),
         );
+        console.log('111-4 order:', order)
 
         // 4. Save order
         const savedOrder = await this.orderRepository.save(order);
+        console.log('111-5 savedOrder:', savedOrder)
 
         // 5. Create sync log
         await this.orderRepository.createSyncLog({
@@ -90,6 +96,8 @@ export class SyncOrdersFromClientUseCase {
         });
       }
     }
+
+    console.log('111-10 results:', results)
 
     return results;
   }

@@ -7,6 +7,9 @@ export const staff = pgTable('staff', {
   merchantId: integer('merchant_id').references(() => merchants.id).notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   role: varchar('role', { length: 100 }).notNull(),
+  username: varchar('username', { length: 100 }),
+  pinHash: varchar('pin_hash', { length: 255 }),
+  status: varchar('status', { length: 20 }).default('active'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
