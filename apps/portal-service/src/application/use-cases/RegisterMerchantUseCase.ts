@@ -13,7 +13,6 @@ import { v4 as uuidv4 } from 'uuid';
 export interface RegisterMerchantRequest {
   merchantName: string;
   staffMembers: {
-    username: string;
     fullName: string;
     pin: string;
     role: 'manager' | 'cashier';
@@ -44,13 +43,14 @@ export class RegisterMerchantUseCase {
     await this.merchantRepository.save(merchant);
 
     for (const staffReq of request.staffMembers) {
+      const username = await this.runningNumberService.nextStaffUsername(mid);
       const pinHash = createHash('sha256').update(staffReq.pin).digest('hex');
       const staff = new Staff(
         uuidv4(),
         merchantUid,
         staffReq.fullName,
         staffReq.role,
-        staffReq.username,
+        username,
         pinHash,
         'active'
       );

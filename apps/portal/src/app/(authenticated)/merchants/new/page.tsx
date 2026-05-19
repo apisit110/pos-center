@@ -147,7 +147,6 @@ const SubmitButton = styled.button`
 type StaffRole = 'manager' | 'cashier';
 
 interface StaffEntry {
-  username: string;
   fullName: string;
   pin: string;
   confirmPin: string;
@@ -158,12 +157,12 @@ export default function CreateMerchantPage() {
   const router = useRouter();
   const [merchantName, setMerchantName] = useState('');
   const [staffMembers, setStaffMembers] = useState<StaffEntry[]>([
-    { username: '', fullName: '', pin: '', confirmPin: '', role: 'manager' },
+    { fullName: '', pin: '', confirmPin: '', role: 'manager' },
   ]);
   const [stores, setStores] = useState([{ name: '', address: '', latitude: 0, longitude: 0, terminals: [{ name: '' }] }]);
 
   const addStaff = () => {
-    setStaffMembers([...staffMembers, { username: '', fullName: '', pin: '', confirmPin: '', role: 'cashier' }]);
+    setStaffMembers([...staffMembers, { fullName: '', pin: '', confirmPin: '', role: 'cashier' }]);
   };
 
   const removeStaff = (index: number) => {
@@ -213,7 +212,7 @@ export default function CreateMerchantPage() {
 
     for (const staff of staffMembers) {
       if (staff.pin !== staff.confirmPin) {
-        alert(`PIN and Confirm PIN do not match for "${staff.username || 'a staff member'}"`);
+        alert(`PIN and Confirm PIN do not match for "${staff.fullName || 'a staff member'}"`);
         return;
       }
     }
@@ -281,16 +280,6 @@ export default function CreateMerchantPage() {
                   <option value="manager">Manager</option>
                   <option value="cashier">Cashier</option>
                 </Select>
-              </FormGroup>
-
-              <FormGroup>
-                <Label>Username</Label>
-                <Input
-                  required
-                  value={staff.username}
-                  onChange={(e) => updateStaff(sIdx, 'username', e.target.value)}
-                  placeholder="Login username"
-                />
               </FormGroup>
 
               <FormGroup>

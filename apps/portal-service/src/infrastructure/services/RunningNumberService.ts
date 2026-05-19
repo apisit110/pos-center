@@ -1,6 +1,6 @@
 import { db, runningNumbers, eq, sql } from '@lightning/database';
 
-const DIGITS = { mid: 4, sid: 4, tid: 2 } as const;
+const DIGITS = { mid: 4, sid: 4, tid: 2, staff: 4 } as const;
 
 export class RunningNumberService {
   private async next(key: string, digits: number): Promise<string> {
@@ -38,5 +38,10 @@ export class RunningNumberService {
   async nextTid(sid: string): Promise<string> {
     const num = await this.next(`tid:${sid}`, DIGITS.tid);
     return `${sid}${num}`;
+  }
+
+  async nextStaffUsername(mid: string): Promise<string> {
+    const num = await this.next(`staff:${mid}`, DIGITS.staff);
+    return `${mid}${num}`;
   }
 }
