@@ -5,13 +5,16 @@ import styled from 'styled-components';
 import { useParams, useRouter } from 'next/navigation';
 import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
 import { ApiStoreRepository } from '../../../../infrastructure/repositories/ApiStoreRepository';
+import { ApiStaffRepository } from '../../../../infrastructure/repositories/ApiStaffRepository';
 import { GetMerchantUseCase } from '../../../../application/use-cases/GetMerchantUseCase';
 import { GetStoresUseCase } from '../../../../application/use-cases/GetStoresUseCase';
+import { GetStaffByMerchantUseCase } from '../../../../application/use-cases/GetStaffByMerchantUseCase';
 import { Merchant } from '../../../../domain/entities/Merchant';
 import { Store } from '../../../../domain/entities/Store';
+import { Staff } from '../../../../domain/entities/Staff';
 import { DataTable } from '../../../../presentation/components/DataTable';
 
-import { FiArrowLeft, FiGrid, FiHash, FiInfo } from 'react-icons/fi';
+import { FiArrowLeft, FiGrid, FiHash, FiInfo, FiUsers } from 'react-icons/fi';
 
 const PageContainer = styled.div`
   display: flex;
@@ -169,6 +172,7 @@ export default function MerchantDetailPage() {
   const router = useRouter();
   const [merchant, setMerchant] = useState<Merchant | null>(null);
   const [stores, setStores] = useState<Store[]>([]);
+  const [staff, setStaff] = useState<Staff[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -178,18 +182,22 @@ export default function MerchantDetailPage() {
       setLoading(true);
       const merchantRepo = new ApiMerchantRepository();
       const storeRepo = new ApiStoreRepository();
-      
+      const staffRepo = new ApiStaffRepository();
+
       const getMerchantUseCase = new GetMerchantUseCase(merchantRepo);
       const getStoresUseCase = new GetStoresUseCase(storeRepo);
-      
+      const getStaffUseCase = new GetStaffByMerchantUseCase(staffRepo);
+
       const merchantId = params.id as string;
-      const [merchantData, storesData] = await Promise.all([
+      const [merchantData, storesData, staffData] = await Promise.all([
         getMerchantUseCase.execute(merchantId),
-        getStoresUseCase.execute(merchantId)
+        getStoresUseCase.execute(merchantId),
+        getStaffUseCase.execute(merchantId)
       ]);
-      
+
       setMerchant(merchantData);
       setStores(storesData);
+      setStaff(staffData);
       setLoading(false);
     };
 
@@ -200,6 +208,13 @@ export default function MerchantDetailPage() {
     { header: 'SID', accessor: 'sid' as const, width: '150px' },
     { header: 'Store Name', accessor: 'name' as const },
     { header: 'Address', accessor: 'address' as const },
+  ];
+
+  const staffColumns = [
+    { header: 'Name', accessor: 'name' as const },
+    { header: 'Username', accessor: 'username' as const },
+    { header: 'Role', accessor: 'role' as const },
+    { header: 'Status', accessor: 'status' as const, width: '120px' },
   ];
 
   if (loading) return <div>Loading...</div>;
@@ -255,10 +270,23 @@ export default function MerchantDetailPage() {
               <Badge>{stores.length}</Badge>
             </CardTitle>
           </CardHeader>
-          <DataTable 
-            columns={storeColumns} 
-            data={stores} 
+          <DataTable
+            columns={storeColumns}
+            data={stores}
             onRowClick={(store) => router.push(`/stores/${store.uid}`)}
+          />
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <FiUsers /> Staff
+              <Badge>{staff.length}</Badge>
+            </CardTitle>
+          </CardHeader>
+          <DataTable
+            columns={staffColumns}
+            data={staff}
           />
         </Card>
       </ContentGrid>

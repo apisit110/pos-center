@@ -6,7 +6,16 @@ export class ApiStaffRepository implements StaffRepository {
   public async getStaffByMerchant(merchantId: string): Promise<Staff[]> {
     const response = await ApiClient.get(`/merchants/${merchantId}/staff`);
     const data = response.data;
-    return data.map((s: any) => new Staff(s.id, s.merchantUid ?? s.merchantId, s.name, s.role));
+    return data.map((s: any) => new Staff(
+      s.uid,
+      '',
+      s.name,
+      s.role,
+      s.username ?? '',
+      '',
+      0,
+      s.status ?? 'active',
+    ));
   }
 
   public async getStaffById(id: string): Promise<Staff | null> {

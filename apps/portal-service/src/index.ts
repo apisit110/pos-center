@@ -24,6 +24,7 @@ import { GetMembersUseCase } from './application/use-cases/GetMembersUseCase';
 import { GetMemberDetailUseCase } from './application/use-cases/GetMemberDetailUseCase';
 import { GetStaffUseCase } from './application/use-cases/GetStaffUseCase';
 import { GetStaffDetailUseCase } from './application/use-cases/GetStaffDetailUseCase';
+import { GetStaffByMerchantUseCase } from './application/use-cases/GetStaffByMerchantUseCase';
 import { RegisterMerchantUseCase } from './application/use-cases/RegisterMerchantUseCase';
 import { GetTerminalsByStoreUseCase } from './application/use-cases/GetTerminalsByStoreUseCase';
 import { BatchUpsertStoreProductsUseCase } from './application/use-cases/BatchUpsertStoreProductsUseCase';
@@ -67,11 +68,12 @@ const getMembersUseCase = new GetMembersUseCase(memberRepository);
 const getMemberDetailUseCase = new GetMemberDetailUseCase(memberRepository);
 const getStaffUseCase = new GetStaffUseCase(staffRepository);
 const getStaffDetailUseCase = new GetStaffDetailUseCase(staffRepository);
+const getStaffByMerchantUseCase = new GetStaffByMerchantUseCase(staffRepository);
 const registerMerchantUseCase = new RegisterMerchantUseCase(merchantRepository, storeRepository, terminalRepository, runningNumberService, staffRepository);
 const getTerminalsByStoreUseCase = new GetTerminalsByStoreUseCase(terminalRepository);
 const batchUpsertStoreProductsUseCase = new BatchUpsertStoreProductsUseCase(storeProductRepository);
 
-const merchantController = new MerchantController(getMerchantsUseCase, getMerchantDetailUseCase, registerMerchantUseCase);
+const merchantController = new MerchantController(getMerchantsUseCase, getMerchantDetailUseCase, registerMerchantUseCase, getStaffByMerchantUseCase);
 const productController = new ProductController(getProductsUseCase, getProductDetailUseCase, getProductFilterMetadataUseCase, createProductUseCase);
 const storeController = new StoreController(getStoresUseCase, getStoreDetailUseCase, getTerminalsByStoreUseCase);
 const memberController = new MemberController(getMembersUseCase, getMemberDetailUseCase);
@@ -95,6 +97,7 @@ app.post('/login', (req: Request, res: Response) => {
 
 // Merchant Endpoints
 app.get('/merchants', (req, res, next) => merchantController.getAll(req, res, next));
+app.get('/merchants/:id/staff', (req, res, next) => merchantController.getStaff(req, res, next));
 app.get('/merchants/:id', (req, res, next) => merchantController.getById(req, res, next));
 app.post('/merchants', (req, res, next) => merchantController.register(req, res, next));
 

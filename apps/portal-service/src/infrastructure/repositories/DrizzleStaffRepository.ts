@@ -45,6 +45,29 @@ export class DrizzleStaffRepository implements IStaffRepository {
     };
   }
 
+  async getStaffByMerchant(merchantUid: string): Promise<Staff[]> {
+    const merchant = await db.select({ id: merchants.id }).from(merchants).where(eq(merchants.uid, merchantUid)).limit(1);
+    if (!merchant[0]) return [];
+
+    const results = await db.select({
+      uid: staff.uid,
+      name: staff.name,
+      role: staff.role,
+      username: staff.username,
+      status: staff.status,
+    }).from(staff).where(eq(staff.merchantId, merchant[0].id));
+
+    return results.map(s => new Staff(
+      s.uid,
+      merchantUid,
+      s.name,
+      s.role as any,
+      s.username ?? undefined,
+      undefined,
+      (s.status ?? 'active') as any,
+    ));
+  }
+
   async getStaffById(id: string): Promise<Staff | null> {
     const result = await db.select().from(staff).where(eq(staff.uid, id)).limit(1);
     if (!result[0]) return null;
