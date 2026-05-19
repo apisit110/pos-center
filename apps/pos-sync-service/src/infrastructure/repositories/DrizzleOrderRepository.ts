@@ -16,7 +16,7 @@ export class DrizzleOrderRepository implements OrderRepository {
       terminalId = terminal?.id ?? null;
     }
 
-    const [staffMember] = await db.select({ id: staff.id }).from(staff).where(eq(staff.uid, order.staffId));
+    const [staffMember] = await db.select({ id: staff.id }).from(staff).where(eq(staff.username, order.staffId));
     if (!staffMember) throw new Error(`Staff not found: ${order.staffId}`);
 
     const result = await db.transaction(async (tx) => {
@@ -55,6 +55,8 @@ export class DrizzleOrderRepository implements OrderRepository {
 
       return newOrder;
     });
+
+    console.log('333-3 result:', result)
 
     return new Order(
       result.id.toString(),

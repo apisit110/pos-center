@@ -16,6 +16,11 @@ export class DrizzleTransactionRepository implements TransactionRepository {
         )
       );
 
+    console.log({
+      transaction: transaction.orderId,
+      store: store.id
+    });
+
     if (!order) {
       throw new Error(`Order not found for local order ID: ${transaction.orderId} in store: ${storeSid}. Sync order first.`);
     }
