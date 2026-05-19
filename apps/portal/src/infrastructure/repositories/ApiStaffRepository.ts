@@ -1,8 +1,31 @@
 import { Staff } from '../../domain/entities/Staff';
-import { StaffRepository } from '../../application/repositories/StaffRepository';
+import { StaffRepository, StaffFilter } from '../../application/repositories/StaffRepository';
 import ApiClient from '../api/ApiClient';
 
 export class ApiStaffRepository implements StaffRepository {
+  public async getAllStaff(page: number, limit: number, filters?: StaffFilter): Promise<{ staff: Staff[], total: number }> {
+    const params = { page, limit, ...filters };
+    const response = await ApiClient.get('/staff', { params });
+    const { staff, total } = response.data;
+    return {
+      staff: staff.map((s: any) => new Staff(
+        s.id,
+        s.merchantId ?? '',
+        s.name,
+        s.role,
+        s.username ?? '',
+        '',
+        0,
+        s.status ?? 'active',
+        null,
+        s.createdAt ? new Date(s.createdAt) : new Date(),
+        s.createdAt ? new Date(s.createdAt) : new Date(),
+        s.merchantName ?? '',
+      )),
+      total,
+    };
+  }
+
   public async getStaffByMerchant(merchantId: string): Promise<Staff[]> {
     const response = await ApiClient.get(`/merchants/${merchantId}/staff`);
     const data = response.data;

@@ -3,6 +3,10 @@ import { Staff } from '../../domain/entities/Staff';
 export interface StaffFilter {
   merchantId?: string;
   role?: string;
+  username?: string;
+  status?: string;
+  startDate?: string;
+  endDate?: string;
   query?: string;
 }
 

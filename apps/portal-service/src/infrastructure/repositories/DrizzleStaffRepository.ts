@@ -1,47 +1,81 @@
 import { db, staff, merchants } from '@lightning/database';
-import { eq, or, like, sql, count } from 'drizzle-orm';
+import { eq, like, and, count, gte, lte } from 'drizzle-orm';
 import { Staff } from '../../domain/entities/Staff';
 import { IStaffRepository, StaffFilter } from '../../application/repositories/IStaffRepository';
 
 export class DrizzleStaffRepository implements IStaffRepository {
   async getStaff(page: number, limit: number, filters?: StaffFilter): Promise<{ staff: Staff[], total: number }> {
     const offset = (page - 1) * limit;
-    
-    let whereClause: any = undefined;
-    
+    const conditions: any[] = [];
+
     if (filters?.merchantId) {
-        // Need to join with merchants or use merchant internal ID
-        // For simplicity assuming merchantId passed is the UID, but we need internal ID for the join
-        const merchant = await db.select({ id: merchants.id }).from(merchants).where(eq(merchants.id, Number(filters.merchantId))).limit(1);
-        if (merchant[0]) {
-            whereClause = eq(staff.merchantId, merchant[0].id);
-        }
+      const merchant = await db.select({ id: merchants.id }).from(merchants)
+        .where(eq(merchants.uid, filters.merchantId)).limit(1);
+      if (merchant[0]) {
+        conditions.push(eq(staff.merchantId, merchant[0].id));
+      }
+    }
+
+    if (filters?.role) {
+      conditions.push(eq(staff.role, filters.role));
+    }
+
+    if (filters?.username) {
+      conditions.push(like(staff.username, `%${filters.username}%`));
+    }
+
+    if (filters?.status) {
+      conditions.push(eq(staff.status, filters.status));
     }
 
     if (filters?.query) {
-      const queryFilter = like(staff.name, `%${filters.query}%`);
-      whereClause = whereClause ? sql`${whereClause} AND ${queryFilter}` : queryFilter;
+      conditions.push(like(staff.name, `%${filters.query}%`));
     }
 
-    const results = await db.select().from(staff)
+    if (filters?.startDate) {
+      conditions.push(gte(staff.createdAt, new Date(filters.startDate)));
+    }
+
+    if (filters?.endDate) {
+      const end = new Date(filters.endDate);
+      end.setHours(23, 59, 59, 999);
+      conditions.push(lte(staff.createdAt, end));
+    }
+
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+    const results = await db.select({
+      uid: staff.uid,
+      merchantId: staff.merchantId,
+      merchantName: merchants.name,
+      name: staff.name,
+      role: staff.role,
+      username: staff.username,
+      status: staff.status,
+      createdAt: staff.createdAt,
+    }).from(staff)
+      .leftJoin(merchants, eq(staff.merchantId, merchants.id))
       .where(whereClause)
       .limit(limit)
       .offset(offset);
 
-    const totalCount = await db.select({ value: count() }).from(staff).where(whereClause);
+    const totalCount = await db.select({ value: count() }).from(staff)
+      .leftJoin(merchants, eq(staff.merchantId, merchants.id))
+      .where(whereClause);
 
-    // Need to get merchant UID for the Staff entity if needed, but Staff entity takes string id
-    // Assuming merchantId in Staff entity is the internal ID for now, or we should map it.
-    // In Staff entity: public readonly merchantId: string
-    
     return {
       staff: results.map(s => new Staff(
         s.uid,
         s.merchantId.toString(),
         s.name,
-        s.role as any
+        s.role as any,
+        s.username ?? undefined,
+        undefined,
+        (s.status ?? 'active') as any,
+        s.createdAt ?? undefined,
+        s.merchantName ?? undefined,
       )),
-      total: Number(totalCount[0].value)
+      total: Number(totalCount[0].value),
     };
   }
 

@@ -14,9 +14,13 @@ export class StaffController {
       const limit = parseInt(req.query.limit as string) || 10;
       const merchantId = req.query.merchantId as string;
       const role = req.query.role as string;
+      const username = req.query.username as string;
+      const status = req.query.status as string;
+      const startDate = req.query.startDate as string;
+      const endDate = req.query.endDate as string;
       const query = req.query.query as string;
 
-      const result = await this.getStaffUseCase.execute(page, limit, { merchantId, role, query });
+      const result = await this.getStaffUseCase.execute(page, limit, { merchantId, role, username, status, startDate, endDate, query });
       res.status(200).json(result);
     } catch (error) {
       next(error);

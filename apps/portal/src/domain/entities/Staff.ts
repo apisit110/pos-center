@@ -11,6 +11,8 @@ export class Staff {
     public roleId: number = 0,
     public status: StaffStatus = 'active',
     public syncId: string | null = null,
-    public updatedAt: Date = new Date()
+    public updatedAt: Date = new Date(),
+    public createdAt: Date = new Date(),
+    public merchantName: string = '',
   ) {}
 }
