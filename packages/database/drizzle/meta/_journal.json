@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1779118797705,
-      "tag": "0000_small_magik",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1779118797706,
-      "tag": "0001_add_staff_auth_fields",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1779118797707,
-      "tag": "0002_rename_staff_user_id_to_username",
+      "when": 1779169858431,
+      "tag": "0000_faithful_timeslip",
       "breakpoints": true
     }
   ]

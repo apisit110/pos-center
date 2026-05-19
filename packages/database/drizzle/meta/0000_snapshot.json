@@ -1,5 +1,5 @@
 {
-  "id": "085f3db1-7299-4888-9c0e-341a25db8da6",
+  "id": "92d0adbb-d25d-443b-a8ea-cae9c08c1f56",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
@@ -512,6 +512,25 @@
           "type": "varchar(100)",
           "primaryKey": false,
           "notNull": true
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pin_hash": {
+          "name": "pin_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'active'"
         },
         "created_at": {
           "name": "created_at",

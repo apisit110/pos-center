@@ -94,6 +94,9 @@ CREATE TABLE IF NOT EXISTS "staff" (
 	"merchant_id" integer NOT NULL,
 	"name" varchar(255) NOT NULL,
 	"role" varchar(100) NOT NULL,
+	"username" varchar(100),
+	"pin_hash" varchar(255),
+	"status" varchar(20) DEFAULT 'active',
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now(),
 	CONSTRAINT "staff_uid_unique" UNIQUE("uid")
