@@ -137,6 +137,18 @@ const SuccessText = styled.p`
   margin-top: 0.5rem;
 `;
 
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+const Label = styled.label`
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-main);
+`;
+
 
 export default function MapProductStorePage() {
   const router = useRouter();

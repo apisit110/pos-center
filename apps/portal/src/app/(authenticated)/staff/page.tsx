@@ -2,12 +2,11 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import Select from 'react-select';
 import { ApiStaffRepository } from '../../../infrastructure/repositories/ApiStaffRepository';
 import { GetStaffUseCase } from '../../../application/use-cases/GetStaffUseCase';
 import { Staff } from '../../../domain/entities/Staff';
 import { StaffFilter } from '../../../application/repositories/StaffRepository';
-import { DataTable, FilterBar, TextFilter, DateFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
+import { DataTable, FilterBar, TextFilter, SelectFilter, DateFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
 
 const PageContainer = styled.div`
   display: flex;
@@ -20,18 +19,6 @@ const Title = styled.h1`
   font-weight: 700;
   margin: 0;
   color: var(--text-main);
-`;
-
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const Label = styled.label`
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-sub);
 `;
 
 const ButtonGroup = styled.div`
@@ -64,34 +51,6 @@ const StatusBadge = styled.span<{ $status: string }>`
     }
   }};
 `;
-
-const selectStyles = {
-  control: (base: any) => ({
-    ...base,
-    background: 'rgba(15, 23, 42, 0.5)',
-    borderColor: 'var(--border)',
-    borderRadius: '0.5rem',
-    minHeight: '42px',
-    boxShadow: 'none',
-    '&:hover': { borderColor: 'var(--primary)' },
-  }),
-  menu: (base: any) => ({
-    ...base,
-    background: 'var(--bg-card)',
-    border: '1px solid var(--border)',
-    zIndex: 20,
-  }),
-  option: (base: any, state: any) => ({
-    ...base,
-    background: state.isFocused ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
-    color: 'white',
-    cursor: 'pointer',
-    '&:active': { background: 'var(--primary)' },
-  }),
-  singleValue: (base: any) => ({ ...base, color: 'white' }),
-  input: (base: any) => ({ ...base, color: 'white' }),
-  placeholder: (base: any) => ({ ...base, color: 'var(--text-sub)', fontSize: '0.9rem' }),
-};
 
 const roleOptions = [
   { value: 'manager', label: 'Manager' },
@@ -215,31 +174,21 @@ export default function StaffPage() {
           onChange={value => setPendingFilters(f => ({ ...f, username: value }))}
         />
 
-        <FormGroup>
-          <Label>Role</Label>
-          <Select
-            instanceId="role-select"
-            isClearable
-            options={roleOptions}
-            styles={selectStyles}
-            value={roleOptions.find(o => o.value === pendingFilters.role) ?? null}
-            onChange={selected => setPendingFilters(f => ({ ...f, role: selected?.value ?? '' }))}
-            placeholder="All roles..."
-          />
-        </FormGroup>
+        <SelectFilter
+          label="Role"
+          value={pendingFilters.role ?? ''}
+          onChange={value => setPendingFilters(f => ({ ...f, role: value }))}
+          options={roleOptions}
+          placeholder="All roles"
+        />
 
-        <FormGroup>
-          <Label>Status</Label>
-          <Select
-            instanceId="status-select"
-            isClearable
-            options={statusOptions}
-            styles={selectStyles}
-            value={statusOptions.find(o => o.value === pendingFilters.status) ?? null}
-            onChange={selected => setPendingFilters(f => ({ ...f, status: selected?.value ?? '' }))}
-            placeholder="All statuses..."
-          />
-        </FormGroup>
+        <SelectFilter
+          label="Status"
+          value={pendingFilters.status ?? ''}
+          onChange={value => setPendingFilters(f => ({ ...f, status: value }))}
+          options={statusOptions}
+          placeholder="All statuses"
+        />
 
         <ButtonGroup>
           <ClearFilterButton onClick={handleClear}>Clear</ClearFilterButton>

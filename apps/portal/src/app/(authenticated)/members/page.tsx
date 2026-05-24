@@ -6,26 +6,13 @@ import { GetMembersUseCase } from '../../../application/use-cases/GetMembersUseC
 import { ApiMemberRepository } from '../../../infrastructure/repositories/ApiMemberRepository';
 import { Member } from '../../../domain/entities/Member';
 import { MemberFilter } from '../../../application/repositories/MemberRepository';
-import { DataTable, FilterBar, TextFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
+import { DataTable, FilterBar, TextFilter, SelectFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
 import { useRouter } from 'next/navigation';
-import Select from 'react-select';
 
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-`;
-
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const Label = styled.label`
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-sub);
 `;
 
 const ButtonGroup = styled.div`
@@ -53,62 +40,6 @@ const TierBadge = styled.span<{ $tier: string }>`
   }};
   color: ${props => props.$tier === 'Platinum' ? '#1e293b' : 'white'};
 `;
-
-const selectStyles = {
-  control: (base: any) => ({
-    ...base,
-    background: 'rgba(15, 23, 42, 0.5)',
-    borderColor: 'var(--border)',
-    borderRadius: '0.5rem',
-    minHeight: '42px',
-    boxShadow: 'none',
-    '&:hover': {
-      borderColor: 'var(--primary)',
-    }
-  }),
-  menu: (base: any) => ({
-    ...base,
-    background: 'var(--bg-card)',
-    border: '1px solid var(--border)',
-    zIndex: 20
-  }),
-  option: (base: any, state: any) => ({
-    ...base,
-    background: state.isFocused ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
-    color: 'white',
-    cursor: 'pointer',
-    '&:active': {
-      background: 'var(--primary)',
-    }
-  }),
-  multiValue: (base: any) => ({
-    ...base,
-    background: 'var(--primary)',
-    borderRadius: '4px',
-  }),
-  multiValueLabel: (base: any) => ({
-    ...base,
-    color: 'white',
-    fontSize: '0.8rem',
-  }),
-  multiValueRemove: (base: any) => ({
-    ...base,
-    color: 'white',
-    '&:hover': {
-      background: 'var(--primary-hover)',
-      color: 'white',
-    }
-  }),
-  input: (base: any) => ({
-    ...base,
-    color: 'white',
-  }),
-  placeholder: (base: any) => ({
-    ...base,
-    color: 'var(--text-sub)',
-    fontSize: '0.9rem'
-  })
-};
 
 const tierOptions = [
   { value: 'Bronze', label: 'Bronze' },
@@ -193,20 +124,13 @@ export default function MembersPage() {
           />
         </div>
 
-        <FormGroup>
-          <Label>Tier</Label>
-          <Select
-            isMulti
-            instanceId="tier-select"
-            options={tierOptions}
-            styles={selectStyles}
-            value={tierOptions.filter(opt => filters.tier?.includes(opt.value))}
-            onChange={(selected) => {
-              setFilters({ ...filters, tier: (selected as any[] || []).map(s => s.value) });
-            }}
-            placeholder="Select tiers..."
-          />
-        </FormGroup>
+        <SelectFilter
+          label="Tier"
+          value={filters.tier?.[0] ?? ''}
+          onChange={(value) => setFilters({ ...filters, tier: value ? [value] : [] })}
+          options={tierOptions}
+          placeholder="All tiers"
+        />
 
         <ButtonGroup>
           <ClearFilterButton onClick={handleClear}>Clear</ClearFilterButton>

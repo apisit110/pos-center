@@ -28,7 +28,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ menuItems }) => {
 
   return (
     <SharedSidebar
-      logoTitle="Lightning POS"
+      logoTitle="POS Center"
       logoIcon={<LogoIcon />}
       navItems={navItems}
     />
