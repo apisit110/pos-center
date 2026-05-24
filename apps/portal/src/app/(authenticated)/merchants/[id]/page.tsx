@@ -12,7 +12,7 @@ import { GetStaffByMerchantUseCase } from '../../../../application/use-cases/Get
 import { Merchant } from '../../../../domain/entities/Merchant';
 import { Store } from '../../../../domain/entities/Store';
 import { Staff } from '../../../../domain/entities/Staff';
-import { DataTable } from '../../../../presentation/components/DataTable';
+import { DataTable } from '@apisit110/pos-ui';
 
 import { FiArrowLeft, FiGrid, FiHash, FiInfo, FiUsers } from 'react-icons/fi';
 
@@ -205,16 +205,16 @@ export default function MerchantDetailPage() {
   }, [params.id]);
 
   const storeColumns = [
-    { header: 'SID', accessor: 'sid' as const, width: '150px' },
-    { header: 'Store Name', accessor: 'name' as const },
-    { header: 'Address', accessor: 'address' as const },
+    { header: 'SID', key: 'sid', width: '150px' },
+    { header: 'Store Name', key: 'name' },
+    { header: 'Address', key: 'address' },
   ];
 
   const staffColumns = [
-    { header: 'Name', accessor: 'name' as const },
-    { header: 'Username', accessor: 'username' as const },
-    { header: 'Role', accessor: 'role' as const },
-    { header: 'Status', accessor: 'status' as const, width: '120px' },
+    { header: 'Name', key: 'name' },
+    { header: 'Username', key: 'username' },
+    { header: 'Role', key: 'role' },
+    { header: 'Status', key: 'status', width: '120px' },
   ];
 
   if (loading) return <div>Loading...</div>;
@@ -273,6 +273,7 @@ export default function MerchantDetailPage() {
           <DataTable
             columns={storeColumns}
             data={stores}
+            rowKey="uid"
             onRowClick={(store) => router.push(`/stores/${store.uid}`)}
           />
         </Card>

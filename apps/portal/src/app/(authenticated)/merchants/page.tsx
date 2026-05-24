@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiMerchantRepository';
 import { GetMerchantsUseCase } from '../../../application/use-cases/GetMerchantsUseCase';
 import { Merchant } from '../../../domain/entities/Merchant';
-import { DataTable } from '../../../presentation/components/DataTable';
+import { DataTable } from '@apisit110/pos-ui';
 
 const PageContainer = styled.div`
   display: flex;
@@ -52,8 +52,8 @@ export default function MerchantsPage() {
   }, []);
 
   const columns = [
-    { header: 'MID', accessor: 'mid' as const, width: '200px' },
-    { header: 'Merchant Name', accessor: 'name' as const },
+    { header: 'MID', key: 'mid', width: '200px' },
+    { header: 'Merchant Name', key: 'name' },
   ];
 
   if (loading && merchants.length === 0) return <div>Loading...</div>;
@@ -65,9 +65,10 @@ export default function MerchantsPage() {
         <CreateButton onClick={() => router.push('/merchants/new')}>Create Merchant</CreateButton>
       </Header>
       
-      <DataTable 
-        columns={columns} 
-        data={merchants} 
+      <DataTable
+        columns={columns}
+        data={merchants}
+        rowKey="uid"
         onRowClick={(merchant) => router.push(`/merchants/${merchant.uid}`)}
       />
     </PageContainer>

@@ -6,8 +6,7 @@ import { GetMembersUseCase } from '../../../application/use-cases/GetMembersUseC
 import { ApiMemberRepository } from '../../../infrastructure/repositories/ApiMemberRepository';
 import { Member } from '../../../domain/entities/Member';
 import { MemberFilter } from '../../../application/repositories/MemberRepository';
-import { DataTable } from '../../../presentation/components/DataTable';
-import { Pagination } from '../../../presentation/components/Pagination';
+import { DataTable } from '@apisit110/pos-ui';
 import { useRouter } from 'next/navigation';
 import Select from 'react-select';
 
@@ -193,32 +192,28 @@ export default function MembersPage() {
   };
 
   const columns = [
-    { 
-      header: 'Name', 
-      accessor: (m: Member) => (
+    {
+      header: 'Name',
+      key: 'member',
+      render: (m: Member) => (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <span style={{ fontWeight: 600 }}>{m.fullName}</span>
           <span style={{ fontSize: '0.8rem', color: 'var(--text-sub)' }}>{m.email}</span>
         </div>
-      )
+      ),
     },
-    { header: 'Phone', accessor: 'phone' as const },
-    { 
-      header: 'Tier', 
-      accessor: (m: Member) => <TierBadge $tier={m.tier}>{m.tier}</TierBadge> 
-    },
-    { 
-      header: 'Points', 
-      accessor: (m: Member) => (
+    { header: 'Phone', key: 'phone' },
+    { header: 'Tier', key: 'tier', render: (m: Member) => <TierBadge $tier={m.tier}>{m.tier}</TierBadge> },
+    {
+      header: 'Points',
+      key: 'points',
+      render: (m: Member) => (
         <span style={{ color: 'var(--primary)', fontWeight: 600 }}>
           {m.points.toLocaleString()} pts
         </span>
-      )
+      ),
     },
-    { 
-      header: 'Joined', 
-      accessor: (m: Member) => m.createdAt.toLocaleDateString() 
-    },
+    { header: 'Joined', key: 'joined', render: (m: Member) => m.createdAt.toLocaleDateString() },
   ];
 
   return (
@@ -255,22 +250,15 @@ export default function MembersPage() {
         </ButtonGroup>
       </FilterSection>
 
-      <DataTable 
-        columns={columns} 
-        data={members} 
+      <DataTable
+        columns={columns}
+        data={members}
         onRowClick={(member) => console.log('Member clicked:', member)}
-        footer={
-          <Pagination 
-            total={total} 
-            page={page} 
-            limit={limit} 
-            onPageChange={setPage} 
-            onLimitChange={(newLimit) => {
-              setLimit(newLimit);
-              setPage(1);
-            }} 
-          />
-        } 
+        totalItems={total}
+        currentPage={page}
+        pageSize={limit}
+        onPageChange={setPage}
+        onPageSizeChange={(newLimit) => { setLimit(newLimit); setPage(1); }}
       />
     </PageContainer>
   );

@@ -9,7 +9,7 @@ import { GetStoreDetailUseCase } from '../../../../application/use-cases/GetStor
 import { GetTerminalsByStoreUseCase } from '../../../../application/use-cases/GetTerminalsByStoreUseCase';
 import { Store } from '../../../../domain/entities/Store';
 import { Terminal } from '../../../../domain/entities/Terminal';
-import { DataTable } from '../../../../presentation/components/DataTable';
+import { DataTable } from '@apisit110/pos-ui';
 
 const PageContainer = styled.div`
   display: flex;
@@ -111,8 +111,8 @@ export default function StoreDetailPage() {
   }, [params.id]);
 
   const terminalColumns = [
-    { header: 'Terminal ID', accessor: 'tid' as const },
-    { header: 'Internal ID', accessor: 'id' as const, width: '300px' },
+    { header: 'Terminal ID', key: 'tid' },
+    { header: 'Internal ID', key: 'id', width: '300px' },
   ];
 
   if (loading) return <div>Loading...</div>;

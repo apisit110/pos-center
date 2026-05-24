@@ -2,15 +2,10 @@
 
 import React, { useState } from 'react';
 import { useServerInsertedHTML } from 'next/navigation';
-import { StyleSheetManager, ServerStyleSheet } from 'styled-components';
+import { StyleSheetManager, ServerStyleSheet, ThemeProvider } from 'styled-components';
+import { darkTheme } from '@apisit110/pos-ui';
 
-export default function StyledComponentsRegistry({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  // [Optional] Create a stylesheet once with a lazy initial state
-  // x-ref: https://reactjs.org/docs/hooks-reference.html#lazy-initial-state
+export default function StyledComponentsRegistry({ children }: { children: React.ReactNode }) {
   const [styledComponentsStyleSheet] = useState(() => new ServerStyleSheet());
 
   useServerInsertedHTML(() => {
@@ -19,11 +14,15 @@ export default function StyledComponentsRegistry({
     return <>{styles}</>;
   });
 
-  if (typeof window !== 'undefined') return <>{children}</>;
+  if (typeof window !== 'undefined') {
+    return <ThemeProvider theme={darkTheme}>{children}</ThemeProvider>;
+  }
 
   return (
     <StyleSheetManager sheet={styledComponentsStyleSheet.instance}>
-      {children}
+      <ThemeProvider theme={darkTheme}>
+        {children}
+      </ThemeProvider>
     </StyleSheetManager>
   );
 }

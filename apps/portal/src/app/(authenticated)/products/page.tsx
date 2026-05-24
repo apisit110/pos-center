@@ -11,8 +11,7 @@ import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiM
 import { ApiStoreRepository } from '../../../infrastructure/repositories/ApiStoreRepository';
 import { Product } from '../../../domain/entities/Product';
 import { ProductFilter } from '../../../application/repositories/ProductRepository';
-import { DataTable } from '../../../presentation/components/DataTable';
-import { Pagination } from '../../../presentation/components/Pagination';
+import { DataTable } from '@apisit110/pos-ui';
 import { useRouter } from 'next/navigation';
 import Select from 'react-select';
 
@@ -249,18 +248,12 @@ export default function ProductsPage() {
   };
 
   const columns = [
-    { header: 'Barcode', accessor: 'barcode' as const, width: '150px' },
-    { header: 'Name', accessor: 'name' as const },
-    { header: 'Brand', accessor: 'brand' as const },
-    { header: 'Unit', accessor: 'unitName' as const },
-    { 
-      header: 'Merchant', 
-      accessor: (p: Product) => merchantMap[p.merchantId] || p.mid 
-    },
-    { 
-      header: 'Price', 
-      accessor: (p: Product) => `${p.basePrice.toLocaleString()} ฿` 
-    },
+    { header: 'Barcode', key: 'barcode', width: '150px' },
+    { header: 'Name', key: 'name' },
+    { header: 'Brand', key: 'brand' },
+    { header: 'Unit', key: 'unitName' },
+    { header: 'Merchant', key: 'merchant', render: (p: Product) => merchantMap[p.merchantId] || p.mid },
+    { header: 'Price', key: 'price', render: (p: Product) => `${p.basePrice.toLocaleString()} ฿` },
   ];
 
   const brandOptions = metadata.brands.map(b => ({ value: b, label: b }));
@@ -368,22 +361,15 @@ export default function ProductsPage() {
         </ButtonGroup>
       </FilterSection>
 
-      <DataTable 
-        columns={columns} 
-        data={products} 
+      <DataTable
+        columns={columns}
+        data={products}
         onRowClick={(product) => router.push(`/products/${product.id}`)}
-        footer={
-          <Pagination 
-            total={total} 
-            page={page} 
-            limit={limit} 
-            onPageChange={setPage} 
-            onLimitChange={(newLimit) => {
-              setLimit(newLimit);
-              setPage(1);
-            }} 
-          />
-        } 
+        totalItems={total}
+        currentPage={page}
+        pageSize={limit}
+        onPageChange={setPage}
+        onPageSizeChange={(newLimit) => { setLimit(newLimit); setPage(1); }}
       />
     </PageContainer>
   );

@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { ApiStoreRepository } from '../../../infrastructure/repositories/ApiStoreRepository';
 import { GetStoresUseCase } from '../../../application/use-cases/GetStoresUseCase';
 import { Store } from '../../../domain/entities/Store';
-import { DataTable } from '../../../presentation/components/DataTable';
+import { DataTable } from '@apisit110/pos-ui';
 
 const PageContainer = styled.div`
   display: flex;
@@ -38,10 +38,10 @@ export default function StoresPage() {
   }, []);
 
   const columns = [
-    { header: 'SID', accessor: 'sid' as const, width: '200px' },
-    { header: 'Store Name', accessor: 'name' as const },
-    { header: 'Address', accessor: 'address' as const },
-    { header: 'MID', accessor: 'mid' as const, width: '200px' },
+    { header: 'SID', key: 'sid', width: '200px' },
+    { header: 'Store Name', key: 'name' },
+    { header: 'Address', key: 'address' },
+    { header: 'MID', key: 'mid', width: '200px' },
   ];
 
   if (loading) return <div>Loading...</div>;
@@ -49,9 +49,10 @@ export default function StoresPage() {
   return (
     <PageContainer>
       <Title>Stores</Title>
-      <DataTable 
-        columns={columns} 
-        data={stores} 
+      <DataTable
+        columns={columns}
+        data={stores}
+        rowKey="uid"
         onRowClick={(store) => router.push(`/stores/${store.uid}`)}
       />
     </PageContainer>

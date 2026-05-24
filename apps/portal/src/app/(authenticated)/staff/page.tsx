@@ -7,8 +7,7 @@ import { ApiStaffRepository } from '../../../infrastructure/repositories/ApiStaf
 import { GetStaffUseCase } from '../../../application/use-cases/GetStaffUseCase';
 import { Staff } from '../../../domain/entities/Staff';
 import { StaffFilter } from '../../../application/repositories/StaffRepository';
-import { DataTable } from '../../../presentation/components/DataTable';
-import { Pagination } from '../../../presentation/components/Pagination';
+import { DataTable } from '@apisit110/pos-ui';
 
 const PageContainer = styled.div`
   display: flex;
@@ -193,26 +192,29 @@ export default function StaffPage() {
   const columns = [
     {
       header: 'Name',
-      accessor: (s: Staff) => (
+      key: 'staff_name',
+      render: (s: Staff) => (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <span style={{ fontWeight: 600 }}>{s.name}</span>
           <span style={{ fontSize: '0.8rem', color: 'var(--text-sub)' }}>{s.username}</span>
         </div>
       ),
     },
-    { header: 'Role', accessor: (s: Staff) => s.role.charAt(0).toUpperCase() + s.role.slice(1) },
+    { header: 'Role', key: 'role', render: (s: Staff) => s.role.charAt(0).toUpperCase() + s.role.slice(1) },
     {
       header: 'Status',
-      accessor: (s: Staff) => (
+      key: 'status',
+      render: (s: Staff) => (
         <StatusBadge $status={s.status}>
           {s.status === 'pending_sync' ? 'Pending Sync' : s.status.charAt(0).toUpperCase() + s.status.slice(1)}
         </StatusBadge>
       ),
     },
-    { header: 'Merchant', accessor: (s: Staff) => s.merchantName || s.merchantUid },
+    { header: 'Merchant', key: 'merchant', render: (s: Staff) => s.merchantName || s.merchantUid },
     {
       header: 'Created At',
-      accessor: (s: Staff) => s.createdAt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      key: 'createdAt',
+      render: (s: Staff) => s.createdAt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
     },
   ];
 
@@ -294,15 +296,12 @@ export default function StaffPage() {
       <DataTable
         columns={columns}
         data={staffList}
-        footer={
-          <Pagination
-            total={total}
-            page={page}
-            limit={limit}
-            onPageChange={setPage}
-            onLimitChange={newLimit => { setLimit(newLimit); setPage(1); }}
-          />
-        }
+        rowKey="uid"
+        totalItems={total}
+        currentPage={page}
+        pageSize={limit}
+        onPageChange={setPage}
+        onPageSizeChange={newLimit => { setLimit(newLimit); setPage(1); }}
       />
 
       {loading && (
