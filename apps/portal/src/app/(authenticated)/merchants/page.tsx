@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiMerchantRepository';
 import { GetMerchantsUseCase } from '../../../application/use-cases/GetMerchantsUseCase';
 import { Merchant } from '../../../domain/entities/Merchant';
-import { DataTable } from '@apisit110/pos-ui';
+import { DataTable, Button } from '@apisit110/pos-ui';
 
 const PageContainer = styled.div`
   display: flex;
@@ -27,11 +27,6 @@ const Title = styled.h1`
   color: var(--text-main);
 `;
 
-const CreateButton = styled.button`
-  width: auto;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.9rem;
-`;
 
 export default function MerchantsPage() {
   const router = useRouter();
@@ -62,7 +57,7 @@ export default function MerchantsPage() {
     <PageContainer>
       <Header>
         <Title>Merchants</Title>
-        <CreateButton onClick={() => router.push('/merchants/new')}>Create Merchant</CreateButton>
+        <Button style={{ width: 'auto' }} onClick={() => router.push('/merchants/new')}>Create Merchant</Button>
       </Header>
       
       <DataTable

@@ -12,7 +12,7 @@ import { GetStaffByMerchantUseCase } from '../../../../application/use-cases/Get
 import { Merchant } from '../../../../domain/entities/Merchant';
 import { Store } from '../../../../domain/entities/Store';
 import { Staff } from '../../../../domain/entities/Staff';
-import { DataTable } from '@apisit110/pos-ui';
+import { DataTable, Button } from '@apisit110/pos-ui';
 
 import { FiArrowLeft, FiGrid, FiHash, FiInfo, FiUsers } from 'react-icons/fi';
 
@@ -38,24 +38,6 @@ const HeaderLeft = styled.div`
   gap: 1.5rem;
 `;
 
-const BackButton = styled.button`
-  width: auto;
-  height: 44px;
-  width: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  color: var(--text-main);
-  border-radius: 12px;
-  font-size: 1.25rem;
-  &:hover {
-    background: var(--border);
-    transform: translateX(-4px);
-  }
-`;
 
 const TitleContainer = styled.div`
   display: flex;
@@ -224,9 +206,9 @@ export default function MerchantDetailPage() {
     <PageContainer>
       <Header>
         <HeaderLeft>
-          <BackButton onClick={() => router.back()}>
+          <Button variant="secondary" style={{ width: '44px', height: '44px', padding: 0 }} onClick={() => router.back()}>
             <FiArrowLeft />
-          </BackButton>
+          </Button>
           <TitleContainer>
             <Subtitle>MERCHANT MANAGEMENT</Subtitle>
             <Title>{merchant.name}</Title>

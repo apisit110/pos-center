@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { RegisterMerchantUseCase } from '../../../../application/use-cases/RegisterMerchantUseCase';
 import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
+import { InputField, SelectFilter, Button } from '@apisit110/pos-ui';
 
 const PageContainer = styled.div`
   display: flex;
@@ -46,78 +47,18 @@ const SectionTitle = styled.h3`
   align-items: center;
 `;
 
-const FormGroup = styled.div`
-  margin-bottom: 1.5rem;
-`;
-
-const Label = styled.label`
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-sub);
-`;
-
-const Input = styled.input`
-  width: 100%;
+const TerminalInput = styled.input`
+  flex: 1;
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
   border: 1px solid var(--border);
   background: rgba(15, 23, 42, 0.5);
   color: white;
   font-size: 1rem;
-  transition: all 0.2s;
-
   &:focus {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-  }
-`;
-
-const Select = styled.select`
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
-  border: 1px solid var(--border);
-  background: rgba(15, 23, 42, 0.5);
-  color: white;
-  font-size: 1rem;
-  transition: all 0.2s;
-  cursor: pointer;
-
-  &:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-  }
-
-  option {
-    background: #1e293b;
-    color: white;
-  }
-`;
-
-const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'danger' }>`
-  width: auto;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0.75rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  background: ${props => {
-    if (props.$variant === 'danger') return '#ef4444';
-    if (props.$variant === 'secondary') return 'rgba(255, 255, 255, 0.05)';
-    return 'var(--primary)';
-  }};
-  color: white;
-  border: ${props => props.$variant === 'secondary' ? '1px solid var(--border)' : 'none'};
-
-  &:hover {
-    background: ${props => {
-      if (props.$variant === 'danger') return '#dc2626';
-      if (props.$variant === 'secondary') return 'rgba(255, 255, 255, 0.1)';
-      return 'var(--primary-hover)';
-    }};
   }
 `;
 
@@ -136,13 +77,6 @@ const TerminalRow = styled.div`
   align-items: center;
 `;
 
-const SubmitButton = styled.button`
-  width: 100%;
-  padding: 1rem;
-  border-radius: 0.75rem;
-  font-size: 1.1rem;
-  margin-top: 1rem;
-`;
 
 type StaffRole = 'manager' | 'cashier';
 
@@ -242,24 +176,22 @@ export default function CreateMerchantPage() {
     <PageContainer>
       <Header>
         <Title>Create New Merchant</Title>
-        <ActionButton $variant="secondary" onClick={() => router.push('/merchants')}>Back</ActionButton>
+        <Button variant="secondary" style={{ width: 'auto' }} onClick={() => router.push('/merchants')}>Back</Button>
       </Header>
 
       <FormCard>
         <form onSubmit={handleSubmit}>
-          <FormGroup>
-            <Label>Merchant Name</Label>
-            <Input
-              required
-              value={merchantName}
-              onChange={(e) => setMerchantName(e.target.value)}
-              placeholder="Enter merchant name"
-            />
-          </FormGroup>
+          <InputField
+            label="Merchant Name"
+            required
+            value={merchantName}
+            onChange={(e) => setMerchantName(e.target.value)}
+            placeholder="Enter merchant name"
+          />
 
           <SectionTitle>
             Staff
-            <ActionButton type="button" $variant="secondary" onClick={addStaff}>+ Add Staff</ActionButton>
+            <Button type="button" variant="secondary" style={{ width: 'auto' }} onClick={addStaff}>+ Add Staff</Button>
           </SectionTitle>
 
           {staffMembers.map((staff, sIdx) => (
@@ -267,59 +199,52 @@ export default function CreateMerchantPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                 <h4 style={{ margin: 0 }}>Staff #{sIdx + 1}</h4>
                 {staffMembers.length > 1 && (
-                  <ActionButton type="button" $variant="danger" onClick={() => removeStaff(sIdx)}>Remove</ActionButton>
+                  <Button type="button" variant="danger" style={{ width: 'auto' }} onClick={() => removeStaff(sIdx)}>Remove</Button>
                 )}
               </div>
 
-              <FormGroup>
-                <Label>Role</Label>
-                <Select
-                  value={staff.role}
-                  onChange={(e) => updateStaff(sIdx, 'role', e.target.value)}
-                >
-                  <option value="manager">Manager</option>
-                  <option value="cashier">Cashier</option>
-                </Select>
-              </FormGroup>
+              <SelectFilter
+                label="Role"
+                value={staff.role}
+                onChange={(value) => updateStaff(sIdx, 'role', value)}
+                options={[
+                  { value: 'manager', label: 'Manager' },
+                  { value: 'cashier', label: 'Cashier' },
+                ]}
+              />
 
-              <FormGroup>
-                <Label>Full Name</Label>
-                <Input
-                  required
-                  value={staff.fullName}
-                  onChange={(e) => updateStaff(sIdx, 'fullName', e.target.value)}
-                  placeholder="Full name"
-                />
-              </FormGroup>
+              <InputField
+                label="Full Name"
+                required
+                value={staff.fullName}
+                onChange={(e) => updateStaff(sIdx, 'fullName', e.target.value)}
+                placeholder="Full name"
+              />
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <FormGroup>
-                  <Label>PIN</Label>
-                  <Input
-                    required
-                    type="password"
-                    value={staff.pin}
-                    onChange={(e) => updateStaff(sIdx, 'pin', e.target.value)}
-                    placeholder="Enter PIN"
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label>Confirm PIN</Label>
-                  <Input
-                    required
-                    type="password"
-                    value={staff.confirmPin}
-                    onChange={(e) => updateStaff(sIdx, 'confirmPin', e.target.value)}
-                    placeholder="Confirm PIN"
-                  />
-                </FormGroup>
+                <InputField
+                  label="PIN"
+                  required
+                  type="password"
+                  value={staff.pin}
+                  onChange={(e) => updateStaff(sIdx, 'pin', e.target.value)}
+                  placeholder="Enter PIN"
+                />
+                <InputField
+                  label="Confirm PIN"
+                  required
+                  type="password"
+                  value={staff.confirmPin}
+                  onChange={(e) => updateStaff(sIdx, 'confirmPin', e.target.value)}
+                  placeholder="Confirm PIN"
+                />
               </div>
             </StoreCard>
           ))}
 
           <SectionTitle>
             Stores
-            <ActionButton type="button" $variant="secondary" onClick={addStore}>+ Add Store</ActionButton>
+            <Button type="button" variant="secondary" style={{ width: 'auto' }} onClick={addStore}>+ Add Store</Button>
           </SectionTitle>
 
           {stores.map((store, sIdx) => (
@@ -327,67 +252,58 @@ export default function CreateMerchantPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                 <h4 style={{ margin: 0 }}>Store #{sIdx + 1}</h4>
                 {stores.length > 1 && (
-                  <ActionButton type="button" $variant="danger" onClick={() => removeStore(sIdx)}>Remove</ActionButton>
+                  <Button type="button" variant="danger" style={{ width: 'auto' }} onClick={() => removeStore(sIdx)}>Remove</Button>
                 )}
               </div>
 
-              <FormGroup>
-                <Label>Store Name</Label>
-                <Input
-                  required
-                  value={store.name}
-                  onChange={(e) => updateStore(sIdx, 'name', e.target.value)}
-                  placeholder="Store name"
-                />
-              </FormGroup>
+              <InputField
+                label="Store Name"
+                required
+                value={store.name}
+                onChange={(e) => updateStore(sIdx, 'name', e.target.value)}
+                placeholder="Store name"
+              />
 
-              <FormGroup>
-                <Label>Address</Label>
-                <Input
-                  required
-                  value={store.address}
-                  onChange={(e) => updateStore(sIdx, 'address', e.target.value)}
-                  placeholder="Store address"
-                />
-              </FormGroup>
+              <InputField
+                label="Address"
+                required
+                value={store.address}
+                onChange={(e) => updateStore(sIdx, 'address', e.target.value)}
+                placeholder="Store address"
+              />
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <FormGroup>
-                  <Label>Latitude</Label>
-                  <Input
-                    type="number"
-                    step="any"
-                    value={store.latitude}
-                    onChange={(e) => updateStore(sIdx, 'latitude', parseFloat(e.target.value))}
-                  />
-                </FormGroup>
-                <FormGroup>
-                  <Label>Longitude</Label>
-                  <Input
-                    type="number"
-                    step="any"
-                    value={store.longitude}
-                    onChange={(e) => updateStore(sIdx, 'longitude', parseFloat(e.target.value))}
-                  />
-                </FormGroup>
+                <InputField
+                  label="Latitude"
+                  type="number"
+                  step="any"
+                  value={store.latitude}
+                  onChange={(e) => updateStore(sIdx, 'latitude', parseFloat(e.target.value))}
+                />
+                <InputField
+                  label="Longitude"
+                  type="number"
+                  step="any"
+                  value={store.longitude}
+                  onChange={(e) => updateStore(sIdx, 'longitude', parseFloat(e.target.value))}
+                />
               </div>
 
               <div style={{ marginTop: '1.5rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                  <Label style={{ marginBottom: 0 }}>Terminals</Label>
-                  <ActionButton type="button" $variant="secondary" onClick={() => addTerminal(sIdx)}>+ Add Terminal</ActionButton>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                  <span style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-sub)' }}>Terminals</span>
+                  <Button type="button" variant="secondary" style={{ width: 'auto' }} onClick={() => addTerminal(sIdx)}>+ Add Terminal</Button>
                 </div>
                 {store.terminals.map((terminal, tIdx) => (
                   <TerminalRow key={tIdx}>
-                    <Input
+                    <TerminalInput
                       required
                       value={terminal.name}
                       onChange={(e) => updateTerminal(sIdx, tIdx, e.target.value)}
                       placeholder="Terminal Name"
-                      style={{ marginBottom: 0 }}
                     />
                     {store.terminals.length > 1 && (
-                      <ActionButton type="button" $variant="danger" onClick={() => removeTerminal(sIdx, tIdx)}>&times;</ActionButton>
+                      <Button type="button" variant="danger" style={{ width: 'auto' }} onClick={() => removeTerminal(sIdx, tIdx)}>&times;</Button>
                     )}
                   </TerminalRow>
                 ))}
@@ -395,7 +311,7 @@ export default function CreateMerchantPage() {
             </StoreCard>
           ))}
 
-          <SubmitButton type="submit">Create Merchant</SubmitButton>
+          <Button type="submit" style={{ marginTop: '1rem' }}>Create Merchant</Button>
         </form>
       </FormCard>
     </PageContainer>

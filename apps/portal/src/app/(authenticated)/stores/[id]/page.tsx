@@ -9,7 +9,7 @@ import { GetStoreDetailUseCase } from '../../../../application/use-cases/GetStor
 import { GetTerminalsByStoreUseCase } from '../../../../application/use-cases/GetTerminalsByStoreUseCase';
 import { Store } from '../../../../domain/entities/Store';
 import { Terminal } from '../../../../domain/entities/Terminal';
-import { DataTable } from '@apisit110/pos-ui';
+import { DataTable, Button } from '@apisit110/pos-ui';
 
 const PageContainer = styled.div`
   display: flex;
@@ -23,16 +23,6 @@ const Header = styled.div`
   gap: 1rem;
 `;
 
-const BackButton = styled.button`
-  width: auto;
-  padding: 0.5rem 1rem;
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-main);
-  &:hover {
-    background: var(--bg-card);
-  }
-`;
 
 const Title = styled.h1`
   font-size: 1.875rem;
@@ -121,7 +111,7 @@ export default function StoreDetailPage() {
   return (
     <PageContainer>
       <Header>
-        <BackButton onClick={() => router.back()}>← Back</BackButton>
+        <Button variant="secondary" style={{ width: 'auto' }} onClick={() => router.back()}>← Back</Button>
         <Title>Store Details</Title>
       </Header>
 

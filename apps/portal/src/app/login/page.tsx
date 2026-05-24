@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoginUseCase } from '../../application/use-cases/LoginUseCase';
 import { ApiAuthRepository } from '../../infrastructure/repositories/ApiAuthRepository';
+import { InputField, Button } from '@apisit110/pos-ui';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -43,29 +44,25 @@ export default function LoginPage() {
           <p style={{ color: 'var(--text-sub)', marginBottom: '2rem' }}>Please enter your details</p>
           
           <form onSubmit={handleLogin}>
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Username</label>
-              <input 
-                type="text" 
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-            </div>
+            <InputField
+              label="Username"
+              type="text"
+              placeholder="Enter your username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
 
-            <div style={{ marginBottom: '1.5rem' }}>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.9rem' }}>Password</label>
-              <input 
-                type="password" 
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+            <InputField
+              label="Password"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
             {error && <p style={{ color: '#f87171', fontSize: '0.8rem', marginBottom: '1rem' }}>{error}</p>}
 
-            <button type="submit">Sign In</button>
+            <Button type="submit">Sign In</Button>
           </form>
         </div>
       </div>

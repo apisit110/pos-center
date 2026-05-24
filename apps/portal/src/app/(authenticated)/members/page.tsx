@@ -6,7 +6,7 @@ import { GetMembersUseCase } from '../../../application/use-cases/GetMembersUseC
 import { ApiMemberRepository } from '../../../infrastructure/repositories/ApiMemberRepository';
 import { Member } from '../../../domain/entities/Member';
 import { MemberFilter } from '../../../application/repositories/MemberRepository';
-import { DataTable } from '@apisit110/pos-ui';
+import { DataTable, FilterBar, TextFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
 import { useRouter } from 'next/navigation';
 import Select from 'react-select';
 
@@ -14,17 +14,6 @@ const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-`;
-
-const FilterSection = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.25rem;
-  padding: 1.5rem;
-  background: var(--bg-card);
-  border-radius: 1rem;
-  border: 1px solid var(--border);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 `;
 
 const FormGroup = styled.div`
@@ -39,17 +28,6 @@ const Label = styled.label`
   color: var(--text-sub);
 `;
 
-const Input = styled.input`
-  margin-bottom: 0;
-  padding: 0.6rem 0.75rem;
-  font-size: 0.9rem;
-  background: rgba(15, 23, 42, 0.5);
-  &:focus {
-    outline: 2px solid var(--primary);
-    border-color: transparent;
-  }
-`;
-
 const ButtonGroup = styled.div`
   display: flex;
   gap: 0.75rem;
@@ -59,19 +37,6 @@ const ButtonGroup = styled.div`
   margin-top: 0.5rem;
 `;
 
-const ActionButton = styled.button<{ $variant?: 'secondary' | 'primary' }>`
-  width: auto;
-  min-width: 120px;
-  padding: 0.6rem 1.5rem;
-  font-size: 0.9rem;
-  background: ${props => props.$variant === 'secondary' ? 'rgba(255, 255, 255, 0.05)' : 'var(--primary)'};
-  color: white;
-  border: ${props => props.$variant === 'secondary' ? '1px solid var(--border)' : 'none'};
-  
-  &:hover {
-    background: ${props => props.$variant === 'secondary' ? 'rgba(255, 255, 255, 0.1)' : 'var(--primary-hover)'};
-  }
-`;
 
 const TierBadge = styled.span<{ $tier: string }>`
   padding: 0.25rem 0.75rem;
@@ -218,16 +183,15 @@ export default function MembersPage() {
 
   return (
     <PageContainer>
-      <FilterSection>
-        <FormGroup style={{ gridColumn: 'span 2' }}>
-          <Label>Search Member</Label>
-          <Input 
-            placeholder="Search by name, email or phone..." 
+      <FilterBar>
+        <div style={{ gridColumn: 'span 2' }}>
+          <TextFilter
+            label="Search Member"
+            placeholder="Search by name, email or phone..."
             value={filters.query}
-            onChange={(e) => setFilters({ ...filters, query: e.target.value })}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+            onChange={(value) => setFilters({ ...filters, query: value })}
           />
-        </FormGroup>
+        </div>
 
         <FormGroup>
           <Label>Tier</Label>
@@ -245,10 +209,10 @@ export default function MembersPage() {
         </FormGroup>
 
         <ButtonGroup>
-          <ActionButton $variant="secondary" onClick={handleClear}>Clear</ActionButton>
-          <ActionButton onClick={handleSearch}>Search</ActionButton>
+          <ClearFilterButton onClick={handleClear}>Clear</ClearFilterButton>
+          <Button style={{ width: 'auto' }} onClick={handleSearch}>Search</Button>
         </ButtonGroup>
-      </FilterSection>
+      </FilterBar>
 
       <DataTable
         columns={columns}

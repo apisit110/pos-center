@@ -11,62 +11,33 @@ import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiM
 import { ApiStoreRepository } from '../../../infrastructure/repositories/ApiStoreRepository';
 import { Product } from '../../../domain/entities/Product';
 import { ProductFilter } from '../../../application/repositories/ProductRepository';
-import { DataTable } from '@apisit110/pos-ui';
+import { DataTable, FilterBar, TextFilter, SelectFilter, ClearFilterButton, InputField, Button } from '@apisit110/pos-ui';
 import { useRouter } from 'next/navigation';
-import Select from 'react-select';
+
+type LocalProductFilter = {
+  barcode: string;
+  name: string;
+  brand: string;
+  price: number | undefined;
+  unit: string;
+  merchantId: string | undefined;
+  storeId: string | undefined;
+};
+
+const toProductFilter = (f: LocalProductFilter): ProductFilter => ({
+  barcode: f.barcode || undefined,
+  name: f.name || undefined,
+  brands: f.brand ? [f.brand] : undefined,
+  price: f.price,
+  units: f.unit ? [f.unit] : undefined,
+  merchantId: f.merchantId,
+  storeId: f.storeId,
+});
 
 const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-`;
-
-const FilterSection = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.25rem;
-  padding: 1.5rem;
-  background: var(--bg-card);
-  border-radius: 1rem;
-  border: 1px solid var(--border);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-`;
-
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const Label = styled.label`
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-sub);
-`;
-
-const Input = styled.input`
-  margin-bottom: 0;
-  padding: 0.6rem 0.75rem;
-  font-size: 0.9rem;
-  background: rgba(15, 23, 42, 0.5);
-  &:focus {
-    outline: 2px solid var(--primary);
-    border-color: transparent;
-  }
-`;
-
-const NativeSelect = styled.select`
-  width: 100%;
-  padding: 0.6rem 0.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border);
-  background: rgba(15, 23, 42, 0.5);
-  color: white;
-  font-size: 0.9rem;
-  &:focus {
-    outline: 2px solid var(--primary);
-    border-color: transparent;
-  }
 `;
 
 const ButtonGroup = styled.div`
@@ -78,77 +49,6 @@ const ButtonGroup = styled.div`
   margin-top: 0.5rem;
 `;
 
-const ActionButton = styled.button<{ $variant?: 'secondary' | 'primary' }>`
-  width: auto;
-  min-width: 120px;
-  padding: 0.6rem 1.5rem;
-  font-size: 0.9rem;
-  background: ${props => props.$variant === 'secondary' ? 'rgba(255, 255, 255, 0.05)' : 'var(--primary)'};
-  color: white;
-  border: ${props => props.$variant === 'secondary' ? '1px solid var(--border)' : 'none'};
-  
-  &:hover {
-    background: ${props => props.$variant === 'secondary' ? 'rgba(255, 255, 255, 0.1)' : 'var(--primary-hover)'};
-  }
-`;
-
-
-
-const selectStyles = {
-  control: (base: any) => ({
-    ...base,
-    background: 'rgba(15, 23, 42, 0.5)',
-    borderColor: 'var(--border)',
-    borderRadius: '0.5rem',
-    minHeight: '42px',
-    boxShadow: 'none',
-    '&:hover': {
-      borderColor: 'var(--primary)',
-    }
-  }),
-  menu: (base: any) => ({
-    ...base,
-    background: 'var(--bg-card)',
-    border: '1px solid var(--border)',
-    zIndex: 20
-  }),
-  option: (base: any, state: any) => ({
-    ...base,
-    background: state.isFocused ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
-    color: 'white',
-    cursor: 'pointer',
-    '&:active': {
-      background: 'var(--primary)',
-    }
-  }),
-  multiValue: (base: any) => ({
-    ...base,
-    background: 'var(--primary)',
-    borderRadius: '4px',
-  }),
-  multiValueLabel: (base: any) => ({
-    ...base,
-    color: 'white',
-    fontSize: '0.8rem',
-  }),
-  multiValueRemove: (base: any) => ({
-    ...base,
-    color: 'white',
-    '&:hover': {
-      background: 'var(--primary-hover)',
-      color: 'white',
-    }
-  }),
-  input: (base: any) => ({
-    ...base,
-    color: 'white',
-  }),
-  placeholder: (base: any) => ({
-    ...base,
-    color: 'var(--text-sub)',
-    fontSize: '0.9rem'
-  })
-};
 
 export default function ProductsPage() {
   const router = useRouter();
@@ -157,15 +57,14 @@ export default function ProductsPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   
-  // Filter state
-  const [filters, setFilters] = useState<ProductFilter>({
+  const [filters, setFilters] = useState<LocalProductFilter>({
     barcode: '',
     name: '',
-    brands: [],
+    brand: '',
     price: undefined,
-    units: [],
+    unit: '',
     merchantId: undefined,
-    storeId: undefined
+    storeId: undefined,
   });
   
   // Metadata for filters
@@ -185,10 +84,10 @@ export default function ProductsPage() {
     return map;
   }, [merchants]);
 
-  const fetchProducts = useCallback(async (activeFilters: ProductFilter) => {
+  const fetchProducts = useCallback(async (activeFilters: LocalProductFilter) => {
     const repository = new ApiProductRepository();
     const useCase = new GetProductsUseCase(repository);
-    const result = await useCase.execute(page, limit, activeFilters);
+    const result = await useCase.execute(page, limit, toProductFilter(activeFilters));
     setProducts(result.products);
     setTotal(result.total);
   }, [page, limit]);
@@ -213,10 +112,10 @@ export default function ProductsPage() {
     fetchMetadata();
   }, []);
 
-  const handleMerchantChange = async (selected: any) => {
-    const merchantId = selected ? selected.value : undefined;
+  const handleMerchantChange = async (selected: { value: string } | null) => {
+    const merchantId = selected?.value || undefined;
     setFilters(prev => ({ ...prev, merchantId, storeId: undefined }));
-    
+
     const storeRepo = new ApiStoreRepository();
     const storeUC = new GetStoresUseCase(storeRepo);
     const storeData = await storeUC.execute(merchantId);
@@ -233,14 +132,14 @@ export default function ProductsPage() {
   };
 
   const handleClear = () => {
-    const clearedFilters = {
+    const clearedFilters: LocalProductFilter = {
       barcode: '',
       name: '',
-      brands: [],
+      brand: '',
       price: undefined,
-      units: [],
+      unit: '',
       merchantId: undefined,
-      storeId: undefined
+      storeId: undefined,
     };
     setFilters(clearedFilters);
     setPage(1);
@@ -262,104 +161,70 @@ export default function ProductsPage() {
   return (
     <PageContainer>
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '-0.5rem' }}>
-        <ActionButton onClick={() => router.push('/products/new')}>+ Add Product</ActionButton>
+        <Button style={{ width: 'auto' }} onClick={() => router.push('/products/new')}>+ Add Product</Button>
       </div>
-      <FilterSection>
-        <FormGroup>
-          <Label>Barcode</Label>
-          <Input 
-            placeholder="Search barcode..." 
-            value={filters.barcode}
-            onChange={(e) => setFilters({ ...filters, barcode: e.target.value })}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-          />
-        </FormGroup>
-        
-        <FormGroup>
-          <Label>Product Name</Label>
-          <Input 
-            placeholder="Search name..." 
-            value={filters.name}
-            onChange={(e) => setFilters({ ...filters, name: e.target.value })}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-          />
-        </FormGroup>
+      <FilterBar>
+        <TextFilter
+          label="Barcode"
+          placeholder="Search barcode..."
+          value={filters.barcode}
+          onChange={(value) => setFilters({ ...filters, barcode: value })}
+        />
 
-        <FormGroup>
-          <Label>Max Price</Label>
-          <Input 
-            type="number"
-            placeholder="Max price..." 
-            value={filters.price === undefined ? '' : filters.price}
-            onChange={(e) => setFilters({ ...filters, price: e.target.value ? Number(e.target.value) : undefined })}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-          />
-        </FormGroup>
+        <TextFilter
+          label="Product Name"
+          placeholder="Search name..."
+          value={filters.name}
+          onChange={(value) => setFilters({ ...filters, name: value })}
+        />
 
-        <FormGroup>
-          <Label>Brand</Label>
-          <Select
-            instanceId="brand-select"
-            isMulti
-            options={brandOptions}
-            styles={selectStyles}
-            value={brandOptions.filter(opt => filters.brands?.includes(opt.value))}
-            onChange={(selected) => {
-              setFilters({ ...filters, brands: (selected as any[]).map(s => s.value) });
-            }}
-            placeholder="Select brands..."
-          />
-        </FormGroup>
+        <InputField
+          label="Max Price"
+          type="number"
+          placeholder="Max price..."
+          value={filters.price === undefined ? '' : filters.price}
+          onChange={(e) => setFilters({ ...filters, price: e.target.value ? Number(e.target.value) : undefined })}
+          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+        />
 
-        <FormGroup>
-          <Label>Unit</Label>
-          <Select
-            instanceId="unit-select"
-            isMulti
-            options={unitOptions}
-            styles={selectStyles}
-            value={unitOptions.filter(opt => filters.units?.includes(opt.value))}
-            onChange={(selected) => {
-              setFilters({ ...filters, units: (selected as any[]).map(s => s.value) });
-            }}
-            placeholder="Select units..."
-          />
-        </FormGroup>
+        <SelectFilter
+          label="Brand"
+          value={filters.brand}
+          onChange={(value) => setFilters({ ...filters, brand: value })}
+          options={brandOptions}
+          placeholder="All Brands"
+        />
 
-        <FormGroup>
-          <Label>Merchant</Label>
-          <Select
-            instanceId="merchant-select"
-            isClearable
-            options={merchants}
-            styles={selectStyles}
-            value={merchants.find(opt => opt.value === filters.merchantId) || null}
-            onChange={handleMerchantChange}
-            placeholder="Filter by Merchant..."
-          />
-        </FormGroup>
+        <SelectFilter
+          label="Unit"
+          value={filters.unit}
+          onChange={(value) => setFilters({ ...filters, unit: value })}
+          options={unitOptions}
+          placeholder="All Units"
+        />
 
-        <FormGroup>
-          <Label>Store</Label>
-          <Select
-            instanceId="store-select"
-            isClearable
-            options={stores}
-            styles={selectStyles}
-            value={stores.find(opt => opt.value === filters.storeId) || null}
-            onChange={(selected) => {
-              setFilters({ ...filters, storeId: selected ? (selected as any).value : undefined });
-            }}
-            placeholder="Filter by Store..."
-            isDisabled={!filters.merchantId && merchants.length > 0}
-          />
-        </FormGroup>
+        <SelectFilter
+          label="Merchant"
+          value={filters.merchantId ?? ''}
+          onChange={(value) => handleMerchantChange(value ? { value } : null)}
+          options={merchants}
+          placeholder="All Merchants"
+        />
+
+        <SelectFilter
+          label="Store"
+          value={filters.storeId ?? ''}
+          onChange={(value) => setFilters({ ...filters, storeId: value || undefined })}
+          options={stores}
+          placeholder="All Stores"
+          disabled={!filters.merchantId && merchants.length > 0}
+        />
 
         <ButtonGroup>
-          <ActionButton $variant="secondary" onClick={handleClear}>Clear</ActionButton>
-          <ActionButton onClick={handleSearch}>Search</ActionButton>
+          <ClearFilterButton onClick={handleClear}>Clear</ClearFilterButton>
+          <Button style={{ width: 'auto' }} onClick={handleSearch}>Search</Button>
         </ButtonGroup>
-      </FilterSection>
+      </FilterBar>
 
       <DataTable
         columns={columns}

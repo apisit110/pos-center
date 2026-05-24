@@ -7,7 +7,7 @@ import { ApiStaffRepository } from '../../../infrastructure/repositories/ApiStaf
 import { GetStaffUseCase } from '../../../application/use-cases/GetStaffUseCase';
 import { Staff } from '../../../domain/entities/Staff';
 import { StaffFilter } from '../../../application/repositories/StaffRepository';
-import { DataTable } from '@apisit110/pos-ui';
+import { DataTable, FilterBar, TextFilter, DateFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
 
 const PageContainer = styled.div`
   display: flex;
@@ -22,16 +22,6 @@ const Title = styled.h1`
   color: var(--text-main);
 `;
 
-const FilterSection = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1.25rem;
-  padding: 1.5rem;
-  background: var(--bg-card);
-  border-radius: 1rem;
-  border: 1px solid var(--border);
-`;
-
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
@@ -44,17 +34,6 @@ const Label = styled.label`
   color: var(--text-sub);
 `;
 
-const Input = styled.input`
-  margin-bottom: 0;
-  padding: 0.6rem 0.75rem;
-  font-size: 0.9rem;
-  background: rgba(15, 23, 42, 0.5);
-  &:focus {
-    outline: 2px solid var(--primary);
-    border-color: transparent;
-  }
-`;
-
 const ButtonGroup = styled.div`
   display: flex;
   gap: 0.75rem;
@@ -64,19 +43,6 @@ const ButtonGroup = styled.div`
   margin-top: 0.5rem;
 `;
 
-const ActionButton = styled.button<{ $variant?: 'secondary' }>`
-  width: auto;
-  min-width: 120px;
-  padding: 0.6rem 1.5rem;
-  font-size: 0.9rem;
-  background: ${props => props.$variant === 'secondary' ? 'rgba(255, 255, 255, 0.05)' : 'var(--primary)'};
-  color: white;
-  border: ${props => props.$variant === 'secondary' ? '1px solid var(--border)' : 'none'};
-
-  &:hover {
-    background: ${props => props.$variant === 'secondary' ? 'rgba(255, 255, 255, 0.1)' : 'var(--primary-hover)'};
-  }
-`;
 
 const StatusBadge = styled.span<{ $status: string }>`
   padding: 0.2rem 0.65rem;
@@ -222,44 +188,32 @@ export default function StaffPage() {
     <PageContainer>
       <Title>Staff Management</Title>
 
-      <FilterSection>
-        <FormGroup>
-          <Label>Start Date</Label>
-          <Input
-            type="date"
-            value={pendingFilters.startDate ?? ''}
-            onChange={e => setPendingFilters(f => ({ ...f, startDate: e.target.value }))}
-          />
-        </FormGroup>
+      <FilterBar>
+        <DateFilter
+          label="Start Date"
+          value={pendingFilters.startDate ?? ''}
+          onChange={value => setPendingFilters(f => ({ ...f, startDate: value }))}
+        />
 
-        <FormGroup>
-          <Label>End Date</Label>
-          <Input
-            type="date"
-            value={pendingFilters.endDate ?? ''}
-            onChange={e => setPendingFilters(f => ({ ...f, endDate: e.target.value }))}
-          />
-        </FormGroup>
+        <DateFilter
+          label="End Date"
+          value={pendingFilters.endDate ?? ''}
+          onChange={value => setPendingFilters(f => ({ ...f, endDate: value }))}
+        />
 
-        <FormGroup>
-          <Label>Merchant UID</Label>
-          <Input
-            placeholder="Enter merchant UID..."
-            value={pendingFilters.merchantId ?? ''}
-            onChange={e => setPendingFilters(f => ({ ...f, merchantId: e.target.value }))}
-            onKeyDown={e => e.key === 'Enter' && handleSearch()}
-          />
-        </FormGroup>
+        <TextFilter
+          label="Merchant UID"
+          placeholder="Enter merchant UID..."
+          value={pendingFilters.merchantId ?? ''}
+          onChange={value => setPendingFilters(f => ({ ...f, merchantId: value }))}
+        />
 
-        <FormGroup>
-          <Label>Username</Label>
-          <Input
-            placeholder="Search by username..."
-            value={pendingFilters.username ?? ''}
-            onChange={e => setPendingFilters(f => ({ ...f, username: e.target.value }))}
-            onKeyDown={e => e.key === 'Enter' && handleSearch()}
-          />
-        </FormGroup>
+        <TextFilter
+          label="Username"
+          placeholder="Search by username..."
+          value={pendingFilters.username ?? ''}
+          onChange={value => setPendingFilters(f => ({ ...f, username: value }))}
+        />
 
         <FormGroup>
           <Label>Role</Label>
@@ -288,10 +242,10 @@ export default function StaffPage() {
         </FormGroup>
 
         <ButtonGroup>
-          <ActionButton $variant="secondary" onClick={handleClear}>Clear</ActionButton>
-          <ActionButton onClick={handleSearch}>Search</ActionButton>
+          <ClearFilterButton onClick={handleClear}>Clear</ClearFilterButton>
+          <Button style={{ width: 'auto' }} onClick={handleSearch}>Search</Button>
         </ButtonGroup>
-      </FilterSection>
+      </FilterBar>
 
       <DataTable
         columns={columns}

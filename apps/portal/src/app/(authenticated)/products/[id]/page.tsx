@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { Button } from '@apisit110/pos-ui';
 import { useParams, useRouter } from 'next/navigation';
 import { GetProductUseCase } from '../../../../application/use-cases/GetProductUseCase';
 import { ApiProductRepository } from '../../../../infrastructure/repositories/ApiProductRepository';
@@ -26,23 +27,6 @@ const Header = styled.div`
   gap: 1rem;
 `;
 
-const BackButton = styled.button`
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  padding: 0.75rem;
-  color: var(--text-main);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateX(-2px);
-  }
-`;
 
 const Title = styled.h1`
   font-size: 1.875rem;
@@ -297,9 +281,9 @@ export default function ProductDetailPage() {
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => router.back()}>
+        <Button variant="secondary" style={{ width: 'auto', padding: '0.75rem' }} onClick={() => router.back()}>
           <FiArrowLeft size={20} />
-        </BackButton>
+        </Button>
         <Title>Product Details</Title>
       </Header>
 

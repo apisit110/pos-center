@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
-import Select from 'react-select';
+import { InputField, SelectFilter, Button } from '@apisit110/pos-ui';
 import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
 import { ApiStoreRepository } from '../../../../infrastructure/repositories/ApiStoreRepository';
 import { ApiStoreProductRepository } from '../../../../infrastructure/repositories/ApiStoreProductRepository';
@@ -68,48 +68,6 @@ const TabButton = styled.button<{ $active: boolean }>`
   }
 `;
 
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-`;
-
-const Label = styled.label`
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-sub);
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 0.75rem;
-  border-radius: 0.5rem;
-  border: 1px solid var(--border);
-  background: rgba(15, 23, 42, 0.5);
-  color: white;
-  font-size: 1rem;
-  &:focus {
-    outline: 2px solid var(--primary);
-    border-color: transparent;
-  }
-`;
-
-const ActionButton = styled.button<{ $variant?: 'secondary' | 'primary' }>`
-  width: 100%;
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  background: ${props => props.$variant === 'secondary' ? 'rgba(255, 255, 255, 0.05)' : 'var(--primary)'};
-  color: white;
-  border: ${props => props.$variant === 'secondary' ? '1px solid var(--border)' : 'none'};
-  border-radius: 0.5rem;
-  cursor: pointer;
-  margin-top: 1rem;
-  
-  &:hover {
-    background: ${props => props.$variant === 'secondary' ? 'rgba(255, 255, 255, 0.1)' : 'var(--primary-hover)'};
-  }
-`;
 
 const DropZone = styled.div<{ $dragActive?: boolean }>`
   border: 2px dashed ${props => props.$dragActive ? 'var(--primary)' : 'var(--border)'};
@@ -179,36 +137,6 @@ const SuccessText = styled.p`
   margin-top: 0.5rem;
 `;
 
-const selectStyles = {
-  control: (base: any) => ({
-    ...base,
-    background: 'rgba(15, 23, 42, 0.5)',
-    borderColor: 'var(--border)',
-    color: 'white',
-    padding: '0.2rem',
-    borderRadius: '0.5rem',
-  }),
-  menu: (base: any) => ({
-    ...base,
-    background: '#1e293b',
-    border: '1px solid var(--border)',
-    zIndex: 100,
-  }),
-  option: (base: any, state: any) => ({
-    ...base,
-    background: state.isFocused ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-    color: 'white',
-    cursor: 'pointer',
-  }),
-  singleValue: (base: any) => ({
-    ...base,
-    color: 'white',
-  }),
-  input: (base: any) => ({
-    ...base,
-    color: 'white',
-  })
-};
 
 export default function MapProductStorePage() {
   const router = useRouter();
@@ -219,8 +147,8 @@ export default function MapProductStorePage() {
   // Data State
   const [merchants, setMerchants] = useState<Merchant[]>([]);
   const [stores, setStores] = useState<Store[]>([]);
-  const [selectedMerchant, setSelectedMerchant] = useState<{value: string, label: string} | null>(null);
-  const [selectedStore, setSelectedStore] = useState<{value: string, label: string} | null>(null);
+  const [selectedMerchant, setSelectedMerchant] = useState('');
+  const [selectedStore, setSelectedStore] = useState('');
 
   useEffect(() => {
     const fetchMerchants = async () => {
@@ -245,7 +173,7 @@ export default function MapProductStorePage() {
       try {
         const repo = new ApiStoreRepository();
         const useCase = new GetStoresUseCase(repo);
-        const data = await useCase.execute(selectedMerchant.value);
+        const data = await useCase.execute(selectedMerchant);
         setStores(data);
       } catch (err) {
         console.error('Failed to fetch stores', err);
@@ -285,6 +213,7 @@ export default function MapProductStorePage() {
       return;
     }
 
+
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
@@ -300,14 +229,14 @@ export default function MapProductStorePage() {
           throw new Error('Invalid JSON structure. Ensure product_uid, stock, and price exist.');
         }
 
-        const store = stores.find(s => s.uid === selectedStore.value);
+        const store = stores.find(s => s.uid === selectedStore);
         const mappedData = json.map(item => ({
           ...item,
-          store_uid: store?.uid || selectedStore.value,
+          store_uid: store?.uid || selectedStore,
         }));
 
         setImportedData(mappedData);
-        setImportSuccess(`Successfully parsed ${json.length} mappings for ${store?.name || selectedStore.label}.`);
+        setImportSuccess(`Successfully parsed ${json.length} mappings for ${store?.name || selectedStore}.`);
       } catch (err: any) {
         setImportError(err.message || 'Failed to parse JSON file.');
       }
@@ -375,44 +304,38 @@ export default function MapProductStorePage() {
     <PageContainer>
       <Header>
         <Title>Map Product to Store</Title>
-        <ActionButton $variant="secondary" style={{ width: 'auto', marginTop: 0 }} onClick={() => router.back()}>
+        <Button variant="secondary" style={{ width: 'auto' }} onClick={() => router.back()}>
           Back
-        </ActionButton>
+        </Button>
       </Header>
 
       <Section style={{ padding: '1.5rem' }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
-          <FormGroup>
-            <Label>Select Merchant</Label>
-            <Select 
-              options={merchants.map(m => ({ value: m.uid, label: m.name }))}
-              value={selectedMerchant}
-              onChange={(val) => {
-                setSelectedMerchant(val);
-                setSelectedStore(null);
-                setManualForm(prev => ({ ...prev, storeId: '' }));
-              }}
-              placeholder="Select a merchant..."
-              styles={selectStyles}
-            />
-          </FormGroup>
-          <FormGroup>
-            <Label>Select Store</Label>
-            <Select 
-              options={stores.map(s => ({ value: s.uid, label: s.name }))}
-              value={selectedStore}
-              onChange={(val) => {
-                setSelectedStore(val);
-                if (val) {
-                   const store = stores.find(s => s.uid === val?.value);
-                   setManualForm(prev => ({ ...prev, storeId: store?.sid || '' }));
-                }
-              }}
-              placeholder="Select a store..."
-              isDisabled={!selectedMerchant}
-              styles={selectStyles}
-            />
-          </FormGroup>
+          <SelectFilter
+            label="Select Merchant"
+            value={selectedMerchant}
+            onChange={(val) => {
+              setSelectedMerchant(val);
+              setSelectedStore('');
+              setManualForm(prev => ({ ...prev, storeId: '' }));
+            }}
+            options={merchants.map(m => ({ value: m.uid, label: m.name }))}
+            placeholder="Select a merchant..."
+          />
+          <SelectFilter
+            label="Select Store"
+            value={selectedStore}
+            onChange={(val) => {
+              setSelectedStore(val);
+              if (val) {
+                const store = stores.find(s => s.uid === val);
+                setManualForm(prev => ({ ...prev, storeId: store?.sid || '' }));
+              }
+            }}
+            options={stores.map(s => ({ value: s.uid, label: s.name }))}
+            placeholder="Select a store..."
+            disabled={!selectedMerchant}
+          />
         </div>
       </Section>
 
@@ -427,57 +350,48 @@ export default function MapProductStorePage() {
 
       {activeTab === 'manual' ? (
         <Section>
-          <form onSubmit={handleManualSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <FormGroup>
-              <Label>Store ID</Label>
-              <Input 
-                type="text" 
-                placeholder="e.g. S-001" 
-                required 
-                value={manualForm.storeId}
-                onChange={(e) => setManualForm({...manualForm, storeId: e.target.value})}
-              />
-            </FormGroup>
+          <form onSubmit={handleManualSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <InputField
+              label="Store ID"
+              type="text"
+              placeholder="e.g. S-001"
+              required
+              value={manualForm.storeId}
+              onChange={(e) => setManualForm({...manualForm, storeId: e.target.value})}
+            />
 
-            <FormGroup>
-              <Label>Product ID</Label>
-              <Input 
-                type="text" 
-                placeholder="e.g. P75Lx5mwPw..." 
-                required 
-                value={manualForm.productId}
-                onChange={(e) => setManualForm({...manualForm, productId: e.target.value})}
-              />
-            </FormGroup>
+            <InputField
+              label="Product ID"
+              type="text"
+              placeholder="e.g. P75Lx5mwPw..."
+              required
+              value={manualForm.productId}
+              onChange={(e) => setManualForm({...manualForm, productId: e.target.value})}
+            />
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
-              <FormGroup>
-                <Label>Stock Quantity</Label>
-                <Input 
-                  type="number" 
-                  placeholder="0" 
-                  min="0"
-                  required 
-                  value={manualForm.stock}
-                  onChange={(e) => setManualForm({...manualForm, stock: e.target.value})}
-                />
-              </FormGroup>
-
-              <FormGroup>
-                <Label>Unit Price (฿)</Label>
-                <Input 
-                  type="number" 
-                  placeholder="0.00" 
-                  min="0"
-                  step="0.01"
-                  required 
-                  value={manualForm.price}
-                  onChange={(e) => setManualForm({...manualForm, price: e.target.value})}
-                />
-              </FormGroup>
+              <InputField
+                label="Stock Quantity"
+                type="number"
+                placeholder="0"
+                min="0"
+                required
+                value={manualForm.stock}
+                onChange={(e) => setManualForm({...manualForm, stock: e.target.value})}
+              />
+              <InputField
+                label="Unit Price (฿)"
+                type="number"
+                placeholder="0.00"
+                min="0"
+                step="0.01"
+                required
+                value={manualForm.price}
+                onChange={(e) => setManualForm({...manualForm, price: e.target.value})}
+              />
             </div>
 
-            <ActionButton type="submit">Save Mapping</ActionButton>
+            <Button type="submit" style={{ marginTop: '0.5rem' }}>Save Mapping</Button>
           </form>
         </Section>
       ) : (
@@ -519,11 +433,11 @@ export default function MapProductStorePage() {
                   {importedData.length > 3 && '\n\n  ... (preview limited to first 3 items)'}
                 </JsonPreview>
                 
-                <ActionButton onClick={handleImportSubmit} disabled={isImporting}>
+                <Button isLoading={isImporting} disabled={isImporting} style={{ marginTop: '1rem' }} onClick={handleImportSubmit}>
                   {isImporting
                     ? `Importing ${importedData.length} Mapping(s)...`
                     : `Import ${importedData.length} Mappings`}
-                </ActionButton>
+                </Button>
               </>
             )}
           </FormGroup>

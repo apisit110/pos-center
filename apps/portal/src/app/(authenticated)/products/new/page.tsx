@@ -8,7 +8,7 @@ import { BatchCreateProductsUseCase } from '../../../../application/use-cases/Ba
 import { GetMerchantsUseCase } from '../../../../application/use-cases/GetMerchantsUseCase';
 import { ApiProductRepository } from '../../../../infrastructure/repositories/ApiProductRepository';
 import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
-import Select from 'react-select';
+import { InputField, SelectFilter, Button } from '@apisit110/pos-ui';
 
 /* ─── Animations ───────────────────────────────────────────── */
 
@@ -153,34 +153,6 @@ const FormCard = styled.div`
   animation: ${fadeIn} 0.3s ease;
 `;
 
-const FormGroup = styled.div`
-  margin-bottom: 1.5rem;
-`;
-
-const Label = styled.label`
-  display: block;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: var(--text-sub);
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border-radius: 0.75rem;
-  border: 1px solid var(--border);
-  background: rgba(15, 23, 42, 0.5);
-  color: white;
-  font-size: 1rem;
-  transition: all 0.2s;
-
-  &:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-  }
-`;
 
 const TwoCol = styled.div`
   display: grid;
@@ -188,59 +160,6 @@ const TwoCol = styled.div`
   gap: 1rem;
 `;
 
-const ActionButton = styled.button<{ $variant?: 'primary' | 'secondary' | 'danger' }>`
-  width: auto;
-  padding: 0.6rem 1.2rem;
-  border-radius: 0.75rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-  background: ${props => {
-    if (props.$variant === 'danger') return '#ef4444';
-    if (props.$variant === 'secondary') return 'rgba(255, 255, 255, 0.05)';
-    return 'var(--primary)';
-  }};
-  color: white;
-  border: ${props => props.$variant === 'secondary' ? '1px solid var(--border)' : 'none'};
-  cursor: pointer;
-  transition: all 0.2s;
-
-  &:hover {
-    background: ${props => {
-      if (props.$variant === 'danger') return '#dc2626';
-      if (props.$variant === 'secondary') return 'rgba(255, 255, 255, 0.1)';
-      return 'var(--primary-hover)';
-    }};
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-`;
-
-const SubmitButton = styled.button<{ $loading?: boolean }>`
-  width: 100%;
-  padding: 1rem;
-  border-radius: 0.75rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-top: 1rem;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-
-  ${props => props.$loading && css`
-    pointer-events: none;
-    &::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
-      background-size: 200% 100%;
-      animation: ${shimmer} 1.5s infinite;
-    }
-  `}
-`;
 
 /* ─── JSON Upload Zone ─────────────────────────────────────── */
 
@@ -364,35 +283,6 @@ const ResultBanner = styled.div<{ $type: 'success' | 'error' }>`
   animation: ${fadeIn} 0.3s ease;
 `;
 
-/* ─── Select styles ────────────────────────────────────────── */
-
-const selectStyles = {
-  control: (base: any) => ({
-    ...base,
-    background: 'rgba(15, 23, 42, 0.5)',
-    borderColor: 'var(--border)',
-    borderRadius: '0.75rem',
-    minHeight: '46px',
-    boxShadow: 'none',
-    '&:hover': { borderColor: 'var(--primary)' }
-  }),
-  menu: (base: any) => ({
-    ...base,
-    background: 'var(--bg-card)',
-    border: '1px solid var(--border)',
-    zIndex: 20
-  }),
-  option: (base: any, state: any) => ({
-    ...base,
-    background: state.isFocused ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
-    color: 'white',
-    cursor: 'pointer',
-    '&:active': { background: 'var(--primary)' }
-  }),
-  singleValue: (base: any) => ({ ...base, color: 'white' }),
-  input: (base: any) => ({ ...base, color: 'white' }),
-  placeholder: (base: any) => ({ ...base, color: 'var(--text-sub)', fontSize: '0.9rem' })
-};
 
 /* ─── JSON product type (from master_product.json) ─────────── */
 
@@ -421,9 +311,8 @@ export default function AddProductPage() {
   // Mode state
   const [mode, setMode] = useState<'keyin' | 'json'>('keyin');
 
-  // Merchant list
   const [merchants, setMerchants] = useState<{ value: string; label: string }[]>([]);
-  const [selectedMerchant, setSelectedMerchant] = useState<{ value: string; label: string } | null>(null);
+  const [selectedMerchant, setSelectedMerchant] = useState('');
 
   // Key-in form state
   const [name, setName] = useState('');
@@ -463,7 +352,7 @@ export default function AddProductPage() {
       const repo = new ApiProductRepository();
       const useCase = new CreateProductUseCase(repo);
       await useCase.execute({
-        merchantId: selectedMerchant.value,
+        merchantId: selectedMerchant,
         name,
         barcode,
         basePrice: Number(basePrice),
@@ -534,7 +423,7 @@ export default function AddProductPage() {
       setResult({ type: 'error', message: 'Please select a merchant' });
       return;
     }
-    if (jsonProducts.length === 0) {
+    if (!jsonProducts.length) {
       setResult({ type: 'error', message: 'No products to import' });
       return;
     }
@@ -547,7 +436,7 @@ export default function AddProductPage() {
       const useCase = new BatchCreateProductsUseCase(repo);
       const requests = jsonProducts.map(p => ({
         uid: p.uid,
-        merchantId: selectedMerchant.value,
+        merchantId: selectedMerchant,
         name: p.name_th || p.name_en || '',
         barcode: p.barcode || '',
         basePrice: p.base_price,
@@ -578,9 +467,9 @@ export default function AddProductPage() {
       {/* Header */}
       <Header>
         <Title>Add Product</Title>
-        <ActionButton $variant="secondary" onClick={() => router.push('/products')}>
+        <Button variant="secondary" style={{ width: 'auto' }} onClick={() => router.push('/products')}>
           ← Back to Products
-        </ActionButton>
+        </Button>
       </Header>
 
       {/* Mode Selector */}
@@ -610,78 +499,64 @@ export default function AddProductPage() {
 
       {/* Merchant Selector (shared) */}
       <FormCard>
-        <FormGroup style={{ marginBottom: 0 }}>
-          <Label>Merchant *</Label>
-          <Select
-            instanceId="merchant-add-product"
-            options={merchants}
-            styles={selectStyles}
-            value={selectedMerchant}
-            onChange={(opt) => setSelectedMerchant(opt as any)}
-            placeholder="Select a merchant..."
-          />
-        </FormGroup>
+        <SelectFilter
+          label="Merchant *"
+          value={selectedMerchant}
+          onChange={setSelectedMerchant}
+          options={merchants}
+          placeholder="Select a merchant..."
+        />
       </FormCard>
 
       {/* ─── Mode: Key-in ────────────────────────────────── */}
       {mode === 'keyin' && (
         <FormCard>
           <form onSubmit={handleKeyinSubmit}>
-            <FormGroup>
-              <Label>Product Name *</Label>
-              <Input
-                required
-                value={name}
-                onChange={e => setName(e.target.value)}
-                placeholder="e.g. เป๊ปซี่ 345มล"
+            <InputField
+              label="Product Name *"
+              required
+              value={name}
+              onChange={e => setName(e.target.value)}
+              placeholder="e.g. เป๊ปซี่ 345มล"
+            />
+
+            <TwoCol>
+              <InputField
+                label="Barcode"
+                value={barcode}
+                onChange={e => setBarcode(e.target.value)}
+                placeholder="e.g. 8858998581221"
               />
-            </FormGroup>
-
-            <TwoCol>
-              <FormGroup>
-                <Label>Barcode</Label>
-                <Input
-                  value={barcode}
-                  onChange={e => setBarcode(e.target.value)}
-                  placeholder="e.g. 8858998581221"
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label>Base Price *</Label>
-                <Input
-                  required
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={basePrice}
-                  onChange={e => setBasePrice(e.target.value)}
-                  placeholder="0.00"
-                />
-              </FormGroup>
+              <InputField
+                label="Base Price *"
+                required
+                type="number"
+                step="0.01"
+                min="0"
+                value={basePrice}
+                onChange={e => setBasePrice(e.target.value)}
+                placeholder="0.00"
+              />
             </TwoCol>
 
             <TwoCol>
-              <FormGroup>
-                <Label>Brand</Label>
-                <Input
-                  value={brand}
-                  onChange={e => setBrand(e.target.value)}
-                  placeholder="e.g. เป๊ปซี่"
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label>Unit</Label>
-                <Input
-                  value={unitName}
-                  onChange={e => setUnitName(e.target.value)}
-                  placeholder="e.g. ขวด, กระป๋อง"
-                />
-              </FormGroup>
+              <InputField
+                label="Brand"
+                value={brand}
+                onChange={e => setBrand(e.target.value)}
+                placeholder="e.g. เป๊ปซี่"
+              />
+              <InputField
+                label="Unit"
+                value={unitName}
+                onChange={e => setUnitName(e.target.value)}
+                placeholder="e.g. ขวด, กระป๋อง"
+              />
             </TwoCol>
 
-            <SubmitButton type="submit" disabled={loading} $loading={loading}>
+            <Button type="submit" isLoading={loading} style={{ marginTop: '1rem' }}>
               {loading ? 'Creating...' : 'Create Product'}
-            </SubmitButton>
+            </Button>
           </form>
 
           {result && (
@@ -721,9 +596,9 @@ export default function AddProductPage() {
               </div>
 
               <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                <ActionButton type="button" onClick={handleLoadMaster}>
+                <Button type="button" style={{ width: 'auto' }} onClick={handleLoadMaster}>
                   📋 Load Master Product List
-                </ActionButton>
+                </Button>
               </div>
             </>
           ) : (
@@ -732,9 +607,9 @@ export default function AddProductPage() {
                 <PreviewTitle>Preview Products</PreviewTitle>
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                   <PreviewBadge>{jsonProducts.length} items</PreviewBadge>
-                  <ActionButton $variant="danger" onClick={() => setJsonProducts([])}>
+                  <Button variant="danger" style={{ width: 'auto' }} onClick={() => setJsonProducts([])}>
                     Clear
-                  </ActionButton>
+                  </Button>
                 </div>
               </PreviewHeader>
 
@@ -765,14 +640,15 @@ export default function AddProductPage() {
                 </Table>
               </TableWrapper>
 
-              <SubmitButton
+              <Button
                 type="button"
+                isLoading={loading}
                 disabled={loading || !selectedMerchant}
-                $loading={loading}
+                style={{ marginTop: '1rem' }}
                 onClick={handleJsonSubmit}
               >
                 {loading ? `Importing ${jsonProducts.length} product(s)...` : `Import ${jsonProducts.length} Product(s)`}
-              </SubmitButton>
+              </Button>
             </PreviewContainer>
           )}
 
