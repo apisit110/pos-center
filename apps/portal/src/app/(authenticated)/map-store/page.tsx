@@ -4,14 +4,14 @@ import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { InputField, SelectFilter, Button } from '@apisit110/pos-ui';
-import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
-import { ApiStoreRepository } from '../../../../infrastructure/repositories/ApiStoreRepository';
-import { ApiStoreProductRepository } from '../../../../infrastructure/repositories/ApiStoreProductRepository';
-import { GetMerchantsUseCase } from '../../../../application/use-cases/GetMerchantsUseCase';
-import { GetStoresUseCase } from '../../../../application/use-cases/GetStoresUseCase';
-import { BatchUpsertStoreProductsUseCase } from '../../../../application/use-cases/BatchUpsertStoreProductsUseCase';
-import { Merchant } from '../../../../domain/entities/Merchant';
-import { Store } from '../../../../domain/entities/Store';
+import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiMerchantRepository';
+import { ApiStoreRepository } from '../../../infrastructure/repositories/ApiStoreRepository';
+import { ApiStoreProductRepository } from '../../../infrastructure/repositories/ApiStoreProductRepository';
+import { GetMerchantsUseCase } from '../../../application/use-cases/GetMerchantsUseCase';
+import { GetStoresUseCase } from '../../../application/use-cases/GetStoresUseCase';
+import { BatchUpsertStoreProductsUseCase } from '../../../application/use-cases/BatchUpsertStoreProductsUseCase';
+import { Merchant } from '../../../domain/entities/Merchant';
+import { Store } from '../../../domain/entities/Store';
 
 const PageContainer = styled.div`
   display: flex;
@@ -107,10 +107,6 @@ const DropHint = styled.p`
   margin: 0.5rem 0 0 0;
   font-size: 0.8rem;
   opacity: 0.7;
-`;
-
-const HiddenInput = styled.input`
-  display: none;
 `;
 
 const JsonPreview = styled.pre`
@@ -233,10 +229,10 @@ export default function MapProductStorePage() {
         if (!Array.isArray(json)) {
           throw new Error('Import file must contain a JSON array of mappings.');
         }
-        
+
         // Basic validation against the master_store_product.json structure
         const isValid = json.every(item => item.product_uid && typeof item.stock === 'number' && typeof item.price === 'number');
-        
+
         if (!isValid) {
           throw new Error('Invalid JSON structure. Ensure product_uid, stock, and price exist.');
         }
@@ -413,7 +409,7 @@ export default function MapProductStorePage() {
             <p style={{ fontSize: '0.85rem', color: 'var(--text-sub)', marginBottom: '1rem' }}>
               Upload a JSON file matching the structure of master_store_product.json.
             </p>
-            
+
             <DropZone
               $dragActive={dragActive}
               onDragOver={e => { e.preventDefault(); setDragActive(true); }}
@@ -444,7 +440,7 @@ export default function MapProductStorePage() {
                   {JSON.stringify(importedData.slice(0, 3), null, 2)}
                   {importedData.length > 3 && '\n\n  ... (preview limited to first 3 items)'}
                 </JsonPreview>
-                
+
                 <Button isLoading={isImporting} disabled={isImporting} style={{ marginTop: '1rem' }} onClick={handleImportSubmit}>
                   {isImporting
                     ? `Importing ${importedData.length} Mapping(s)...`
