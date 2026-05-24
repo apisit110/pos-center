@@ -1,4 +1,4 @@
-import { db, products, storeProducts, merchants, stores, eq, and, gt } from '@lightning/database';
+import { db, products, storeProducts, merchants, stores, eq, and, gt } from '@pos-center/database';
 import { Product } from '../../domain/entities/Product';
 import { IProductRepository } from '../../application/repositories/IProductRepository';
 

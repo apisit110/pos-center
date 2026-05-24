@@ -1,4 +1,4 @@
-import { db, runningNumbers, eq, sql } from '@lightning/database';
+import { db, runningNumbers, eq, sql } from '@pos-center/database';
 
 const DIGITS = { mid: 4, sid: 4, tid: 2, staff: 4 } as const;
 

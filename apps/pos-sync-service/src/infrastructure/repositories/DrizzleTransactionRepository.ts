@@ -1,4 +1,4 @@
-import { db, transactions as dbTransactions, orders as dbOrders, stores, eq, and } from '@lightning/database';
+import { db, transactions as dbTransactions, orders as dbOrders, stores, eq, and } from '@pos-center/database';
 import { Transaction } from '../../domain/entities/Transaction';
 import { TransactionRepository } from '../../domain/repositories/TransactionRepository';
 

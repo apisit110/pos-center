@@ -1,4 +1,4 @@
-import { db, merchants, eq } from '@lightning/database';
+import { db, merchants, eq } from '@pos-center/database';
 import { IMerchantRepository } from '../../application/repositories/IMerchantRepository';
 import { Merchant } from '../../domain/entities/Merchant';
 

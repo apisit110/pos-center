@@ -1,4 +1,4 @@
-import { db, terminals, stores, eq } from '@lightning/database';
+import { db, terminals, stores, eq } from '@pos-center/database';
 import { ITerminalRepository } from '../../application/repositories/ITerminalRepository';
 import { Terminal } from '../../domain/entities/Terminal';
 

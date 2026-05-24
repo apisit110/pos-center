@@ -1,5 +1,5 @@
 import { db } from './index';
-import { merchants, stores, products, storeProducts, members, staff, runningNumbers, syncMetadata, roles, branches } from '@lightning/models';
+import { merchants, stores, products, storeProducts, members, staff, runningNumbers, syncMetadata, roles, branches } from '@pos-center/models';
 import { eq, sql } from 'drizzle-orm';
 import fs from 'fs';
 import path from 'path';

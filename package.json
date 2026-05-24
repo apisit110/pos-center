@@ -1,12 +1,12 @@
 {
-  "name": "lightning-pos-service-center",
+  "name": "pos-center",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
-    "dev:portal": "turbo run dev --filter=portal*",
-    "dev:sync": "turbo run dev --filter=pos-sync*",
+    "dev:portal": "turbo run dev --filter=pos-center-portal*",
+    "dev:sync": "turbo run dev --filter=pos-center-sync*",
     "lint": "turbo run lint",
     "clean": "turbo run clean",
     "clean-install": "find -E . -mindepth 1 -maxdepth 3 -type d -regex '.*(node_modules|dist|.turbo|.serverless|.next|.out)$' -exec rm -rf {} + && pnpm install"

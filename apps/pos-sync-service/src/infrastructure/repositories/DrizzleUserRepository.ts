@@ -1,4 +1,4 @@
-import { db, users, userSyncLogs, userBranchAccess, runningNumbers, eq, and, sql } from '@lightning/database';
+import { db, users, userSyncLogs, userBranchAccess, runningNumbers, eq, and, sql } from '@pos-center/database';
 import { User, UserSyncLog, UserStatus } from '../../domain/entities/User';
 import { UserRepository } from '../../domain/repositories/UserRepository';
 

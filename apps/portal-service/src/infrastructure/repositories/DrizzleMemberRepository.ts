@@ -1,4 +1,4 @@
-import { db, members } from '@lightning/database';
+import { db, members } from '@pos-center/database';
 import { eq, or, like, sql, count } from 'drizzle-orm';
 import { Member } from '../../domain/entities/Member';
 import { IMemberRepository, MemberFilter } from '../../application/repositories/IMemberRepository';

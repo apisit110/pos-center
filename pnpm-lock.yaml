@@ -66,7 +66,7 @@ importers:
 
   apps/portal-service:
     dependencies:
-      '@lightning/database':
+      '@pos-center/database':
         specifier: workspace:*
         version: link:../../packages/database
       cors:
@@ -118,10 +118,10 @@ importers:
 
   apps/pos-sync-service:
     dependencies:
-      '@lightning/database':
+      '@pos-center/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@lightning/models':
+      '@pos-center/models':
         specifier: workspace:*
         version: link:../../packages/models
       axios:
@@ -164,7 +164,7 @@ importers:
 
   packages/database:
     dependencies:
-      '@lightning/models':
+      '@pos-center/models':
         specifier: workspace:*
         version: link:../models
       dotenv:

@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { and, db, eq, products, storeProducts, stores } from '@lightning/database';
+import { and, db, eq, products, storeProducts, stores } from '@pos-center/database';
 import {
   IStoreProductRepository,
   UpsertStoreProductByUidInput

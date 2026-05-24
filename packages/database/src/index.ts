@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import * as schema from '@lightning/models';
+import * as schema from '@pos-center/models';
 import * as dotenv from 'dotenv';
 import path from 'path';
 
@@ -13,5 +13,5 @@ const connectionString = process.env.DATABASE_URL || 'postgres://postgres:postgr
 const client = postgres(connectionString);
 export const db = drizzle(client, { schema });
 
-export * from '@lightning/models';
+export * from '@pos-center/models';
 export * from 'drizzle-orm';

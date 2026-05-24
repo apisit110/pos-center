@@ -1,5 +1,5 @@
 {
-  "name": "portal-service",
+  "name": "pos-center-portal-service",
   "version": "1.0.0",
   "description": "Portal Service API",
   "main": "dist/index.js",
@@ -11,7 +11,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@lightning/database": "workspace:*",
+    "@pos-center/database": "workspace:*",
     "cors": "^2.8.5",
     "drizzle-orm": "^0.30.10",
     "express": "^4.19.2",

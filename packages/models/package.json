@@ -1,5 +1,5 @@
 {
-  "name": "@lightning/models",
+  "name": "@pos-center/models",
   "version": "1.0.0",
   "description": "Shared Drizzle ORM models",
   "main": "src/index.ts",

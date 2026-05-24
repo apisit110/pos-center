@@ -1,4 +1,4 @@
-import { db, orders as dbOrders, orderItems as dbOrderItems, orderSyncLogs as dbOrderSyncLogs, merchants, stores, terminals, staff, products, eq, and } from '@lightning/database';
+import { db, orders as dbOrders, orderItems as dbOrderItems, orderSyncLogs as dbOrderSyncLogs, merchants, stores, terminals, staff, products, eq, and } from '@pos-center/database';
 import { Order, OrderStatus } from '../../domain/entities/Order';
 import { OrderRepository, OrderSyncLog } from '../../domain/repositories/OrderRepository';
 

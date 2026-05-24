@@ -1,4 +1,4 @@
-import { db, staff, merchants } from '@lightning/database';
+import { db, staff, merchants } from '@pos-center/database';
 import { eq, like, and, count, gte, lte } from 'drizzle-orm';
 import { Staff } from '../../domain/entities/Staff';
 import { IStaffRepository, StaffFilter } from '../../application/repositories/IStaffRepository';

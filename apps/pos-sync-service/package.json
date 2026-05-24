@@ -1,5 +1,5 @@
 {
-  "name": "pos-sync-service",
+  "name": "pos-center-sync-service",
   "version": "1.0.0",
   "description": "POS Sync Service",
   "main": "dist/index.js",
@@ -11,8 +11,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@lightning/database": "workspace:*",
-    "@lightning/models": "workspace:*",
+    "@pos-center/database": "workspace:*",
+    "@pos-center/models": "workspace:*",
     "axios": "^1.6.8",
     "cors": "^2.8.5",
     "express": "^4.19.2",
