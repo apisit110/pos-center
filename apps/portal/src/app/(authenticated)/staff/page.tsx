@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { ApiStaffRepository } from '../../../infrastructure/repositories/ApiStaffRepository';
 import { GetStaffUseCase } from '../../../application/use-cases/GetStaffUseCase';
@@ -81,37 +81,41 @@ export default function StaffPage() {
   const [pendingFilters, setPendingFilters] = useState<StaffFilter>(EMPTY_FILTERS);
   const [activeFilters, setActiveFilters] = useState<StaffFilter>(EMPTY_FILTERS);
 
-  const fetchStaff = useCallback(async (filters: StaffFilter, currentPage: number, currentLimit: number) => {
-    setLoading(true);
-    try {
-      const repository = new ApiStaffRepository();
-      const useCase = new GetStaffUseCase(repository);
-      const cleanFilters = Object.fromEntries(
-        Object.entries(filters).filter(([, v]) => v !== '' && v !== undefined)
-      ) as StaffFilter;
-      const result = await useCase.execute(currentPage, currentLimit, cleanFilters);
-      setStaffList(result.staff);
-      setTotal(result.total);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
-    fetchStaff(activeFilters, page, limit);
-  }, [page, limit, fetchStaff, activeFilters]);
+    let cancelled = false;
+
+    const load = async () => {
+      setLoading(true);
+      try {
+        const repository = new ApiStaffRepository();
+        const useCase = new GetStaffUseCase(repository);
+        const cleanFilters = Object.fromEntries(
+          Object.entries(activeFilters).filter(([, v]) => v !== '' && v !== undefined)
+        ) as StaffFilter;
+        const result = await useCase.execute(page, limit, cleanFilters);
+        if (!cancelled) {
+          setStaffList(result.staff);
+          setTotal(result.total);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    load();
+
+    return () => { cancelled = true; };
+  }, [page, limit, activeFilters]);
 
   const handleSearch = () => {
     setActiveFilters(pendingFilters);
     setPage(1);
-    fetchStaff(pendingFilters, 1, limit);
   };
 
   const handleClear = () => {
     setPendingFilters(EMPTY_FILTERS);
     setActiveFilters(EMPTY_FILTERS);
     setPage(1);
-    fetchStaff(EMPTY_FILTERS, 1, limit);
   };
 
   const columns = [
@@ -199,7 +203,7 @@ export default function StaffPage() {
       <DataTable
         columns={columns}
         data={staffList}
-        rowKey="uid"
+        rowKey="id"
         totalItems={total}
         currentPage={page}
         pageSize={limit}
