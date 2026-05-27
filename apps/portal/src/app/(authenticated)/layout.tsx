@@ -53,6 +53,7 @@ export default function DashboardLayout({
     { name: 'Map Store Products', path: '/map-store' },
     { name: 'Members', path: '/members' },
     { name: 'Staff', path: '/staff' },
+    { name: 'Transactions', path: '/transactions' },
   ];
 
   const currentTitle = menuItems.find(i => pathname.startsWith(i.path) && (i.path !== '/dashboard' || pathname === '/dashboard'))?.name || 'Dashboard';

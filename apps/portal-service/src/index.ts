@@ -28,6 +28,7 @@ import { GetStaffByMerchantUseCase } from './application/use-cases/GetStaffByMer
 import { RegisterMerchantUseCase } from './application/use-cases/RegisterMerchantUseCase';
 import { GetTerminalsByStoreUseCase } from './application/use-cases/GetTerminalsByStoreUseCase';
 import { BatchUpsertStoreProductsUseCase } from './application/use-cases/BatchUpsertStoreProductsUseCase';
+import { GetTransactionsUseCase } from './application/use-cases/GetTransactionsUseCase';
 
 // Controllers
 import { MerchantController } from './infrastructure/controllers/MerchantController';
@@ -36,7 +37,9 @@ import { StoreController } from './infrastructure/controllers/StoreController';
 import { MemberController } from './infrastructure/controllers/MemberController';
 import { StaffController } from './infrastructure/controllers/StaffController';
 import { StoreProductController } from './infrastructure/controllers/StoreProductController';
+import { TransactionController } from './infrastructure/controllers/TransactionController';
 import { DrizzleStoreProductRepository } from './infrastructure/repositories/DrizzleStoreProductRepository';
+import { DrizzleTransactionRepository } from './infrastructure/repositories/DrizzleTransactionRepository';
 
 import { loggerMiddleware } from './infrastructure/middleware/LoggerMiddleware';
 import { errorMiddleware } from './infrastructure/middleware/ErrorMiddleware';
@@ -54,6 +57,7 @@ const memberRepository = new DrizzleMemberRepository();
 const staffRepository = new DrizzleStaffRepository();
 const terminalRepository = new DrizzleTerminalRepository();
 const storeProductRepository = new DrizzleStoreProductRepository();
+const transactionRepository = new DrizzleTransactionRepository();
 const runningNumberService = new RunningNumberService();
 
 const getMerchantsUseCase = new GetMerchantsUseCase(merchantRepository);
@@ -72,6 +76,7 @@ const getStaffByMerchantUseCase = new GetStaffByMerchantUseCase(staffRepository)
 const registerMerchantUseCase = new RegisterMerchantUseCase(merchantRepository, storeRepository, terminalRepository, runningNumberService, staffRepository);
 const getTerminalsByStoreUseCase = new GetTerminalsByStoreUseCase(terminalRepository);
 const batchUpsertStoreProductsUseCase = new BatchUpsertStoreProductsUseCase(storeProductRepository);
+const getTransactionsUseCase = new GetTransactionsUseCase(transactionRepository);
 
 const merchantController = new MerchantController(getMerchantsUseCase, getMerchantDetailUseCase, registerMerchantUseCase, getStaffByMerchantUseCase);
 const productController = new ProductController(getProductsUseCase, getProductDetailUseCase, getProductFilterMetadataUseCase, createProductUseCase);
@@ -79,6 +84,7 @@ const storeController = new StoreController(getStoresUseCase, getStoreDetailUseC
 const memberController = new MemberController(getMembersUseCase, getMemberDetailUseCase);
 const staffController = new StaffController(getStaffUseCase, getStaffDetailUseCase);
 const storeProductController = new StoreProductController(batchUpsertStoreProductsUseCase);
+const transactionController = new TransactionController(getTransactionsUseCase);
 
 app.use(cors());
 app.use(express.json());
@@ -121,6 +127,9 @@ app.get('/members/:id', (req, res, next) => memberController.getById(req, res, n
 // Staff Endpoints
 app.get('/staff', (req, res, next) => staffController.getAll(req, res, next));
 app.get('/staff/:id', (req, res, next) => staffController.getById(req, res, next));
+
+// Transaction Endpoints
+app.get('/transactions', (req, res, next) => transactionController.getAll(req, res, next));
 
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'ok' });

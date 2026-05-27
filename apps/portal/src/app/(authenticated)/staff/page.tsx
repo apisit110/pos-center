@@ -7,6 +7,7 @@ import { GetStaffUseCase } from '../../../application/use-cases/GetStaffUseCase'
 import { Staff } from '../../../domain/entities/Staff';
 import { StaffFilter } from '../../../application/repositories/StaffRepository';
 import { DataTable, FilterBar, TextFilter, SelectFilter, DateFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
+import { formatDateTime } from '../../../lib/dayjs';
 
 const PageContainer = styled.div`
   display: flex;
@@ -143,7 +144,7 @@ export default function StaffPage() {
     {
       header: 'Created At',
       key: 'createdAt',
-      render: (s: Staff) => s.createdAt.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+      render: (s: Staff) => formatDateTime(s.createdAt),
     },
   ];
 
