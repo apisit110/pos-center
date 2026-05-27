@@ -1,11 +1,19 @@
 :root {
   --primary: #6366f1;
   --primary-hover: #4f46e5;
-  --bg-main: #0f172a;
+  --bg-main: #020617;
   --bg-card: #1e293b;
   --text-main: #f8fafc;
   --text-sub: #94a3b8;
   --border: #334155;
+}
+
+[data-theme="light"] {
+  --bg-main: #f1f5f9;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;
+  --text-sub: #64748b;
+  --border: #e2e8f0;
 }
 
 body {
@@ -14,6 +22,7 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--bg-main);
   color: var(--text-main);
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -26,7 +35,7 @@ input {
   border-radius: 0.5rem;
   border: 1px solid var(--border);
   background: var(--bg-card);
-  color: white;
+  color: var(--text-main);
   margin-bottom: 1rem;
 }
 

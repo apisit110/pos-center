@@ -36,27 +36,20 @@ export class DrizzleOrderRepository implements OrderRepository {
       if (order.items.length > 0) {
         const productIds = await Promise.all(order.items.map(async item => {
           const [product] = await db.select({ id: products.id }).from(products).where(eq(products.uid, item.productId));
-          return product?.id ?? null;
+          if (!product) throw new Error(`Product not found: ${item.productId}`);
+          return product.id;
         }));
 
-        const itemsWithResolvedIds = order.items
-          .map((item, i) => ({ item, resolvedId: productIds[i] }))
-          .filter(({ resolvedId }) => resolvedId !== null);
-
-        if (itemsWithResolvedIds.length > 0) {
-          await tx.insert(dbOrderItems).values(itemsWithResolvedIds.map(({ item, resolvedId }) => ({
-            orderId: newOrder.id,
-            productId: resolvedId!,
-            quantity: item.quantity,
-            price: item.price.toString(),
-          })));
-        }
+        await tx.insert(dbOrderItems).values(order.items.map((item, i) => ({
+          orderId: newOrder.id,
+          productId: productIds[i],
+          quantity: item.quantity,
+          price: item.price.toString(),
+        })));
       }
 
       return newOrder;
     });
-
-    console.log('333-3 result:', result)
 
     return new Order(
       result.id.toString(),

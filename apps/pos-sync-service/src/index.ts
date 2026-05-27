@@ -63,7 +63,7 @@ app.post('/v1/sync/users', async (req: Request, res: Response, next: NextFunctio
   try {
     const validatedData = SyncUserSchema.parse(req.body);
     console.log(`[pos-sync-service] Syncing ${validatedData.users.length} users from POS`);
-    
+
     const results = await syncUsersUseCase.execute(validatedData.users as any);
 
     return res.status(200).json({
@@ -79,7 +79,7 @@ app.post('/v1/sync/orders', async (req: Request, res: Response, next: NextFuncti
   try {
     const validatedData = syncOrderSchema.parse(req.body);
     console.log(`[pos-sync-service] Receiving ${validatedData.orders.length} orders from client`);
-    
+
     const results = await syncOrdersUseCase.execute(validatedData.orders as any);
 
     return res.status(200).json({

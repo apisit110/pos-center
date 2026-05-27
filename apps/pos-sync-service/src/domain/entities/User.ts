@@ -16,11 +16,3 @@ export class User {
   ) {}
 }
 
-export class UserSyncLog {
-  constructor(
-    public readonly id: number,
-    public readonly posTempId: string,
-    public readonly originBranchId: number,
-    public readonly globalUserId: string
-  ) {}
-}

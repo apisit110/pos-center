@@ -1,20 +1,16 @@
 import { UserRepository } from '../../domain/repositories/UserRepository';
-import { User, UserStatus } from '../../domain/entities/User';
 
 export interface SyncUserDTO {
-  posTempId: string;
   userId: string;
   fullName: string;
   pinHash: string;
   roleId: number;
   branchIds: number[];
-  status: UserStatus;
+  status: 'active' | 'inactive';
   originBranchId: number;
 }
 
 export interface SyncUserResponseDTO {
-  posTempId: string;
-  globalUserId: string;
   userId: string;
   status: 'synced' | 'already_synced' | 'error';
 }
@@ -27,32 +23,16 @@ export class SyncUsersUseCase {
 
     for (const userData of usersToSync) {
       try {
-        // 1. Check idempotency
-        const existingLog = await this.userRepository.findSyncLogByPosTempId(userData.posTempId);
-        if (existingLog) {
-          results.push({
-            posTempId: userData.posTempId,
-            globalUserId: existingLog.globalUserId,
-            userId: '', // Client already has it for already_synced or can look it up
-            status: 'already_synced',
-          });
+        // 1. Check idempotency — userId is unique (merchant-prefixed from cashier)
+        const existingUser = await this.userRepository.findByUserId(userData.userId);
+        if (existingUser) {
+          results.push({ userId: userData.userId, status: 'already_synced' });
           continue;
         }
 
-        // 2. Provision real ID if needed
-        // If userData.userId starts with 'TEMP_', it's a local temp ID
-        let realUserId = userData.userId;
-        if (userData.userId.startsWith('TEMP_')) {
-          realUserId = await this.userRepository.generateNextUserId();
-        }
-
-        // 3. Upsert user
-        // We use staffId to find existing user if any
-        let existingUser = await this.userRepository.findByUserId(realUserId);
-        
+        // 2. Upsert user using cashier's userId directly
         const user = await this.userRepository.upsert({
-          id: existingUser?.id,
-          userId: realUserId,
+          userId: userData.userId,
           fullName: userData.fullName,
           pinHash: userData.pinHash,
           roleId: userData.roleId,
@@ -65,27 +45,10 @@ export class SyncUsersUseCase {
           await this.userRepository.addUserBranchAccess(user.id, branchId);
         }
 
-        // 4. Create sync log
-        await this.userRepository.createSyncLog({
-          posTempId: userData.posTempId,
-          originBranchId: userData.originBranchId,
-          globalUserId: user.id,
-        });
-
-        results.push({
-          posTempId: userData.posTempId,
-          globalUserId: user.id,
-          userId: user.userId,
-          status: 'synced',
-        });
+        results.push({ userId: user.userId, status: 'synced' });
       } catch (error) {
         console.error(`Error syncing user ${userData.userId}:`, error);
-        results.push({
-          posTempId: userData.posTempId,
-          globalUserId: '',
-          userId: '',
-          status: 'error',
-        });
+        results.push({ userId: userData.userId, status: 'error' });
       }
     }
 
