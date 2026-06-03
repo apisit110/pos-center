@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Lightning POS",
+  title: "POS Center",
   description: "Advanced Service Center for POS",
 };
 
