@@ -135,7 +135,39 @@ GRANT ALL PRIVILEGES ON DATABASE lightning_pos TO lightning;
 drop db ใน pgadmin4
 create db lightning_pos ใน pgadmin4
 rm -rf packages/database/drizzle
-pnpm --filter @lightning/database db:generate
-pnpm --filter @lightning/database db:migrate
+pnpm --filter @pos-center/database db:generate
+pnpm --filter @pos-center/database db:migrate
 
-<!-- pnpm --filter @lightning/database db:seed -->
+<!-- pnpm --filter @pos-center/database db:seed -->
+
+---
+
+| Action                    | Manager | XXX |
+| ------------------------- | ------- | --- |
+| View Merchant             | [ ]     | [ ] |
+| Create Merchant           | [ ]     | [ ] |
+| View Stores               | [ ]     | [ ] |
+| Create Stores             | [ ]     | [ ] |
+| View Product              | [ ]     | [ ] |
+| Create Product            | [ ]     | [ ] |
+| View Map Store Products   | [ ]     | [ ] |
+| Create Map Store Products | [ ]     | [ ] |
+| View Members              | [ ]     | [ ] |
+| View Staffs               | [ ]     | [ ] |
+| View Transactions         | [ ]     | [ ] |
+
+---
+
+todos
+
+[ ] - upupdate product price of store
+ 
+
+
+----
+
+todos
+
+[ ] - add product detail to master_product_2.json
+    - use unused_product_images.json for more information to checking
+[ ] - create master_store_product_2.json
