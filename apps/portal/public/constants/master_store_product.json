@@ -1376,5 +1376,3697 @@
         "tier": 1
       }
     ]
+  },
+  {
+    "product_uid": "f31cd945-7ee4-42c7-91b5-47c3fa0fbd62",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "dc9d9d13-2ba1-4de8-bc4b-5bb513cb5c02",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "0ba51eae-316c-4add-8369-4ee13bfd996e",
+    "stock": 100,
+    "price": 29,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 29,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "968be8a3-185e-4ea0-ad51-cd43e0b5ecae",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "490b31c6-6653-418d-ba8f-56811ac54484",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "3eb1da3c-9311-4996-a13f-fe6cdda9cb93",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "d1f1b445-bca5-412d-a2d4-d05cdcfca343",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ad534d70-afa4-43e2-b54e-74565c385e95",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "fb0006d3-dd7f-47b0-a007-c257a954250f",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ebe9800c-03bf-47ed-b855-843ab167b99d",
+    "stock": 100,
+    "price": 60,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 60,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "6c3aa4a0-04b6-4c11-8c5e-20501224067c",
+    "stock": 100,
+    "price": 1,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 1,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "607825d7-06bc-43ec-a327-5273aab8dd4b",
+    "stock": 100,
+    "price": 50,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 50,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "e9fd35cd-23f6-46a1-a58a-2b60e2f5775f",
+    "stock": 100,
+    "price": 1,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 1,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "e844a516-8458-4181-a65d-685fd80ada55",
+    "stock": 100,
+    "price": 40,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 40,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "2887151b-02c6-40c1-aa6a-2a799f642947",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "621c3b8f-6699-4bcd-9da6-ea366bd66951",
+    "stock": 100,
+    "price": 50,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 50,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "cba706fe-2c8c-43ce-a23d-8cf78bb2658c",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "00eac990-bf53-490a-85b4-d0a095589150",
+    "stock": 100,
+    "price": 50,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 50,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "1a8e5cac-9533-4d00-a2c2-676dd63181a7",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "812f3391-a10f-4c90-ad8d-18e57e6753d7",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "2372ba87-bb8b-4a87-9810-251824eff6d0",
+    "stock": 100,
+    "price": 50,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 50,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "0f0011f5-2c57-4b18-80dc-61948775dbd9",
+    "stock": 100,
+    "price": 50,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 50,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "d66b58cc-8c78-44cd-8319-19184bd94a83",
+    "stock": 100,
+    "price": 50,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 50,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "b198664f-5837-4478-b247-ff626f60a782",
+    "stock": 100,
+    "price": 52,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 52,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "1b983fd8-2122-460d-8baf-8ddb133d8a1a",
+    "stock": 100,
+    "price": 27,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 27,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "2647c48e-8ad7-4bf8-b6b6-02bb3fa2de20",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "af310aa3-88f5-4147-bd48-bb7fdeebdddb",
+    "stock": 100,
+    "price": 16,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 16,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "173be5ee-6656-4d0b-aac2-1bbcbb2e8014",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a1835e41-5bdf-4476-a526-86c0523a4858",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "9acc7843-3b30-49cd-8a5f-e6d9a6fe952e",
+    "stock": 100,
+    "price": 54,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 54,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "85e0ee78-3914-476c-bdb1-501452a75d5b",
+    "stock": 100,
+    "price": 52,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 52,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "7504d9c5-f6ec-4a6f-a072-c2d8f114d19d",
+    "stock": 100,
+    "price": 58,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 58,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "be66de33-d0d7-4456-a57b-0dbbc6821a90",
+    "stock": 100,
+    "price": 60,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 60,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "efe142f1-7feb-4086-b0cd-1bc4c3ba9985",
+    "stock": 100,
+    "price": 68,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 68,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a66cc323-40a6-4e41-a301-c66d8f231d77",
+    "stock": 100,
+    "price": 28,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 28,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "3bdaa3ff-4e12-4694-beed-12fb19adbb7f",
+    "stock": 100,
+    "price": 28,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 28,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a6fbcd6b-a8a2-4794-a9a4-f0c77b5bb251",
+    "stock": 100,
+    "price": 45,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 45,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "53d9eea7-ddfa-4be2-ae09-7cd06b1df626",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "d86e20fd-ecdb-4bbf-a7bc-6fd5639eecfc",
+    "stock": 100,
+    "price": 100,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 100,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "1e4330fd-cf35-478b-821c-54c0154ec032",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "0390c892-859a-4154-a2a7-73b60da8a087",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "bed48830-8f94-457e-bb0f-f8b41efccaf1",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "1abbf7d8-7692-4d85-a0ed-3812819f8532",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "38004fbb-ad68-44a7-8bf4-cd90b71c039d",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "0ce7ac09-1115-440e-8815-5ad880a274d0",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "10430dd0-9630-49a3-8aa7-bf8958f050d4",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "4510b09a-a301-4709-81bb-597dc24c6f15",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "0021df0f-50a4-4f59-84a1-0c09b27af3d0",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "98acf74e-f86a-4cff-8a53-bd7e1d814de5",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ae7622ad-a964-4219-a98e-fdb1c0e197b0",
+    "stock": 100,
+    "price": 25,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 25,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "4de96a32-c5b8-4df4-8100-5460c6ecba08",
+    "stock": 100,
+    "price": 25,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 25,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "139e73a1-ad23-45ba-857e-7b1a15b13411",
+    "stock": 100,
+    "price": 38,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 38,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "4ddf02e4-6dfe-4b89-a222-3f357028bb17",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "62274aae-2790-4ae6-89b7-7e99006b2ff5",
+    "stock": 100,
+    "price": 25,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 25,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "f95286bc-9ab5-46ae-8973-29d98f2f105e",
+    "stock": 100,
+    "price": 65,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 65,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "acb992df-142c-4338-8294-e8a432af7ab7",
+    "stock": 100,
+    "price": 75,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 75,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "bc64ed8f-45a0-47f0-b78e-efed07890e4f",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "1a1508cc-8762-4a1b-8eab-5b87acd7abf1",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "9fcc34e4-cc94-4103-a561-f8f7ce5c780c",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "0edb7313-773a-40d5-899c-114360b41e96",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "109d2270-2557-41dc-8ec2-659b2990f10b",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "05e1346e-cc0b-418b-b997-02398ec13f93",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "1748e434-7194-4f04-8f55-89a3a657b257",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "5255c521-e7e0-47e3-9efe-5756877689bd",
+    "stock": 100,
+    "price": 35,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 35,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "9840ed80-589e-4b3e-8bd3-e018f9041de4",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "dbe908d8-3433-4656-b416-ac5180796cf5",
+    "stock": 100,
+    "price": 40,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 40,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "52094afd-9ce4-4d95-b4de-68fe46f37752",
+    "stock": 100,
+    "price": 43,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 43,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "cb4c1723-e57f-483b-8b17-d87adb4f0f41",
+    "stock": 100,
+    "price": 37,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 37,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "c021d24b-3ec7-4159-8c80-1fb91c47b177",
+    "stock": 100,
+    "price": 35,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 35,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "7829d51e-f9ef-417d-a8e6-2dfca18d9e5d",
+    "stock": 100,
+    "price": 32,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 32,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "2caf990f-e6b2-4252-a907-6e1e5bfc026d",
+    "stock": 100,
+    "price": 32,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 32,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "517bf0e5-fe54-4dbe-ac43-dea78173fac0",
+    "stock": 100,
+    "price": 50,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 50,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ee8c0ec3-a03b-4b6c-8527-d0cf8fba2817",
+    "stock": 100,
+    "price": 60,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 60,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "11c4b1b1-a62f-4ea8-819e-dcc5cd2b8cf6",
+    "stock": 100,
+    "price": 55,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 55,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "f4a9190a-f35f-44bc-8c60-32d2bd3bf828",
+    "stock": 100,
+    "price": 43,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 43,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a3094386-27ae-42e2-a5d5-593b9b19effc",
+    "stock": 100,
+    "price": 38,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 38,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "91fd4a7a-b71a-48de-a48f-ccf2910457d1",
+    "stock": 100,
+    "price": 35,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 35,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "d2bb0d53-10c1-4264-84e3-048508612992",
+    "stock": 100,
+    "price": 17,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 17,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "75ffb473-5e87-47ca-ae4b-c38b527ca216",
+    "stock": 100,
+    "price": 17,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 17,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "bb39e03a-b2f3-42f5-95e5-edd42550d31f",
+    "stock": 100,
+    "price": 35,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 35,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "fd3a67ba-fd48-42a5-a8e7-a45fcdd5a7e4",
+    "stock": 100,
+    "price": 22,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 22,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "7ecc7454-b0b6-44dc-8a67-951b7d45ca5e",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "f18920ab-5dbf-4c6e-9b8c-9e53806bd175",
+    "stock": 100,
+    "price": 32,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 32,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "23871466-5ad6-48cb-ac50-d6d04a99556e",
+    "stock": 100,
+    "price": 23,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 23,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a667f0ba-f7ca-4fcd-9cd3-2dc3fc4d593b",
+    "stock": 100,
+    "price": 17,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 17,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a75a5d7b-5c40-4d91-9360-3cb88a67ae03",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "edc4bec6-bc86-4a9b-be9f-c99d7b6810bf",
+    "stock": 100,
+    "price": 40,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 40,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "d0b16941-94cf-40a5-9e9e-2a3923cca395",
+    "stock": 100,
+    "price": 25,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 25,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "52286acb-6a45-4cf1-8294-88da3decafa3",
+    "stock": 100,
+    "price": 28,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 28,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "5f651d0d-63c0-464c-b376-3f69e3d78f56",
+    "stock": 100,
+    "price": 28,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 28,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "16b1d149-ec68-4a6f-bf3d-e1ccfc935534",
+    "stock": 100,
+    "price": 8,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 8,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a50279a0-dc9b-4572-9978-e828121e20af",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "396e1395-e1fe-47f8-a3f0-c8b97067112b",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "b1230852-78f9-41bc-b16e-9eee7a99a53c",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "fa9586ea-d11e-494b-b450-fddec4b8ffcc",
+    "stock": 100,
+    "price": 32,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 32,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a3382286-85f2-49f9-917e-e9413ba0b069",
+    "stock": 100,
+    "price": 32,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 32,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ae5dc63f-136b-4d69-9669-3c741cbd60e1",
+    "stock": 100,
+    "price": 25,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 25,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "de7ca239-6946-4eaf-8361-7e460451946b",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "74b2c303-7b4b-4087-a308-3ea9cd99adba",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "413fe405-a0a5-4c87-a4a5-d5b8c9d8ad79",
+    "stock": 100,
+    "price": 25,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 25,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "2aa4877a-1f78-4c06-addc-83f63c7fcc07",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "9fd3d5fc-04e1-4373-9a1b-b825ba38cea5",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "96967116-dd08-4d2d-904d-8b3850d9fbb2",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "3613f696-a423-4151-82c8-c98e5b8132a4",
+    "stock": 100,
+    "price": 50,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 50,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "c63b4d29-5232-4db0-ab5c-dfa67a4240f3",
+    "stock": 100,
+    "price": 13,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 13,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "1170da0e-c3c7-4588-95b3-94e361387e8c",
+    "stock": 100,
+    "price": 27,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 27,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "dd7c383c-725a-4296-bb68-961921416ed5",
+    "stock": 100,
+    "price": 12,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 12,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "0a415a9d-fb9d-416e-bf8e-18661f74af74",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "8a7dd13b-00bc-48f1-a422-5edf86a6b7b4",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "915d8498-5586-4977-ad94-12866b335262",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "3593ea9c-93f1-409e-824e-83375f084ac7",
+    "stock": 100,
+    "price": 23,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 23,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "5a324e8c-eb45-4a9a-af27-f16632d3b51c",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "3e8ae33a-c6c1-4a84-8b37-0947c88c414c",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "42575fa5-e5db-48a4-a495-7c37ab6a3ae7",
+    "stock": 100,
+    "price": 50,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 50,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "f34fa103-6ffc-4538-9151-6ecd3b7d3713",
+    "stock": 100,
+    "price": 80,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 80,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "3fb86dd7-2d80-4ad9-bcfe-157b2818aa58",
+    "stock": 100,
+    "price": 35,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 35,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "4db23ac8-e729-42f4-860e-2d98393a6a85",
+    "stock": 100,
+    "price": 55,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 55,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "e721b25b-9435-42e3-8844-63b50f98f96e",
+    "stock": 100,
+    "price": 105,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 105,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "3ce697a4-2334-4693-8910-3b710cf68933",
+    "stock": 100,
+    "price": 45,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 45,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "999eb5c7-8c24-46d9-8765-744b94401f3a",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ca90a214-0cde-4ea4-b4fa-641f35ef6709",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "7353a37a-c2c9-4972-9a8a-0d1bff5a58a8",
+    "stock": 100,
+    "price": 25,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 25,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "bdf06d2d-d96d-494b-817c-0736adb5037a",
+    "stock": 100,
+    "price": 25,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 25,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "4b9d740c-fcf5-4d99-bb39-077bdef8a29e",
+    "stock": 100,
+    "price": 39,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 39,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "064589f7-1f59-41b8-ac39-e8d56e7c6dea",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "5babadb2-b9cc-457f-84ad-2a1a638d1c87",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "8887bc68-6894-4d41-9c4a-33b0d58a5b89",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "5b9589d6-868a-4ead-99a0-75c6cb172a22",
+    "stock": 100,
+    "price": 22,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 22,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "958de484-d74a-4b18-9730-2d16fdd6e337",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a1adcc2f-22f6-4744-bd9a-441749bc3eb6",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "79434b16-d656-418e-9f18-f7163736ca1a",
+    "stock": 100,
+    "price": 13,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 13,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "1c2dc15d-6c92-457c-b187-ecbc49a94e05",
+    "stock": 100,
+    "price": 13,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 13,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "cd595a9c-fd68-4ed9-9cc9-f1e94ab1cf23",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ae3e9e27-2b2f-43a3-86e5-f6ca4540b431",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "e41db9f7-2373-4699-9643-35123d5a3987",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "104d88c9-4c8a-438a-8bc1-7c5ac322ccc8",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "83e36a4b-a9af-4a10-8418-903dcd14f9ba",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a09881c6-21b5-4dea-ae15-5e477213c774",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "e9e26908-9adc-442a-898b-7e758cdb7951",
+    "stock": 100,
+    "price": 7,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 7,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "eadabbe4-9248-49f6-a127-d43068514af2",
+    "stock": 100,
+    "price": 7,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 7,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "3aa8a9e8-596c-4b6a-8f4f-8a000ac685a3",
+    "stock": 100,
+    "price": 7,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 7,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "c53742ec-61b9-4c09-965d-a88caa217f61",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "3ea87d6e-4ee3-4006-a940-a770487f30a8",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "12119e29-60a9-411c-b016-e4c1c2a0713e",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "1fac1592-ed71-404a-b751-a0337993dc70",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "119b30f3-4383-4240-bb53-ae26f8d604e3",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "80c14c64-cfaf-4e3a-847b-8e7f258b6e75",
+    "stock": 100,
+    "price": 7,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 7,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "7be2278d-b214-4db9-b9cf-f0f52d559397",
+    "stock": 100,
+    "price": 7,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 7,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "555eca8a-6a7b-41be-b81c-3d826c221228",
+    "stock": 100,
+    "price": 7,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 7,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "9bf313ba-4b45-4cc8-9e17-3d35dc815d36",
+    "stock": 100,
+    "price": 7,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 7,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "deb55471-303e-4cbf-b753-94485f85db55",
+    "stock": 100,
+    "price": 7,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 7,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "cbf6ded3-7c81-4d21-857f-2cf23058749d",
+    "stock": 100,
+    "price": 7,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 7,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "6f5a68e7-227e-4b69-afae-d8ca66f1bb13",
+    "stock": 100,
+    "price": 7,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 7,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "7ccc5cdf-c57c-4296-9839-b66eac27fe06",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "9d3d1fcd-6621-4a84-996c-84e1b6620e0f",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a62494c3-5a2d-4689-b3c4-3f9cedc0c1d1",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "9ee9cc44-a821-4bb2-85e0-e4c5503ab373",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "85c476d1-38dd-495a-806f-b944ed4828e7",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "e0481927-a1c6-45cc-937f-72d62f6cff39",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a92d7a7c-4a05-4eef-bd9f-d5975f6e3f13",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "acdfb9e7-dab8-490b-bc51-f6e0702a3b68",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "caa16f5e-3bc5-4c89-92f0-9c889044711c",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "2c42cfa2-adc6-4927-af9f-3e189e2d349a",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "e7546332-f0a5-49df-bd77-ecbfd8bd0542",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "8bc873c5-0292-4561-818f-c85e9557827c",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "8d2f827a-4c38-485c-9891-8914b43fe5d1",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "39d24097-7025-44bd-b412-7291c5958c9f",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "be19cb7b-1bec-45f1-be8d-7a36a453f011",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "296cc725-08db-4bb3-aa76-f30c6fcfb586",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "2ed4bcf5-e205-4942-a053-25606d53206a",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "4e16d949-5c47-4aa5-9f57-31e15547a568",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "bd5188bd-0689-4bb0-a17b-00924be5a986",
+    "stock": 100,
+    "price": 4,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 4,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "b3fb4e73-d9ee-4de8-8e31-7bb11d2e4f4e",
+    "stock": 100,
+    "price": 4,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 4,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "b6fca2b2-fd76-45a9-99d9-e31e7e880307",
+    "stock": 100,
+    "price": 4,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 4,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "27f81ad0-8c6e-4ae5-9ed4-b29ef9425100",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "fc02c9a4-b0b8-4396-8907-079e1fd9eede",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "6816bb72-50ce-498e-a6d8-33769e4aa87f",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "0bdcf91a-22a7-4df3-874e-176a6009b902",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "f96c2474-4560-4167-b8fb-493a15b520ae",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "fc3f19c8-202f-476d-ac5e-2101f9a26fc3",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "df1fe3f2-945c-4241-9992-9b3607f5d855",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "456acf5a-ca49-4d4c-bae6-c0aa81bcbe3f",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "4f11c2f8-12ee-4bdc-901a-73a674efa05a",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "510822b4-61c5-4a38-8605-784fff4679a6",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "323d3d90-4769-4629-8aee-4fefb80868f1",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "68eb6a60-db81-4c5e-b3bf-4d58b4eac07b",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "28a45b74-7cea-4ce4-88e0-0ca93066fa75",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "1a03715b-c171-425c-a700-1e97e27a4233",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "83215c59-44b2-4d7e-b2f4-f0c557577e4f",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "aea4aaa7-b93b-4a17-a977-c4edaf9940f2",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "0177adc3-345f-4d71-9861-9f78def132df",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "aa5164a4-1fcf-49d8-b35f-546c94a4cf5b",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "9da26b43-4f8e-4ad7-89a5-569a809036aa",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "e894d832-21c7-49fc-8427-5e81c12e461a",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "b7557e44-988d-4f93-a2f5-84b5ed0d489d",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "c129cf50-c915-40d0-93d7-26909aff2ce1",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "f2041133-0b44-4e6d-8d8f-105b6e629038",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "8d83442c-cfd7-46b7-8f09-db9c1d23b39e",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ac607c35-8f3f-4ef8-9276-5457f7aa0803",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "959fb576-023f-4f38-9fb7-8871cd2ed42c",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "9b64a157-68c6-4e85-9e6c-1c7eb23bd1af",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "5816e7a0-abfc-48eb-8e92-be64ca0304aa",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ea6abf64-f5e2-4976-bf9a-fa58c7adda2d",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "437056d9-cbaf-48e0-a635-334d7e5d0fbb",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "09374f07-9637-49cf-83b9-db393905d3f6",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "54950f88-5c5d-4054-89b9-94109b5cf820",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ade10fb6-6bc7-4b75-9759-8b9dd5afd25e",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "541d6455-0010-4645-8b3d-c34d7aeb2064",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "6915a19b-5983-4b46-9c81-aaacb3b8dab7",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "15e92c44-8ea5-484e-9cc1-c9810e2cc6ce",
+    "stock": 100,
+    "price": 15,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 15,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "d6eaa151-f617-4f57-8454-2273c7093968",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "3be1d84b-fc99-425a-99e0-be7ea435688e",
+    "stock": 100,
+    "price": 25,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 25,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "286abc05-c6ee-4ada-93b6-53d8f34d2b62",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "1d895d1e-7dd0-4204-8818-bc8391247532",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "4bbbed7f-69d6-4f08-8b78-ddcda437ef90",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "93973e1b-edcb-4f70-904a-b663d6b992bf",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "4f9c83f6-c3f4-4b49-a047-042652596269",
+    "stock": 100,
+    "price": 25,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 25,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "f5a2fefb-7685-45ff-8eb0-180939f722dd",
+    "stock": 100,
+    "price": 25,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 25,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "1eeacc8c-4661-4a26-9003-6b9608010cc1",
+    "stock": 100,
+    "price": 25,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 25,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "b1b55b18-419a-44a6-aca3-e96bf75e1b70",
+    "stock": 100,
+    "price": 25,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 25,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "5b796fc1-dbc7-4f6c-8991-2d9b9265aaf5",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a519e63e-33f8-4ab8-b2d3-84768713c0f0",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ec83de9f-842b-46fc-9799-4a9d9b01fdf6",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "bdcad325-53ad-4f08-80f8-b4f4063c1840",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "48769730-ffdc-4b15-bcf7-9d578736378f",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "03d5bf3d-ac9c-4c08-b51c-de94301c86f0",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "6f877091-b12b-4aae-bf10-316ba23bfc3b",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "38a0bdf7-ee4b-4800-b215-b85703e87fd1",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ef43d530-f8c7-40dc-8c0b-430730e223c9",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "7273493a-1584-4064-9a3b-4f3ae77dd55e",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a5f45ee3-05ea-40df-88e7-245d755e6c86",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "e0122c3a-27e9-40df-bef9-04609f391045",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ea11029f-c516-4205-b444-8343088e4c5a",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "18341bff-a472-4ea2-b983-98998b8c1439",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "b8a2aa99-6fa8-41d0-91cc-17583dc95806",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "2d98d9e8-35d1-4379-af87-1c0a53715646",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "9f15b91d-4da1-46b2-bad3-cd503a9c8d18",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "cb592f0f-d996-49f2-9eb0-7bee6c2075a6",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "389af3ed-77fe-4c85-af64-be1b5d8dea3d",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "32c21aa8-8afe-486b-a123-6401bac1f485",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "30008e97-3c69-457b-a9ac-c7498db70060",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "59cff767-662c-4342-8336-8223b18fd922",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "0f731cbf-e33e-492f-a22f-2e687b194f96",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "7dc805e7-a97b-430b-9f88-5397e63c82ca",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a050eaa8-ea2d-45d9-8c4c-08dcc1095c8a",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "b4e59b8e-2f77-4972-ae72-4a2cb1a9ebda",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "52ffec5e-2760-4db9-ba32-7376ab16b219",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "d891cd60-5263-44fc-bc2e-e779d5109678",
+    "stock": 100,
+    "price": 12,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 12,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "6e9dcbc8-c05d-43b0-b7ee-0c904b1a0fcb",
+    "stock": 100,
+    "price": 12,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 12,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "5c94892f-48e2-4c91-a964-319cbd622cc1",
+    "stock": 100,
+    "price": 12,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 12,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "3acbebe4-597d-4861-b815-2c71de12101c",
+    "stock": 100,
+    "price": 12,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 12,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "aded1635-ee04-4931-a397-31609b90025c",
+    "stock": 100,
+    "price": 2,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 2,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "48118c18-7172-4724-9fac-30ed8fd45bcd",
+    "stock": 100,
+    "price": 1,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 1,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "6ed04fe3-ebf7-4259-8600-926e3c39e5ca",
+    "stock": 100,
+    "price": 7,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 7,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "20de5ca2-4c51-41f5-bab1-7c1cea571f67",
+    "stock": 100,
+    "price": 7,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 7,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ec90fbea-ad5f-4307-9405-819bca6b4a72",
+    "stock": 100,
+    "price": 6,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 6,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "d9e5429a-1c24-4993-aec3-3e2bc51c82bf",
+    "stock": 100,
+    "price": 6,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 6,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "6c5a60e3-14b0-46ce-b923-896cc0c27b4d",
+    "stock": 100,
+    "price": 10,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 10,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "f89b8ef3-a17b-4557-96d2-a634ca261e71",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "54a5473a-49c0-435f-b063-d33405b6c396",
+    "stock": 100,
+    "price": 5,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 5,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "2cb5d254-5121-489b-b08c-a033a1488bc2",
+    "stock": 100,
+    "price": 28,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 28,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "d8231850-35f5-4c0b-9f53-706616f3d27e",
+    "stock": 100,
+    "price": 35,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 35,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "02986ec9-c8b6-4cb3-b0a4-1732a8bce519",
+    "stock": 100,
+    "price": 35,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 35,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "d583179a-2230-419d-a757-37e33279bd31",
+    "stock": 100,
+    "price": 65,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 65,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "b6861516-39ab-4ed5-a05d-b6aa9656c6b5",
+    "stock": 100,
+    "price": 70,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 70,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "74001c71-cac3-4f25-be4a-b31316f0b6d3",
+    "stock": 100,
+    "price": 68,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 68,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "ebf1bf43-1151-4daa-998a-9878c0e6fa4d",
+    "stock": 100,
+    "price": 38,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 38,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a9457aee-742d-4110-ae76-3eb52967dba2",
+    "stock": 100,
+    "price": 38,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 38,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "83957af4-3126-467d-a0e4-b187224c8d8c",
+    "stock": 100,
+    "price": 38,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 38,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "05e2c3a5-2d21-4b9d-b835-875cb912c588",
+    "stock": 100,
+    "price": 38,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 38,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a02067e4-2279-4f58-a9ff-ab2c098c498d",
+    "stock": 100,
+    "price": 35,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 35,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "75f0c0fd-7be0-42a1-b7bb-042048370046",
+    "stock": 100,
+    "price": 38,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 38,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "6050f3ec-def9-4e88-bb02-213a3ec5b84e",
+    "stock": 100,
+    "price": 38,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 38,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "431914b4-0adc-4d84-a27c-292ba5abc6e7",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "bbfee857-63ca-40d5-831b-d170140d5fa9",
+    "stock": 100,
+    "price": 45,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 45,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "0f8038ad-a58f-44b8-9aec-4aba890382d3",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "0892c7c2-bab3-491d-b3f5-76a8d547d516",
+    "stock": 100,
+    "price": 32,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 32,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "7b0bff2a-669c-4b34-81b8-2a42d740ef7e",
+    "stock": 100,
+    "price": 25,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 25,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "666b21a2-3179-4d0c-a49e-61e941966aee",
+    "stock": 100,
+    "price": 20,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 20,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "804204df-fcd9-4fa1-97f7-dca7aebe3520",
+    "stock": 100,
+    "price": 85,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 85,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a6c2789e-8985-4336-bc36-3629a2fd6192",
+    "stock": 100,
+    "price": 35,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 35,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "86125f30-2f48-4a88-a693-07bdf896eefa",
+    "stock": 100,
+    "price": 50,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 50,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "a18bbb5a-e391-401d-8f70-b29ea933abf7",
+    "stock": 100,
+    "price": 30,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "6fa56397-1933-41e0-9b64-bb4212551dde",
+    "stock": 100,
+    "price": 79,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 79,
+        "tier": 1
+      }
+    ]
   }
 ]
