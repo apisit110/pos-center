@@ -4,12 +4,14 @@ import { SyncPOSProductsUseCase } from './domain/usecases/SyncPOSProductsUseCase
 import { SyncUsersUseCase } from './domain/usecases/SyncUsersUseCase';
 import { SyncOrdersFromClientUseCase } from './domain/usecases/SyncOrdersFromClientUseCase';
 import { SyncTransactionsFromClientUseCase } from './domain/usecases/SyncTransactionsFromClientUseCase';
+import { ReceiveProductsFromClientUseCase } from './domain/usecases/ReceiveProductsFromClientUseCase';
 import { DrizzleProductRepository } from './infrastructure/repositories/DrizzleProductRepository';
 import { DrizzleUserRepository } from './infrastructure/repositories/DrizzleUserRepository';
 import { DrizzleOrderRepository } from './infrastructure/repositories/DrizzleOrderRepository';
 import { DrizzleTransactionRepository } from './infrastructure/repositories/DrizzleTransactionRepository';
 
 import { syncProductSchema } from './infrastructure/validation/SyncProductSchema';
+import { receiveProductsSchema } from './infrastructure/validation/ReceiveProductsSchema';
 import { SyncUserSchema } from './infrastructure/validation/SyncUserSchema';
 import { syncOrderSchema } from './infrastructure/validation/SyncOrderSchema';
 import { syncTransactionSchema } from './infrastructure/validation/SyncTransactionSchema';
@@ -32,6 +34,7 @@ const orderRepo = new DrizzleOrderRepository();
 const transactionRepo = new DrizzleTransactionRepository();
 
 const syncUseCase = new SyncPOSProductsUseCase(productRepo);
+const receiveProductsUseCase = new ReceiveProductsFromClientUseCase(productRepo);
 const syncUsersUseCase = new SyncUsersUseCase(userRepo);
 const syncOrdersUseCase = new SyncOrdersFromClientUseCase(orderRepo);
 const syncTransactionsUseCase = new SyncTransactionsFromClientUseCase(transactionRepo);
@@ -54,6 +57,24 @@ app.post('/v1/sync/products', async (req: Request, res: Response, next: NextFunc
     } else {
       return res.status(500).json({ message: 'Sync failed' });
     }
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post('/v1/sync/products/receive', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const validatedData = receiveProductsSchema.parse(req.body);
+    const { mid, sid, products } = validatedData;
+
+    console.log(`[pos-sync-service] Receiving ${products.length} product(s) from merchant: ${mid}, store: ${sid}`);
+
+    const results = await receiveProductsUseCase.execute(mid, sid, products);
+
+    return res.status(200).json({
+      message: 'Products received successfully',
+      results,
+    });
   } catch (error) {
     next(error);
   }
