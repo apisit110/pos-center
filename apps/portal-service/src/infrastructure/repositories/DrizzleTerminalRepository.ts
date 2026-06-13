@@ -1,5 +1,5 @@
 import { db, terminals, stores, eq } from '@pos-center/database';
-import { ITerminalRepository } from '../../application/repositories/ITerminalRepository';
+import { ITerminalRepository } from '../../domain/repositories/ITerminalRepository';
 import { Terminal } from '../../domain/entities/Terminal';
 
 export class DrizzleTerminalRepository implements ITerminalRepository {

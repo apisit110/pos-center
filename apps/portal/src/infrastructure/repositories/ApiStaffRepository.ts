@@ -1,5 +1,5 @@
 import { Staff } from '../../domain/entities/Staff';
-import { StaffRepository, StaffFilter } from '../../application/repositories/StaffRepository';
+import { StaffRepository, StaffFilter } from '../../domain/repositories/StaffRepository';
 import ApiClient from '../api/ApiClient';
 
 export class ApiStaffRepository implements StaffRepository {

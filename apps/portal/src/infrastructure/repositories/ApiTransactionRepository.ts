@@ -1,5 +1,5 @@
 import { Transaction } from '../../domain/entities/Transaction';
-import { TransactionRepository, TransactionFilter } from '../../application/repositories/TransactionRepository';
+import { TransactionRepository, TransactionFilter } from '../../domain/repositories/TransactionRepository';
 import ApiClient from '../api/ApiClient';
 
 export class ApiTransactionRepository implements TransactionRepository {

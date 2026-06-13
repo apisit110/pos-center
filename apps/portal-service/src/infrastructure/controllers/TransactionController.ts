@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { GetTransactionsUseCase } from '../../application/use-cases/GetTransactionsUseCase';
+import { GetTransactionsUseCase } from '../../domain/usecases/GetTransactionsUseCase';
 
 export class TransactionController {
   constructor(private getTransactionsUseCase: GetTransactionsUseCase) {}

@@ -1,9 +1,9 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import { SyncPOSProductsUseCase } from './application/use-cases/SyncPOSProductsUseCase';
-import { SyncUsersUseCase } from './application/use-cases/SyncUsersUseCase';
-import { SyncOrdersFromClientUseCase } from './application/use-cases/SyncOrdersFromClientUseCase';
-import { SyncTransactionsFromClientUseCase } from './application/use-cases/SyncTransactionsFromClientUseCase';
+import { SyncPOSProductsUseCase } from './domain/usecases/SyncPOSProductsUseCase';
+import { SyncUsersUseCase } from './domain/usecases/SyncUsersUseCase';
+import { SyncOrdersFromClientUseCase } from './domain/usecases/SyncOrdersFromClientUseCase';
+import { SyncTransactionsFromClientUseCase } from './domain/usecases/SyncTransactionsFromClientUseCase';
 import { DrizzleProductRepository } from './infrastructure/repositories/DrizzleProductRepository';
 import { DrizzleUserRepository } from './infrastructure/repositories/DrizzleUserRepository';
 import { DrizzleOrderRepository } from './infrastructure/repositories/DrizzleOrderRepository';

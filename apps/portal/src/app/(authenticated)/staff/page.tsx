@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { ApiStaffRepository } from '../../../infrastructure/repositories/ApiStaffRepository';
-import { GetStaffUseCase } from '../../../application/use-cases/GetStaffUseCase';
+import { GetStaffUseCase } from '../../../domain/usecases/GetStaffUseCase';
 import { Staff } from '../../../domain/entities/Staff';
-import { StaffFilter } from '../../../application/repositories/StaffRepository';
+import { StaffFilter } from '../../../domain/repositories/StaffRepository';
 import { DataTable, FilterBar, TextFilter, SelectFilter, DateFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
 import { formatDateTime } from '../../../lib/dayjs';
 

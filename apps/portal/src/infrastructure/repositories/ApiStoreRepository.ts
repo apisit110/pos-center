@@ -1,5 +1,5 @@
 import { Store } from '../../domain/entities/Store';
-import { StoreRepository } from '../../application/repositories/StoreRepository';
+import { StoreRepository } from '../../domain/repositories/StoreRepository';
 import ApiClient from '../api/ApiClient';
 
 export class ApiStoreRepository implements StoreRepository {

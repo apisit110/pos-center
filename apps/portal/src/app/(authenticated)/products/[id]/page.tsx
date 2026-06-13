@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Button } from '@apisit110/pos-ui';
 import { useParams, useRouter } from 'next/navigation';
-import { GetProductUseCase } from '../../../../application/use-cases/GetProductUseCase';
+import { GetProductUseCase } from '../../../../domain/usecases/GetProductUseCase';
 import { ApiProductRepository } from '../../../../infrastructure/repositories/ApiProductRepository';
 import { Product } from '../../../../domain/entities/Product';
 import { FiArrowLeft, FiPackage, FiTag, FiDollarSign, FiBox, FiChevronLeft, FiChevronRight } from 'react-icons/fi';

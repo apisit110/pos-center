@@ -3,7 +3,7 @@ import { and, db, eq, products, storeProducts, stores } from '@pos-center/databa
 import {
   IStoreProductRepository,
   UpsertStoreProductByUidInput
-} from '../../application/repositories/IStoreProductRepository';
+} from '../../domain/repositories/IStoreProductRepository';
 import { StoreProduct } from '../../domain/entities/StoreProduct';
 
 export class DrizzleStoreProductRepository implements IStoreProductRepository {

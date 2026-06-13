@@ -1,6 +1,6 @@
 import { db, products, storeProducts, merchants, stores, eq, and, gt } from '@pos-center/database';
 import { Product } from '../../domain/entities/Product';
-import { IProductRepository } from '../../application/repositories/IProductRepository';
+import { IProductRepository } from '../../domain/repositories/IProductRepository';
 
 export class DrizzleProductRepository implements IProductRepository {
   async saveMany(productsList: Product[]): Promise<void> {

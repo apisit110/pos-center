@@ -1,5 +1,5 @@
 import { db, merchants, eq } from '@pos-center/database';
-import { IMerchantRepository } from '../../application/repositories/IMerchantRepository';
+import { IMerchantRepository } from '../../domain/repositories/IMerchantRepository';
 import { Merchant } from '../../domain/entities/Merchant';
 
 export class DrizzleMerchantRepository implements IMerchantRepository {

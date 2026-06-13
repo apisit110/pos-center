@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { GetProductsUseCase } from '../../application/use-cases/GetProductsUseCase';
-import { GetProductDetailUseCase } from '../../application/use-cases/GetProductDetailUseCase';
-import { GetProductFilterMetadataUseCase } from '../../application/use-cases/GetProductFilterMetadataUseCase';
-import { CreateProductUseCase } from '../../application/use-cases/CreateProductUseCase';
+import { GetProductsUseCase } from '../../domain/usecases/GetProductsUseCase';
+import { GetProductDetailUseCase } from '../../domain/usecases/GetProductDetailUseCase';
+import { GetProductFilterMetadataUseCase } from '../../domain/usecases/GetProductFilterMetadataUseCase';
+import { CreateProductUseCase } from '../../domain/usecases/CreateProductUseCase';
 
 export class ProductController {
   constructor(

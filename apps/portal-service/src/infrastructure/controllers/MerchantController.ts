@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { GetMerchantsUseCase } from '../../application/use-cases/GetMerchantsUseCase';
-import { GetMerchantDetailUseCase } from '../../application/use-cases/GetMerchantDetailUseCase';
-import { RegisterMerchantUseCase } from '../../application/use-cases/RegisterMerchantUseCase';
-import { GetStaffByMerchantUseCase } from '../../application/use-cases/GetStaffByMerchantUseCase';
+import { GetMerchantsUseCase } from '../../domain/usecases/GetMerchantsUseCase';
+import { GetMerchantDetailUseCase } from '../../domain/usecases/GetMerchantDetailUseCase';
+import { RegisterMerchantUseCase } from '../../domain/usecases/RegisterMerchantUseCase';
+import { GetStaffByMerchantUseCase } from '../../domain/usecases/GetStaffByMerchantUseCase';
 
 export class MerchantController {
   constructor(

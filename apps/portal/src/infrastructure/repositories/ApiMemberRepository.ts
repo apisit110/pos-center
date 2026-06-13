@@ -1,5 +1,5 @@
 import { Member } from '../../domain/entities/Member';
-import { MemberFilter, MemberRepository } from '../../application/repositories/MemberRepository';
+import { MemberFilter, MemberRepository } from '../../domain/repositories/MemberRepository';
 import ApiClient from '../api/ApiClient';
 
 export class ApiMemberRepository implements MemberRepository {

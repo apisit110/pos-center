@@ -1,5 +1,5 @@
 import { db, products, merchants, storeProducts, stores, eq, ilike, and, inArray, lte, sql, runningNumbers } from '@pos-center/database';
-import { IProductRepository } from '../../application/repositories/IProductRepository';
+import { IProductRepository } from '../../domain/repositories/IProductRepository';
 import { Product } from '../../domain/entities/Product';
 
 export class DrizzleProductRepository implements IProductRepository {

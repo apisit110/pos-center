@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiMerchantRepository';
-import { GetMerchantsUseCase } from '../../../application/use-cases/GetMerchantsUseCase';
+import { GetMerchantsUseCase } from '../../../domain/usecases/GetMerchantsUseCase';
 import { Merchant } from '../../../domain/entities/Merchant';
 import { DataTable, Button, FilterBar, TextFilter, ClearFilterButton } from '@apisit110/pos-ui';
 

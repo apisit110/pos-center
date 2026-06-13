@@ -1,7 +1,7 @@
 import { db, members } from '@pos-center/database';
 import { eq, or, like, sql, count } from 'drizzle-orm';
 import { Member } from '../../domain/entities/Member';
-import { IMemberRepository, MemberFilter } from '../../application/repositories/IMemberRepository';
+import { IMemberRepository, MemberFilter } from '../../domain/repositories/IMemberRepository';
 
 export class DrizzleMemberRepository implements IMemberRepository {
   async getMembers(page: number, limit: number, filters?: MemberFilter): Promise<{ members: Member[], total: number }> {

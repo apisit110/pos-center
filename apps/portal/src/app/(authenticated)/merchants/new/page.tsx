@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
-import { RegisterMerchantUseCase } from '../../../../application/use-cases/RegisterMerchantUseCase';
+import { RegisterMerchantUseCase } from '../../../../domain/usecases/RegisterMerchantUseCase';
 import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
 import { InputField, SelectFilter, Button } from '@apisit110/pos-ui';
 

@@ -3,9 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { useRouter } from 'next/navigation';
-import { CreateProductUseCase } from '../../../../application/use-cases/CreateProductUseCase';
-import { BatchCreateProductsUseCase } from '../../../../application/use-cases/BatchCreateProductsUseCase';
-import { GetMerchantsUseCase } from '../../../../application/use-cases/GetMerchantsUseCase';
+import { CreateProductUseCase } from '../../../../domain/usecases/CreateProductUseCase';
+import { BatchCreateProductsUseCase } from '../../../../domain/usecases/BatchCreateProductsUseCase';
+import { GetMerchantsUseCase } from '../../../../domain/usecases/GetMerchantsUseCase';
 import { ApiProductRepository } from '../../../../infrastructure/repositories/ApiProductRepository';
 import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
 import { InputField, SelectFilter, Button } from '@apisit110/pos-ui';

@@ -1,5 +1,5 @@
 import { Merchant } from '../../domain/entities/Merchant';
-import { MerchantRepository, MerchantRegistrationRequest } from '../../application/repositories/MerchantRepository';
+import { MerchantRepository, MerchantRegistrationRequest } from '../../domain/repositories/MerchantRepository';
 import ApiClient from '../api/ApiClient';
 
 export class ApiMerchantRepository implements MerchantRepository {

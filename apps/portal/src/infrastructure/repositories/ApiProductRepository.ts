@@ -1,5 +1,5 @@
 import { Product } from '../../domain/entities/Product';
-import { ProductRepository, ProductFilter, CreateProductRequest } from '../../application/repositories/ProductRepository';
+import { ProductRepository, ProductFilter, CreateProductRequest } from '../../domain/repositories/ProductRepository';
 import ApiClient from '../api/ApiClient';
 
 export class ApiProductRepository implements ProductRepository {

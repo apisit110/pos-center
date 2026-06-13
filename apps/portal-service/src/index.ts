@@ -12,23 +12,23 @@ import { DrizzleStaffRepository } from './infrastructure/repositories/DrizzleSta
 import { DrizzleTerminalRepository } from './infrastructure/repositories/DrizzleTerminalRepository';
 
 // Use Cases
-import { GetMerchantsUseCase } from './application/use-cases/GetMerchantsUseCase';
-import { GetMerchantDetailUseCase } from './application/use-cases/GetMerchantDetailUseCase';
-import { GetProductsUseCase } from './application/use-cases/GetProductsUseCase';
-import { GetProductDetailUseCase } from './application/use-cases/GetProductDetailUseCase';
-import { GetProductFilterMetadataUseCase } from './application/use-cases/GetProductFilterMetadataUseCase';
-import { CreateProductUseCase } from './application/use-cases/CreateProductUseCase';
-import { GetStoresUseCase } from './application/use-cases/GetStoresUseCase';
-import { GetStoreDetailUseCase } from './application/use-cases/GetStoreDetailUseCase';
-import { GetMembersUseCase } from './application/use-cases/GetMembersUseCase';
-import { GetMemberDetailUseCase } from './application/use-cases/GetMemberDetailUseCase';
-import { GetStaffUseCase } from './application/use-cases/GetStaffUseCase';
-import { GetStaffDetailUseCase } from './application/use-cases/GetStaffDetailUseCase';
-import { GetStaffByMerchantUseCase } from './application/use-cases/GetStaffByMerchantUseCase';
-import { RegisterMerchantUseCase } from './application/use-cases/RegisterMerchantUseCase';
-import { GetTerminalsByStoreUseCase } from './application/use-cases/GetTerminalsByStoreUseCase';
-import { BatchUpsertStoreProductsUseCase } from './application/use-cases/BatchUpsertStoreProductsUseCase';
-import { GetTransactionsUseCase } from './application/use-cases/GetTransactionsUseCase';
+import { GetMerchantsUseCase } from './domain/usecases/GetMerchantsUseCase';
+import { GetMerchantDetailUseCase } from './domain/usecases/GetMerchantDetailUseCase';
+import { GetProductsUseCase } from './domain/usecases/GetProductsUseCase';
+import { GetProductDetailUseCase } from './domain/usecases/GetProductDetailUseCase';
+import { GetProductFilterMetadataUseCase } from './domain/usecases/GetProductFilterMetadataUseCase';
+import { CreateProductUseCase } from './domain/usecases/CreateProductUseCase';
+import { GetStoresUseCase } from './domain/usecases/GetStoresUseCase';
+import { GetStoreDetailUseCase } from './domain/usecases/GetStoreDetailUseCase';
+import { GetMembersUseCase } from './domain/usecases/GetMembersUseCase';
+import { GetMemberDetailUseCase } from './domain/usecases/GetMemberDetailUseCase';
+import { GetStaffUseCase } from './domain/usecases/GetStaffUseCase';
+import { GetStaffDetailUseCase } from './domain/usecases/GetStaffDetailUseCase';
+import { GetStaffByMerchantUseCase } from './domain/usecases/GetStaffByMerchantUseCase';
+import { RegisterMerchantUseCase } from './domain/usecases/RegisterMerchantUseCase';
+import { GetTerminalsByStoreUseCase } from './domain/usecases/GetTerminalsByStoreUseCase';
+import { BatchUpsertStoreProductsUseCase } from './domain/usecases/BatchUpsertStoreProductsUseCase';
+import { GetTransactionsUseCase } from './domain/usecases/GetTransactionsUseCase';
 
 // Controllers
 import { MerchantController } from './infrastructure/controllers/MerchantController';

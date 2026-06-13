@@ -2,15 +2,15 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styled from 'styled-components';
-import { GetProductsUseCase } from '../../../application/use-cases/GetProductsUseCase';
-import { GetProductFilterMetadataUseCase } from '../../../application/use-cases/GetProductFilterMetadataUseCase';
-import { GetMerchantsUseCase } from '../../../application/use-cases/GetMerchantsUseCase';
-import { GetStoresUseCase } from '../../../application/use-cases/GetStoresUseCase';
+import { GetProductsUseCase } from '../../../domain/usecases/GetProductsUseCase';
+import { GetProductFilterMetadataUseCase } from '../../../domain/usecases/GetProductFilterMetadataUseCase';
+import { GetMerchantsUseCase } from '../../../domain/usecases/GetMerchantsUseCase';
+import { GetStoresUseCase } from '../../../domain/usecases/GetStoresUseCase';
 import { ApiProductRepository } from '../../../infrastructure/repositories/ApiProductRepository';
 import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiMerchantRepository';
 import { ApiStoreRepository } from '../../../infrastructure/repositories/ApiStoreRepository';
 import { Product } from '../../../domain/entities/Product';
-import { ProductFilter } from '../../../application/repositories/ProductRepository';
+import { ProductFilter } from '../../../domain/repositories/ProductRepository';
 import { DataTable, FilterBar, TextFilter, SelectFilter, ClearFilterButton, InputField, Button } from '@apisit110/pos-ui';
 import { useRouter } from 'next/navigation';
 

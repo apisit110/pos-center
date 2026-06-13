@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { GetStaffUseCase } from '../../application/use-cases/GetStaffUseCase';
-import { GetStaffDetailUseCase } from '../../application/use-cases/GetStaffDetailUseCase';
+import { GetStaffUseCase } from '../../domain/usecases/GetStaffUseCase';
+import { GetStaffDetailUseCase } from '../../domain/usecases/GetStaffDetailUseCase';
 
 export class StaffController {
   constructor(

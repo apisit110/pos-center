@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { GetStoresUseCase } from '../../application/use-cases/GetStoresUseCase';
-import { GetStoreDetailUseCase } from '../../application/use-cases/GetStoreDetailUseCase';
-import { GetTerminalsByStoreUseCase } from '../../application/use-cases/GetTerminalsByStoreUseCase';
+import { GetStoresUseCase } from '../../domain/usecases/GetStoresUseCase';
+import { GetStoreDetailUseCase } from '../../domain/usecases/GetStoreDetailUseCase';
+import { GetTerminalsByStoreUseCase } from '../../domain/usecases/GetTerminalsByStoreUseCase';
 
 export class StoreController {
   constructor(

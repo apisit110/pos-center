@@ -1,7 +1,7 @@
 import { db, staff, merchants } from '@pos-center/database';
 import { eq, like, and, count, gte, lte } from 'drizzle-orm';
 import { Staff } from '../../domain/entities/Staff';
-import { IStaffRepository, StaffFilter } from '../../application/repositories/IStaffRepository';
+import { IStaffRepository, StaffFilter } from '../../domain/repositories/IStaffRepository';
 
 export class DrizzleStaffRepository implements IStaffRepository {
   async getStaff(page: number, limit: number, filters?: StaffFilter): Promise<{ staff: Staff[], total: number }> {

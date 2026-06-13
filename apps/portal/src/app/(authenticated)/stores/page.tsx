@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import { ApiStoreRepository } from '../../../infrastructure/repositories/ApiStoreRepository';
-import { GetStoresUseCase } from '../../../application/use-cases/GetStoresUseCase';
+import { GetStoresUseCase } from '../../../domain/usecases/GetStoresUseCase';
 import { Store } from '../../../domain/entities/Store';
 import { DataTable, FilterBar, TextFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
 

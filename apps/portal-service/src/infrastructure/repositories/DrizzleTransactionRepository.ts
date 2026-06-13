@@ -1,7 +1,7 @@
 import { db, transactions, stores } from '@pos-center/database';
 import { eq, and, like, gte, lte, count } from 'drizzle-orm';
 import { Transaction } from '../../domain/entities/Transaction';
-import { ITransactionRepository, TransactionFilter } from '../../application/repositories/ITransactionRepository';
+import { ITransactionRepository, TransactionFilter } from '../../domain/repositories/ITransactionRepository';
 
 export class DrizzleTransactionRepository implements ITransactionRepository {
   async getTransactions(page: number, limit: number, filters?: TransactionFilter): Promise<{ transactions: Transaction[]; total: number }> {

@@ -7,9 +7,9 @@ import { InputField, SelectFilter, Button } from '@apisit110/pos-ui';
 import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiMerchantRepository';
 import { ApiStoreRepository } from '../../../infrastructure/repositories/ApiStoreRepository';
 import { ApiStoreProductRepository } from '../../../infrastructure/repositories/ApiStoreProductRepository';
-import { GetMerchantsUseCase } from '../../../application/use-cases/GetMerchantsUseCase';
-import { GetStoresUseCase } from '../../../application/use-cases/GetStoresUseCase';
-import { BatchUpsertStoreProductsUseCase } from '../../../application/use-cases/BatchUpsertStoreProductsUseCase';
+import { GetMerchantsUseCase } from '../../../domain/usecases/GetMerchantsUseCase';
+import { GetStoresUseCase } from '../../../domain/usecases/GetStoresUseCase';
+import { BatchUpsertStoreProductsUseCase } from '../../../domain/usecases/BatchUpsertStoreProductsUseCase';
 import { Merchant } from '../../../domain/entities/Merchant';
 import { Store } from '../../../domain/entities/Store';
 

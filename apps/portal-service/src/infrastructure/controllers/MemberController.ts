@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { GetMembersUseCase } from '../../application/use-cases/GetMembersUseCase';
-import { GetMemberDetailUseCase } from '../../application/use-cases/GetMemberDetailUseCase';
+import { GetMembersUseCase } from '../../domain/usecases/GetMembersUseCase';
+import { GetMemberDetailUseCase } from '../../domain/usecases/GetMemberDetailUseCase';
 
 export class MemberController {
   constructor(

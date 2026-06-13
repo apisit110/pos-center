@@ -1,4 +1,4 @@
-import { AuthRepository } from '../../application/repositories/AuthRepository';
+import { AuthRepository } from '../../domain/repositories/AuthRepository';
 import ApiClient from '../api/ApiClient';
 
 export class ApiAuthRepository implements AuthRepository {

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import {
   BatchStoreProductMappingRequest,
   BatchUpsertStoreProductsUseCase
-} from '../../application/use-cases/BatchUpsertStoreProductsUseCase';
+} from '../../domain/usecases/BatchUpsertStoreProductsUseCase';
 
 export class StoreProductController {
   constructor(private readonly batchUpsertStoreProductsUseCase: BatchUpsertStoreProductsUseCase) {}

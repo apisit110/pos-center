@@ -3,7 +3,7 @@ import {
   BatchStoreProductMappingRequest,
   BatchStoreProductMappingResponse,
   StoreProductRepository
-} from '../../application/repositories/StoreProductRepository';
+} from '../../domain/repositories/StoreProductRepository';
 import ApiClient from '../api/ApiClient';
 
 export class ApiStoreProductRepository implements StoreProductRepository {

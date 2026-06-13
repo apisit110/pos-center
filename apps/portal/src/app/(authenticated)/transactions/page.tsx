@@ -4,10 +4,10 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { formatDateTime } from '../../../lib/dayjs';
 import { DataTable, FilterBar, TextFilter, SelectFilter, DateFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
-import { GetTransactionsUseCase } from '../../../application/use-cases/GetTransactionsUseCase';
+import { GetTransactionsUseCase } from '../../../domain/usecases/GetTransactionsUseCase';
 import { ApiTransactionRepository } from '../../../infrastructure/repositories/ApiTransactionRepository';
 import { Transaction } from '../../../domain/entities/Transaction';
-import { TransactionFilter } from '../../../application/repositories/TransactionRepository';
+import { TransactionFilter } from '../../../domain/repositories/TransactionRepository';
 
 const PageContainer = styled.div`
   display: flex;

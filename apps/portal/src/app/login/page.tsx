@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { LoginUseCase } from '../../application/use-cases/LoginUseCase';
+import { LoginUseCase } from '../../domain/usecases/LoginUseCase';
 import { ApiAuthRepository } from '../../infrastructure/repositories/ApiAuthRepository';
 import { InputField, Button } from '@apisit110/pos-ui';
 

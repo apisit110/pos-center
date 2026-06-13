@@ -1,5 +1,5 @@
 import { Terminal } from '../../domain/entities/Terminal';
-import { TerminalRepository } from '../../application/repositories/TerminalRepository';
+import { TerminalRepository } from '../../domain/repositories/TerminalRepository';
 import ApiClient from '../api/ApiClient';
 
 export class ApiTerminalRepository implements TerminalRepository {

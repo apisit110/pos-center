@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
-import { GetMembersUseCase } from '../../../application/use-cases/GetMembersUseCase';
+import { GetMembersUseCase } from '../../../domain/usecases/GetMembersUseCase';
 import { ApiMemberRepository } from '../../../infrastructure/repositories/ApiMemberRepository';
 import { Member } from '../../../domain/entities/Member';
-import { MemberFilter } from '../../../application/repositories/MemberRepository';
+import { MemberFilter } from '../../../domain/repositories/MemberRepository';
 import { DataTable, FilterBar, TextFilter, SelectFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
 import { useRouter } from 'next/navigation';
 
