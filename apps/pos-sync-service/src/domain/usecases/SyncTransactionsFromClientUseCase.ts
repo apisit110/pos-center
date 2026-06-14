@@ -2,6 +2,7 @@ import { TransactionRepository } from '../repositories/TransactionRepository';
 import { Transaction } from '../entities/Transaction';
 
 export interface SyncTransactionDTO {
+  id: string;
   transactionId: string; // order_id used as idempotency key
   orderId: string;
   merchantId: string;
@@ -41,7 +42,7 @@ export class SyncTransactionsFromClientUseCase {
 
         // 2. Create transaction entity
         const transaction = new Transaction(
-          '',
+          txData.id,
           txData.transactionId,
           txData.orderId,
           txData.merchantId,

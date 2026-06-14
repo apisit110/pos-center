@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const syncTransactionSchema = z.object({
   transactions: z.array(z.object({
+    id: z.string().min(1),
     order_id: z.string().min(1),
     merchant_id: z.string().min(1),
     store_id: z.string().min(1),
@@ -12,6 +13,7 @@ export const syncTransactionSchema = z.object({
     staff_name: z.string().min(1),
     created_at: z.string(),
   }).transform(tx => ({
+    id: tx.id,
     transactionId: tx.order_id,
     orderId: tx.order_id,
     merchantId: tx.merchant_id,

@@ -3,7 +3,7 @@ import { orders } from './orders';
 import { stores } from './stores';
 
 export const transactions = pgTable('transactions', {
-  id: serial('id').primaryKey(),
+  id: varchar('id', { length: 255 }).primaryKey(),
   uid: varchar('uid', { length: 255 }).unique().notNull(),
   orderId: integer('order_id').references(() => orders.id).notNull(),
   merchantId: varchar('merchant_id', { length: 255 }).notNull(),
@@ -18,8 +18,8 @@ export const transactions = pgTable('transactions', {
 
 export const transactionSyncLogs = pgTable('transaction_sync_logs', {
   id: serial('id').primaryKey(),
-  posTempId: varchar('pos_temp_id', { length: 255 }).notNull(), // The ID from POS
+  posTempId: varchar('pos_temp_id', { length: 255 }).notNull(),
   storeId: integer('store_id').references(() => stores.id).notNull(),
-  globalTransactionId: integer('global_transaction_id').references(() => transactions.id).notNull(),
+  globalTransactionId: varchar('global_transaction_id', { length: 255 }).references(() => transactions.id).notNull(),
   syncedAt: timestamp('synced_at').defaultNow(),
 });
