@@ -3,13 +3,15 @@ import { GetProductsUseCase } from '../../domain/usecases/GetProductsUseCase';
 import { GetProductDetailUseCase } from '../../domain/usecases/GetProductDetailUseCase';
 import { GetProductFilterMetadataUseCase } from '../../domain/usecases/GetProductFilterMetadataUseCase';
 import { CreateProductUseCase } from '../../domain/usecases/CreateProductUseCase';
+import { BulkCreateProductsUseCase } from '../../domain/usecases/BulkCreateProductsUseCase';
 
 export class ProductController {
   constructor(
     private getProductsUseCase: GetProductsUseCase,
     private getProductDetailUseCase: GetProductDetailUseCase,
     private getProductFilterMetadataUseCase: GetProductFilterMetadataUseCase,
-    private createProductUseCase: CreateProductUseCase
+    private createProductUseCase: CreateProductUseCase,
+    private bulkCreateProductsUseCase: BulkCreateProductsUseCase
   ) {}
 
   async getAll(req: Request, res: Response, next: NextFunction) {
@@ -84,29 +86,20 @@ export class ProductController {
         return res.status(400).json({ message: 'products must be an array' });
       }
 
-      let created = 0;
-      const errors: string[] = [];
+      const result = await this.bulkCreateProductsUseCase.execute(
+        products.map(p => ({
+          uid: p.uid,
+          merchantId: p.merchantId,
+          name: p.name,
+          barcode: p.barcode || '',
+          basePrice: Number(p.basePrice),
+          imageUrl: p.imageUrl || [],
+          brand: p.brand || '',
+          unitName: p.unitName || ''
+        }))
+      );
 
-      for (const p of products) {
-        try {
-          await this.createProductUseCase.execute({
-            uid: p.uid,
-            merchantId: p.merchantId,
-            name: p.name,
-            sku: p.barcode || '',
-            barcode: p.barcode || '',
-            basePrice: Number(p.basePrice),
-            imageUrl: p.imageUrl || [],
-            brand: p.brand || '',
-            unitName: p.unitName || ''
-          });
-          created++;
-        } catch (err: any) {
-          errors.push(`Failed to create "${p.name}": ${err.message}`);
-        }
-      }
-
-      res.status(201).json({ created, errors });
+      res.status(201).json(result);
     } catch (error) {
       next(error);
     }

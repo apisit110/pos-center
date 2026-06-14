@@ -71,9 +71,24 @@ export class ApiProductRepository implements ProductRepository {
     );
   }
 
-  public async createProducts(requests: CreateProductRequest[]): Promise<{ created: number; errors: string[] }> {
-    const response = await ApiClient.post('/products/batch', { products: requests });
-    return response.data;
+  public async createProducts(
+    requests: CreateProductRequest[],
+    onProgress?: (done: number, total: number) => void
+  ): Promise<{ created: number; errors: string[] }> {
+    const CHUNK_SIZE = 500;
+    let totalCreated = 0;
+    const allErrors: string[] = [];
+
+    for (let i = 0; i < requests.length; i += CHUNK_SIZE) {
+      const chunk = requests.slice(i, i + CHUNK_SIZE);
+      const response = await ApiClient.post('/products/batch', { products: chunk });
+      const { created, errors } = response.data;
+      totalCreated += created;
+      if (errors?.length) allErrors.push(...errors);
+      onProgress?.(Math.min(i + CHUNK_SIZE, requests.length), requests.length);
+    }
+
+    return { created: totalCreated, errors: allErrors };
   }
 }
 

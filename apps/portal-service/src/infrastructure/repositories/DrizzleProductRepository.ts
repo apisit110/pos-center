@@ -200,6 +200,67 @@ export class DrizzleProductRepository implements IProductRepository {
     });
   }
 
+  async bulkSave(productList: Product[]): Promise<void> {
+    if (productList.length === 0) return;
+
+    // Resolve unique merchants once (avoids N lookups inside the loop)
+    const uniqueMerchantUids = [...new Set(productList.map(p => p.merchantId))];
+    const merchantRows = await db.select({ uid: merchants.uid, id: merchants.id })
+      .from(merchants)
+      .where(inArray(merchants.uid, uniqueMerchantUids));
+
+    const merchantIdMap = new Map(merchantRows.map(m => [m.uid, m.id]));
+    const missing = uniqueMerchantUids.filter(uid => !merchantIdMap.has(uid));
+    if (missing.length > 0) throw new Error(`Merchants not found: ${missing.join(', ')}`);
+
+    const CHUNK_SIZE = 500;
+    for (let i = 0; i < productList.length; i += CHUNK_SIZE) {
+      const chunk = productList.slice(i, i + CHUNK_SIZE);
+      await db.transaction(async (tx) => {
+        const inserted = await tx.insert(products).values(
+          chunk.map(p => ({
+            uid: p.id,
+            merchantId: merchantIdMap.get(p.merchantId)!,
+            name: p.name,
+            sku: p.sku,
+            barcode: p.barcode,
+            basePrice: p.basePrice.toString(),
+            imageUrl: p.imageUrl,
+            brand: p.brand,
+            unitName: p.unitName
+          }))
+        ).onConflictDoUpdate({
+          target: products.uid,
+          set: {
+            name: sql`excluded.name`,
+            sku: sql`excluded.sku`,
+            barcode: sql`excluded.barcode`,
+            basePrice: sql`excluded.base_price`,
+            imageUrl: sql`excluded.image_url`,
+            brand: sql`excluded.brand`,
+            unitName: sql`excluded.unit_name`,
+            updatedAt: new Date()
+          }
+        }).returning({ id: products.id });
+
+        if (inserted.length === 0) return;
+
+        const versionResult = await tx.update(runningNumbers)
+          .set({ number: sql`${runningNumbers.number} + 1`, updatedAt: new Date() })
+          .where(eq(runningNumbers.type, 'product_version'))
+          .returning({ newVersion: runningNumbers.number });
+
+        const newVersion = versionResult[0]?.newVersion;
+        if (newVersion !== undefined) {
+          const productIds = inserted.map(r => r.id);
+          await tx.update(storeProducts)
+            .set({ rowVersion: newVersion, updatedAt: new Date() })
+            .where(inArray(storeProducts.productId, productIds));
+        }
+      });
+    }
+  }
+
   async delete(id: string): Promise<void> {
     await db.delete(products).where(eq(products.uid, id));
   }

@@ -18,6 +18,7 @@ import { GetProductsUseCase } from './domain/usecases/GetProductsUseCase';
 import { GetProductDetailUseCase } from './domain/usecases/GetProductDetailUseCase';
 import { GetProductFilterMetadataUseCase } from './domain/usecases/GetProductFilterMetadataUseCase';
 import { CreateProductUseCase } from './domain/usecases/CreateProductUseCase';
+import { BulkCreateProductsUseCase } from './domain/usecases/BulkCreateProductsUseCase';
 import { GetStoresUseCase } from './domain/usecases/GetStoresUseCase';
 import { GetStoreDetailUseCase } from './domain/usecases/GetStoreDetailUseCase';
 import { GetMembersUseCase } from './domain/usecases/GetMembersUseCase';
@@ -66,6 +67,7 @@ const getProductsUseCase = new GetProductsUseCase(productRepository);
 const getProductDetailUseCase = new GetProductDetailUseCase(productRepository);
 const getProductFilterMetadataUseCase = new GetProductFilterMetadataUseCase(productRepository);
 const createProductUseCase = new CreateProductUseCase(productRepository, merchantRepository);
+const bulkCreateProductsUseCase = new BulkCreateProductsUseCase(productRepository, merchantRepository);
 const getStoresUseCase = new GetStoresUseCase(storeRepository);
 const getStoreDetailUseCase = new GetStoreDetailUseCase(storeRepository);
 const getMembersUseCase = new GetMembersUseCase(memberRepository);
@@ -79,7 +81,7 @@ const batchUpsertStoreProductsUseCase = new BatchUpsertStoreProductsUseCase(stor
 const getTransactionsUseCase = new GetTransactionsUseCase(transactionRepository);
 
 const merchantController = new MerchantController(getMerchantsUseCase, getMerchantDetailUseCase, registerMerchantUseCase, getStaffByMerchantUseCase);
-const productController = new ProductController(getProductsUseCase, getProductDetailUseCase, getProductFilterMetadataUseCase, createProductUseCase);
+const productController = new ProductController(getProductsUseCase, getProductDetailUseCase, getProductFilterMetadataUseCase, createProductUseCase, bulkCreateProductsUseCase);
 const storeController = new StoreController(getStoresUseCase, getStoreDetailUseCase, getTerminalsByStoreUseCase);
 const memberController = new MemberController(getMembersUseCase, getMemberDetailUseCase);
 const staffController = new StaffController(getStaffUseCase, getStaffDetailUseCase);
@@ -87,7 +89,7 @@ const storeProductController = new StoreProductController(batchUpsertStoreProduc
 const transactionController = new TransactionController(getTransactionsUseCase);
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(loggerMiddleware);
 
 app.post('/login', (req: Request, res: Response) => {

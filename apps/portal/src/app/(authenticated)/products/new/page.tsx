@@ -327,6 +327,7 @@ export default function AddProductPage() {
 
   // Shared
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [result, setResult] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
   useEffect(() => {
@@ -429,6 +430,7 @@ export default function AddProductPage() {
     }
 
     setLoading(true);
+    setProgress(null);
     setResult(null);
 
     try {
@@ -445,7 +447,7 @@ export default function AddProductPage() {
         unitName: p.unit_name || ''
       }));
 
-      const res = await useCase.execute(requests);
+      const res = await useCase.execute(requests, (done, total) => setProgress({ done, total }));
       const msg = `Successfully created ${res.created} product(s).` +
         (res.errors.length > 0 ? ` ${res.errors.length} error(s).` : '');
       setResult({ type: res.errors.length === 0 ? 'success' : 'error', message: msg });
@@ -647,7 +649,11 @@ export default function AddProductPage() {
                 style={{ marginTop: '1rem' }}
                 onClick={handleJsonSubmit}
               >
-                {loading ? `Importing ${jsonProducts.length} product(s)...` : `Import ${jsonProducts.length} Product(s)`}
+                {loading
+                  ? progress
+                    ? `Importing... ${progress.done} / ${progress.total}`
+                    : 'Preparing...'
+                  : `Import ${jsonProducts.length} Product(s)`}
               </Button>
             </PreviewContainer>
           )}

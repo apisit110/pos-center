@@ -26,5 +26,5 @@ export interface ProductRepository {
   getProductById(id: string): Promise<Product | null>;
   getFilterMetadata(): Promise<{ brands: string[], units: string[] }>;
   createProduct(request: CreateProductRequest): Promise<Product>;
-  createProducts(requests: CreateProductRequest[]): Promise<{ created: number; errors: string[] }>;
+  createProducts(requests: CreateProductRequest[], onProgress?: (done: number, total: number) => void): Promise<{ created: number; errors: string[] }>;
 }

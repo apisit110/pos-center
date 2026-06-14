@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
-import { and, db, eq, products, storeProducts, stores } from '@pos-center/database';
+import { and, db, eq, inArray, products, sql, storeProducts, stores } from '@pos-center/database';
 import {
+  BatchUpsertResult,
   IStoreProductRepository,
   UpsertStoreProductByUidInput
 } from '../../domain/repositories/IStoreProductRepository';
@@ -106,6 +107,7 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
             stock: input.stock,
             price: input.price.toString(),
             unit: product.unitName || existing.unit,
+            rowVersion: sql`${storeProducts.rowVersion} + 1`,
             updatedAt: new Date(),
           })
           .where(eq(storeProducts.id, existing.id));
@@ -122,6 +124,98 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
       });
       return 'created';
     });
+  }
+
+  async batchUpsertByUids(inputs: UpsertStoreProductByUidInput[]): Promise<BatchUpsertResult> {
+    if (inputs.length === 0) return { created: 0, updated: 0, errors: [] };
+
+    const storeUids = [...new Set(inputs.map((i) => i.storeUid))];
+    const productUids = [...new Set(inputs.map((i) => i.productUid))];
+
+    const [storeRows, productRows] = await Promise.all([
+      db.select().from(stores).where(inArray(stores.uid, storeUids)),
+      db.select().from(products).where(inArray(products.uid, productUids)),
+    ]);
+
+    const storeMap = new Map(storeRows.map((s) => [s.uid, s]));
+    const productMap = new Map(productRows.map((p) => [p.uid, p]));
+
+    type ValidItem = { input: UpsertStoreProductByUidInput; storeId: number; productId: number; unitName: string | null };
+    const valid: ValidItem[] = [];
+    const errors: BatchUpsertResult['errors'] = [];
+
+    for (const [index, input] of inputs.entries()) {
+      const store = storeMap.get(input.storeUid);
+      const product = productMap.get(input.productUid);
+      if (!store) {
+        errors.push({ index, message: `store_uid "${input.storeUid}" not found` });
+        continue;
+      }
+      if (!product) {
+        errors.push({ index, message: `product_uid "${input.productUid}" not found` });
+        continue;
+      }
+      valid.push({ input, storeId: store.id, productId: product.id, unitName: product.unitName ?? null });
+    }
+
+    if (valid.length === 0) return { created: 0, updated: 0, errors };
+
+    const storeIds = [...new Set(valid.map((v) => v.storeId))];
+    const productIds = [...new Set(valid.map((v) => v.productId))];
+
+    const existingRows = await db
+      .select()
+      .from(storeProducts)
+      .where(
+        and(
+          inArray(storeProducts.storeId, storeIds),
+          inArray(storeProducts.productId, productIds)
+        )
+      );
+
+    const existingMap = new Map(existingRows.map((r) => [`${r.storeId}:${r.productId}`, r]));
+
+    let created = 0;
+    let updated = 0;
+
+    await db.transaction(async (tx) => {
+      const toInsert: typeof storeProducts.$inferInsert[] = [];
+
+      for (const item of valid) {
+        const key = `${item.storeId}:${item.productId}`;
+        const existing = existingMap.get(key);
+
+        if (existing) {
+          await tx
+            .update(storeProducts)
+            .set({
+              stock: item.input.stock,
+              price: item.input.price.toString(),
+              unit: item.unitName ?? existing.unit,
+              rowVersion: sql`${storeProducts.rowVersion} + 1`,
+              updatedAt: new Date(),
+            })
+            .where(eq(storeProducts.id, existing.id));
+          updated++;
+        } else {
+          toInsert.push({
+            uid: randomUUID(),
+            storeId: item.storeId,
+            productId: item.productId,
+            stock: item.input.stock,
+            price: item.input.price.toString(),
+            unit: item.unitName,
+          });
+          created++;
+        }
+      }
+
+      if (toInsert.length > 0) {
+        await tx.insert(storeProducts).values(toInsert);
+      }
+    });
+
+    return { created, updated, errors };
   }
 }
 
