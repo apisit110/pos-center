@@ -60,6 +60,7 @@ const EMPTY_FILTERS: TransactionFilter = {
   startDate: '',
   endDate: '',
   transactionId: '',
+  orderId: '',
   method: '',
   status: '',
 };
@@ -90,6 +91,13 @@ const columns = [
     key: 'id',
     render: (tx: Transaction) => (
       <span style={{ fontFamily: 'monospace', fontWeight: 600 }}>{tx.id}</span>
+    ),
+  },
+  {
+    header: 'Order ID',
+    key: 'orderId',
+    render: (tx: Transaction) => (
+      <span style={{ fontFamily: 'monospace' }}>{tx.orderId || '-'}</span>
     ),
   },
   {
@@ -186,6 +194,13 @@ export default function TransactionsPage() {
           placeholder="Search by transaction ID..."
           value={pendingFilters.transactionId ?? ''}
           onChange={value => setPendingFilters(f => ({ ...f, transactionId: value }))}
+        />
+
+        <TextFilter
+          label="Order ID"
+          placeholder="Search by order ID..."
+          value={pendingFilters.orderId ?? ''}
+          onChange={value => setPendingFilters(f => ({ ...f, orderId: value }))}
         />
 
         <SelectFilter

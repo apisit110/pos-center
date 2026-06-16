@@ -17,6 +17,7 @@ export class ApiTransactionRepository implements TransactionRepository {
         t.currency ?? 'THB',
         t.storeName ?? '',
         t.createdAt ? new Date(t.createdAt) : new Date(),
+        t.orderId ?? '',
       )),
       total,
     };

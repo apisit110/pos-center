@@ -1,4 +1,4 @@
-import { db, transactions, stores } from '@pos-center/database';
+import { db, transactions, stores, orders } from '@pos-center/database';
 import { eq, and, like, gte, lte, count } from 'drizzle-orm';
 import { Transaction } from '../../domain/entities/Transaction';
 import { ITransactionRepository, TransactionFilter } from '../../domain/repositories/ITransactionRepository';
@@ -10,6 +10,10 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
 
     if (filters?.transactionId) {
       conditions.push(like(transactions.uid, `%${filters.transactionId}%`));
+    }
+
+    if (filters?.orderId) {
+      conditions.push(like(orders.orderId, `%${filters.orderId}%`));
     }
 
     if (filters?.method) {
@@ -36,6 +40,7 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
       .select({
         id: transactions.id,
         uid: transactions.uid,
+        orderId: orders.orderId,
         paymentMethod: transactions.paymentMethod,
         status: transactions.status,
         amount: transactions.amount,
@@ -43,6 +48,7 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
         createdAt: transactions.createdAt,
       })
       .from(transactions)
+      .leftJoin(orders, eq(transactions.orderId, orders.id))
       .leftJoin(stores, eq(transactions.storeId, stores.id))
       .where(whereClause)
       .orderBy(transactions.createdAt)
@@ -52,6 +58,7 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
     const totalCount = await db
       .select({ value: count() })
       .from(transactions)
+      .leftJoin(orders, eq(transactions.orderId, orders.id))
       .where(whereClause);
 
     return {
@@ -64,6 +71,7 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
         'THB',
         t.storeName ?? '',
         t.createdAt ?? new Date(),
+        t.orderId?.toString() ?? '',
       )),
       total: Number(totalCount[0].value),
     };

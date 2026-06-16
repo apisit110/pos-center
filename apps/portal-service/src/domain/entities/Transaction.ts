@@ -8,5 +8,6 @@ export class Transaction {
     public readonly currency: string = 'THB',
     public readonly storeName: string = '',
     public readonly createdAt: Date = new Date(),
+    public readonly orderId: string = '',
   ) {}
 }

@@ -4,6 +4,7 @@ export interface TransactionFilter {
   startDate?: string;
   endDate?: string;
   transactionId?: string;
+  orderId?: string;
   method?: string;
   status?: string;
 }
