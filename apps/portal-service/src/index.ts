@@ -1,56 +1,64 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import jwt from 'jsonwebtoken';
-import { loginSchema } from './infrastructure/validation/LoginSchema';
 
-// Repositories
+// Infrastructure: Repositories & Services
 import { DrizzleMerchantRepository } from './infrastructure/repositories/DrizzleMerchantRepository';
 import { DrizzleProductRepository } from './infrastructure/repositories/DrizzleProductRepository';
 import { DrizzleStoreRepository } from './infrastructure/repositories/DrizzleStoreRepository';
 import { DrizzleMemberRepository } from './infrastructure/repositories/DrizzleMemberRepository';
 import { DrizzleStaffRepository } from './infrastructure/repositories/DrizzleStaffRepository';
 import { DrizzleTerminalRepository } from './infrastructure/repositories/DrizzleTerminalRepository';
-
-// Use Cases
-import { GetMerchantsUseCase } from './domain/usecases/GetMerchantsUseCase';
-import { GetMerchantDetailUseCase } from './domain/usecases/GetMerchantDetailUseCase';
-import { GetProductsUseCase } from './domain/usecases/GetProductsUseCase';
-import { GetProductDetailUseCase } from './domain/usecases/GetProductDetailUseCase';
-import { GetProductFilterMetadataUseCase } from './domain/usecases/GetProductFilterMetadataUseCase';
-import { CreateProductUseCase } from './domain/usecases/CreateProductUseCase';
-import { BulkCreateProductsUseCase } from './domain/usecases/BulkCreateProductsUseCase';
-import { GetStoresUseCase } from './domain/usecases/GetStoresUseCase';
-import { GetStoreDetailUseCase } from './domain/usecases/GetStoreDetailUseCase';
-import { GetMembersUseCase } from './domain/usecases/GetMembersUseCase';
-import { GetMemberDetailUseCase } from './domain/usecases/GetMemberDetailUseCase';
-import { GetStaffUseCase } from './domain/usecases/GetStaffUseCase';
-import { GetStaffDetailUseCase } from './domain/usecases/GetStaffDetailUseCase';
-import { GetStaffByMerchantUseCase } from './domain/usecases/GetStaffByMerchantUseCase';
-import { RegisterMerchantUseCase } from './domain/usecases/RegisterMerchantUseCase';
-import { GetTerminalsByStoreUseCase } from './domain/usecases/GetTerminalsByStoreUseCase';
-import { BatchUpsertStoreProductsUseCase } from './domain/usecases/BatchUpsertStoreProductsUseCase';
-import { GetTransactionsUseCase } from './domain/usecases/GetTransactionsUseCase';
-
-// Controllers
-import { MerchantController } from './infrastructure/controllers/MerchantController';
-import { ProductController } from './infrastructure/controllers/ProductController';
-import { StoreController } from './infrastructure/controllers/StoreController';
-import { MemberController } from './infrastructure/controllers/MemberController';
-import { StaffController } from './infrastructure/controllers/StaffController';
-import { StoreProductController } from './infrastructure/controllers/StoreProductController';
-import { TransactionController } from './infrastructure/controllers/TransactionController';
 import { DrizzleStoreProductRepository } from './infrastructure/repositories/DrizzleStoreProductRepository';
 import { DrizzleTransactionRepository } from './infrastructure/repositories/DrizzleTransactionRepository';
-
-import { loggerMiddleware } from './infrastructure/middleware/LoggerMiddleware';
-import { errorMiddleware } from './infrastructure/middleware/ErrorMiddleware';
 import { RunningNumberService } from './infrastructure/services/RunningNumberService';
+
+// Application: Use Cases
+import { GetMerchantsUseCase } from './application/usecases/GetMerchantsUseCase';
+import { GetMerchantDetailUseCase } from './application/usecases/GetMerchantDetailUseCase';
+import { GetProductsUseCase } from './application/usecases/GetProductsUseCase';
+import { GetProductDetailUseCase } from './application/usecases/GetProductDetailUseCase';
+import { GetProductFilterMetadataUseCase } from './application/usecases/GetProductFilterMetadataUseCase';
+import { CreateProductUseCase } from './application/usecases/CreateProductUseCase';
+import { BulkCreateProductsUseCase } from './application/usecases/BulkCreateProductsUseCase';
+import { GetStoresUseCase } from './application/usecases/GetStoresUseCase';
+import { GetStoreDetailUseCase } from './application/usecases/GetStoreDetailUseCase';
+import { GetMembersUseCase } from './application/usecases/GetMembersUseCase';
+import { GetMemberDetailUseCase } from './application/usecases/GetMemberDetailUseCase';
+import { GetStaffUseCase } from './application/usecases/GetStaffUseCase';
+import { GetStaffDetailUseCase } from './application/usecases/GetStaffDetailUseCase';
+import { GetStaffByMerchantUseCase } from './application/usecases/GetStaffByMerchantUseCase';
+import { RegisterMerchantUseCase } from './application/usecases/RegisterMerchantUseCase';
+import { GetTerminalsByStoreUseCase } from './application/usecases/GetTerminalsByStoreUseCase';
+import { BatchUpsertStoreProductsUseCase } from './application/usecases/BatchUpsertStoreProductsUseCase';
+import { GetTransactionsUseCase } from './application/usecases/GetTransactionsUseCase';
+
+// Presentation: Controllers
+import { MerchantController } from './presentation/controllers/MerchantController';
+import { ProductController } from './presentation/controllers/ProductController';
+import { StoreController } from './presentation/controllers/StoreController';
+import { MemberController } from './presentation/controllers/MemberController';
+import { StaffController } from './presentation/controllers/StaffController';
+import { StoreProductController } from './presentation/controllers/StoreProductController';
+import { TransactionController } from './presentation/controllers/TransactionController';
+
+// Presentation: Middleware
+import { loggerMiddleware } from './presentation/middleware/LoggerMiddleware';
+import { errorMiddleware } from './presentation/middleware/ErrorMiddleware';
+
+// Presentation: Routes
+import { authRoutes } from './presentation/routes/auth.routes';
+import { merchantRoutes } from './presentation/routes/merchant.routes';
+import { productRoutes } from './presentation/routes/product.routes';
+import { storeProductRoutes } from './presentation/routes/storeProduct.routes';
+import { storeRoutes } from './presentation/routes/store.routes';
+import { memberRoutes } from './presentation/routes/member.routes';
+import { staffRoutes } from './presentation/routes/staff.routes';
+import { transactionRoutes } from './presentation/routes/transaction.routes';
 
 const app = express();
 const port = process.env.PORT || 4001;
-const JWT_SECRET = 'your-secret-key';
 
-// Initialize Dependencies
+// Initialize Infrastructure
 const merchantRepository = new DrizzleMerchantRepository();
 const productRepository = new DrizzleProductRepository();
 const storeRepository = new DrizzleStoreRepository();
@@ -61,6 +69,7 @@ const storeProductRepository = new DrizzleStoreProductRepository();
 const transactionRepository = new DrizzleTransactionRepository();
 const runningNumberService = new RunningNumberService();
 
+// Initialize Application Use Cases
 const getMerchantsUseCase = new GetMerchantsUseCase(merchantRepository);
 const getMerchantDetailUseCase = new GetMerchantDetailUseCase(merchantRepository);
 const getProductsUseCase = new GetProductsUseCase(productRepository);
@@ -80,6 +89,7 @@ const getTerminalsByStoreUseCase = new GetTerminalsByStoreUseCase(terminalReposi
 const batchUpsertStoreProductsUseCase = new BatchUpsertStoreProductsUseCase(storeProductRepository);
 const getTransactionsUseCase = new GetTransactionsUseCase(transactionRepository);
 
+// Initialize Presentation Controllers
 const merchantController = new MerchantController(getMerchantsUseCase, getMerchantDetailUseCase, registerMerchantUseCase, getStaffByMerchantUseCase);
 const productController = new ProductController(getProductsUseCase, getProductDetailUseCase, getProductFilterMetadataUseCase, createProductUseCase, bulkCreateProductsUseCase);
 const storeController = new StoreController(getStoresUseCase, getStoreDetailUseCase, getTerminalsByStoreUseCase);
@@ -92,46 +102,15 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(loggerMiddleware);
 
-app.post('/login', (req: Request, res: Response) => {
-  const { username, password } = loginSchema.parse(req.body);
-
-  if (username === 'admin' && password === 'admin') {
-    const token = jwt.sign({ uid: 'admin-id-123' }, JWT_SECRET, { expiresIn: '1h' });
-    return res.status(200).json({ token });
-  }
-
-  return res.status(401).json({ message: 'Invalid credentials' });
-});
-
-// Merchant Endpoints
-app.get('/merchants', (req, res, next) => merchantController.getAll(req, res, next));
-app.get('/merchants/:id/staff', (req, res, next) => merchantController.getStaff(req, res, next));
-app.get('/merchants/:id', (req, res, next) => merchantController.getById(req, res, next));
-app.post('/merchants', (req, res, next) => merchantController.register(req, res, next));
-
-// Product Endpoints
-app.get('/products', (req, res, next) => productController.getAll(req, res, next));
-app.get('/products/metadata', (req, res, next) => productController.getMetadata(req, res, next));
-app.post('/products/batch', (req, res, next) => productController.batchCreate(req, res, next));
-app.post('/products', (req, res, next) => productController.create(req, res, next));
-app.get('/products/:id', (req, res, next) => productController.getById(req, res, next));
-app.post('/store-products/batch', (req, res, next) => storeProductController.batchCreate(req, res, next));
-
-// Store Endpoints
-app.get('/stores', (req, res, next) => storeController.getAll(req, res, next));
-app.get('/stores/:id', (req, res, next) => storeController.getById(req, res, next));
-app.get('/stores/:id/terminals', (req, res, next) => storeController.getTerminals(req, res, next));
-
-// Member Endpoints
-app.get('/members', (req, res, next) => memberController.getAll(req, res, next));
-app.get('/members/:id', (req, res, next) => memberController.getById(req, res, next));
-
-// Staff Endpoints
-app.get('/staff', (req, res, next) => staffController.getAll(req, res, next));
-app.get('/staff/:id', (req, res, next) => staffController.getById(req, res, next));
-
-// Transaction Endpoints
-app.get('/transactions', (req, res, next) => transactionController.getAll(req, res, next));
+// Routes
+app.use('/', authRoutes());
+app.use('/', merchantRoutes(merchantController));
+app.use('/', productRoutes(productController));
+app.use('/', storeProductRoutes(storeProductController));
+app.use('/', storeRoutes(storeController));
+app.use('/', memberRoutes(memberController));
+app.use('/', staffRoutes(staffController));
+app.use('/', transactionRoutes(transactionController));
 
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'ok' });
