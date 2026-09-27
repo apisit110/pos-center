@@ -19,7 +19,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: var(--font-prompt), system-ui, -apple-system, sans-serif;
   background-color: var(--bg-main);
   color: var(--text-main);
   transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);

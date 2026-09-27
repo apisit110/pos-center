@@ -127658,5 +127658,109 @@
         "tier": 1
       }
     ]
+  },
+  {
+    "product_uid": "ad3237f6-478a-4198-8578-8e6f02ff0ebe",
+    "stock": 100,
+    "price": 189.0,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 189.0,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "dacb4320-5877-4a21-9230-1028dde2da6c",
+    "stock": 100,
+    "price": 39.0,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 39.0,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "96941cb6-b945-45b1-b948-175c96860cd8",
+    "stock": 100,
+    "price": 30.0,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 30.0,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "3d78d878-525b-4ab4-bac0-391a3bf8f931",
+    "stock": 100,
+    "price": 90.0,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 90.0,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "7b3b8f7c-dfdd-4668-9139-17fc567d1ec9",
+    "stock": 100,
+    "price": 40.0,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 40.0,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "0ddde634-2657-4f6e-83c0-bb8ded869851",
+    "stock": 100,
+    "price": 800.0,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 800.0,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "9276e984-5e88-4405-9ff7-0b5a8f65e71a",
+    "stock": 100,
+    "price": 250.0,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 250.0,
+        "tier": 1
+      }
+    ]
+  },
+  {
+    "product_uid": "d9012934-f8f3-4ffb-930f-532a96ad75a6",
+    "stock": 100,
+    "price": 109.0,
+    "price_tiers": [
+      {
+        "min_qty": 1,
+        "max_qty": 1,
+        "unit_price": 109.0,
+        "tier": 1
+      }
+    ]
   }
 ]

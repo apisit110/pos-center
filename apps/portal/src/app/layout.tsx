@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import StyledComponentsRegistry from "../lib/registry";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const prompt = localFont({
+  variable: "--font-prompt",
+  src: [
+    { path: "./fonts/Prompt-300.woff2", weight: "300", style: "normal" },
+    { path: "./fonts/Prompt-400.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/Prompt-500.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/Prompt-600.woff2", weight: "600", style: "normal" },
+    { path: "./fonts/Prompt-700.woff2", weight: "700", style: "normal" },
+  ],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -24,10 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className={`${prompt.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
       </body>
