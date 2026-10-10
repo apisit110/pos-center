@@ -1,5 +1,5 @@
 import { Merchant } from '../../domain/entities/Merchant';
-import { MerchantRepository, MerchantRegistrationRequest } from '../../domain/repositories/MerchantRepository';
+import { MerchantRepository, MerchantRegistrationRequest, MerchantFilter } from '../../domain/repositories/MerchantRepository';
 import ApiClient from '../api/ApiClient';
 
 export class ApiMerchantRepository implements MerchantRepository {
@@ -13,10 +13,14 @@ export class ApiMerchantRepository implements MerchantRepository {
     }
   }
 
-  public async getMerchants(): Promise<Merchant[]> {
-    const response = await ApiClient.get('/merchants');
-    const data = response.data;
-    return data.map((m: any) => new Merchant(m.uid || m.id, m.mid, m.name));
+  public async getMerchants(page: number, limit: number, filters?: MerchantFilter): Promise<{ merchants: Merchant[]; total: number }> {
+    const params = { page, limit, ...filters };
+    const response = await ApiClient.get('/merchants', { params });
+    const { items, total } = response.data;
+    return {
+      merchants: items.map((m: any) => new Merchant(m.uid || m.id, m.mid, m.name)),
+      total,
+    };
   }
 
   public async updateMerchant(merchant: Merchant): Promise<void> {

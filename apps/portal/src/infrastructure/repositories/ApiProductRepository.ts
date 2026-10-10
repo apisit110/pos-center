@@ -9,10 +9,10 @@ export class ApiProductRepository implements ProductRepository {
     // Handle multi-select filters (axios by default might not format arrays the way backend expects, 
     // but we can adjust if needed)
     const response = await ApiClient.get('/products', { params });
-    const { products, total } = response.data;
-    
+    const { items, total } = response.data;
+
     return {
-      products: products.map((p: any) => new Product(
+      products: items.map((p: any) => new Product(
         p.id,
         p.merchantId,
         p.mid,

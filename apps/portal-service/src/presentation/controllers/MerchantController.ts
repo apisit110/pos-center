@@ -3,21 +3,48 @@ import { GetMerchantsUseCase } from '../../application/usecases/GetMerchantsUseC
 import { GetMerchantDetailUseCase } from '../../application/usecases/GetMerchantDetailUseCase';
 import { RegisterMerchantUseCase } from '../../application/usecases/RegisterMerchantUseCase';
 import { GetStaffByMerchantUseCase } from '../../application/usecases/GetStaffByMerchantUseCase';
+import { IStaffRepository } from '../../domain/repositories/IStaffRepository';
 import { registerMerchantSchema } from '../dtos/request/RegisterMerchantRequestDto';
+import { getMerchantsQuerySchema } from '../dtos/request/GetMerchantsQueryDto';
 import { toMerchantResponseDto } from '../dtos/response/MerchantResponseDto';
+import { PaginatedResponseDto } from '../dtos/response/PaginatedResponseDto';
+import { SUPER_ADMIN_ROLE } from '../../domain/constants/roles';
 
 export class MerchantController {
   constructor(
     private getMerchantsUseCase: GetMerchantsUseCase,
     private getMerchantDetailUseCase: GetMerchantDetailUseCase,
     private registerMerchantUseCase: RegisterMerchantUseCase,
-    private getStaffByMerchantUseCase: GetStaffByMerchantUseCase
+    private getStaffByMerchantUseCase: GetStaffByMerchantUseCase,
+    private staffRepository: IStaffRepository
   ) {}
 
   async getAll(req: Request, res: Response, next: NextFunction) {
     try {
-      const merchants = await this.getMerchantsUseCase.execute();
-      res.json(merchants.map(toMerchantResponseDto));
+      const { page, limit, mid, name } = getMerchantsQuerySchema.parse(req.query);
+
+      // Non-super-admin staff may only ever see their own merchant, never the full list.
+      if (req.auth?.role !== SUPER_ADMIN_ROLE) {
+        const ownMerchantUid = req.auth ? await this.staffRepository.getMerchantUidByStaffId(req.auth.uid) : null;
+        const ownMerchant = ownMerchantUid ? await this.getMerchantDetailUseCase.execute(ownMerchantUid) : null;
+        const items = ownMerchant ? [toMerchantResponseDto(ownMerchant)] : [];
+        const response: PaginatedResponseDto<ReturnType<typeof toMerchantResponseDto>> = {
+          items,
+          total: items.length,
+          page: 1,
+          limit: items.length,
+        };
+        return res.json(response);
+      }
+
+      const result = await this.getMerchantsUseCase.execute(page, limit, { mid, name });
+      const response: PaginatedResponseDto<ReturnType<typeof toMerchantResponseDto>> = {
+        items: result.merchants.map(toMerchantResponseDto),
+        total: result.total,
+        page,
+        limit,
+      };
+      res.json(response);
     } catch (error) {
       next(error);
     }

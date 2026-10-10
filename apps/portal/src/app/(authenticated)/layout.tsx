@@ -4,6 +4,7 @@ import React from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Sidebar } from '../../presentation/components/Sidebar';
 import { TopBar } from '../../presentation/components/TopBar';
+import { ApiAuthRepository } from '../../infrastructure/repositories/ApiAuthRepository';
 import styled from 'styled-components';
 
 const LayoutContainer = styled.div`
@@ -35,15 +36,21 @@ export default function DashboardLayout({
   const [authorized, setAuthorized] = React.useState(false);
 
   React.useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      router.replace('/login');
-    } else {
-      setAuthorized(true);
-    }
+    let active = true;
+    new ApiAuthRepository().getSession().then((session) => {
+      if (!active) return;
+      if (!session) {
+        router.replace('/login');
+      } else {
+        setAuthorized(true);
+      }
+    });
+    return () => {
+      active = false;
+    };
   }, [router]);
 
-  if (!authorized) return null; // Or a loading spinner
+  if (!authorized) return null;
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard' },
@@ -51,7 +58,6 @@ export default function DashboardLayout({
     { name: 'Stores', path: '/stores' },
     { name: 'Products', path: '/products' },
     { name: 'Map Store Products', path: '/map-store' },
-    { name: 'Members', path: '/members' },
     { name: 'Staff', path: '/staff' },
     { name: 'Transactions', path: '/transactions' },
   ];

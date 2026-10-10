@@ -12,5 +12,7 @@ export class Staff {
     public status: StaffStatus = 'active',
     public createdAt?: Date,
     public merchantName?: string,
+    public failedAttempts: number = 0,
+    public lockedUntil?: Date | null,
   ) {}
 }

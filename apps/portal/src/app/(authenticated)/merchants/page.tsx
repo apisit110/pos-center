@@ -41,27 +41,43 @@ interface MerchantFilter {
   name: string;
 }
 
+const EMPTY_FILTERS: MerchantFilter = { mid: '', name: '' };
+
 export default function MerchantsPage() {
   const router = useRouter();
   const [merchants, setMerchants] = useState<Merchant[]>([]);
+  const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [filters, setFilters] = useState<MerchantFilter>({ mid: '', name: '' });
-  const [activeFilters, setActiveFilters] = useState<MerchantFilter>({ mid: '', name: '' });
-
-  const fetchMerchants = async () => {
-    setLoading(true);
-    const repository = new ApiMerchantRepository();
-    const useCase = new GetMerchantsUseCase(repository);
-    const result = await useCase.execute();
-    setMerchants(result);
-    setLoading(false);
-  };
+  const [filters, setFilters] = useState<MerchantFilter>(EMPTY_FILTERS);
+  const [activeFilters, setActiveFilters] = useState<MerchantFilter>(EMPTY_FILTERS);
 
   useEffect(() => {
+    let cancelled = false;
+
+    const fetchMerchants = async () => {
+      setLoading(true);
+      try {
+        const repository = new ApiMerchantRepository();
+        const useCase = new GetMerchantsUseCase(repository);
+        const cleanFilters = Object.fromEntries(
+          Object.entries(activeFilters).filter(([, v]) => v !== '')
+        ) as MerchantFilter;
+        const result = await useCase.execute(page, limit, cleanFilters);
+        if (!cancelled) {
+          setMerchants(result.merchants);
+          setTotal(result.total);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
     fetchMerchants();
-  }, []);
+
+    return () => { cancelled = true; };
+  }, [page, limit, activeFilters]);
 
   const handleSearch = () => {
     setActiveFilters(filters);
@@ -69,19 +85,10 @@ export default function MerchantsPage() {
   };
 
   const handleClear = () => {
-    const cleared = { mid: '', name: '' };
-    setFilters(cleared);
-    setActiveFilters(cleared);
+    setFilters(EMPTY_FILTERS);
+    setActiveFilters(EMPTY_FILTERS);
     setPage(1);
   };
-
-  const filtered = merchants.filter(m => {
-    const midMatch = !activeFilters.mid || m.mid.toLowerCase().includes(activeFilters.mid.toLowerCase());
-    const nameMatch = !activeFilters.name || m.name.toLowerCase().includes(activeFilters.name.toLowerCase());
-    return midMatch && nameMatch;
-  });
-
-  const pagedMerchants = filtered.slice((page - 1) * limit, page * limit);
 
   const columns = [
     { header: 'MID', key: 'mid', width: '200px' },
@@ -118,15 +125,19 @@ export default function MerchantsPage() {
 
       <DataTable
         columns={columns}
-        data={pagedMerchants}
+        data={merchants}
         rowKey="uid"
         onRowClick={(merchant) => router.push(`/merchants/${merchant.uid}`)}
-        totalItems={filtered.length}
+        totalItems={total}
         currentPage={page}
         pageSize={limit}
         onPageChange={setPage}
         onPageSizeChange={(newLimit) => { setLimit(newLimit); setPage(1); }}
       />
+
+      {loading && (
+        <div style={{ textAlign: 'center', color: 'var(--text-sub)', padding: '1rem' }}>Loading...</div>
+      )}
     </PageContainer>
   );
 }

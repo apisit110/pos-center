@@ -171,3 +171,13 @@ todos
 [ ] - add product detail to master_product_2.json
     - use unused_product_images.json for more information to checking
 [ ] - create master_store_product_2.json
+
+
+
+center
+admin
+admin
+
+cashier
+00010001
+123456

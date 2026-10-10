@@ -101,8 +101,8 @@ export default function ProductsPage() {
 
       const merchantRepo = new ApiMerchantRepository();
       const merchantUC = new GetMerchantsUseCase(merchantRepo);
-      const merchantData = await merchantUC.execute();
-      setMerchants(merchantData.map(m => ({ value: m.uid, label: m.name })));
+      const merchantData = await merchantUC.execute(1, 1000);
+      setMerchants(merchantData.merchants.map(m => ({ value: m.uid, label: m.name })));
 
       const storeRepo = new ApiStoreRepository();
       const storeUC = new GetStoresUseCase(storeRepo);

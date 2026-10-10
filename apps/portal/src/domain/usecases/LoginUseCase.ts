@@ -1,12 +1,12 @@
-import { AuthRepository } from '../repositories/AuthRepository';
+import { AuthRepository, AuthenticatedStaff } from '../repositories/AuthRepository';
 
 export class LoginUseCase {
   constructor(private authRepository: AuthRepository) {}
 
-  public async execute(username: string, password: string): Promise<{ token: string }> {
-    if (!username || !password) {
-      throw new Error('Username and password are required');
+  public async execute(username: string, pin: string): Promise<{ staff: AuthenticatedStaff }> {
+    if (!username || !pin) {
+      throw new Error('Username and pin are required');
     }
-    return this.authRepository.login(username, password);
+    return this.authRepository.login(username, pin);
   }
 }

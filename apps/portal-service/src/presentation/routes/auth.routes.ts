@@ -1,21 +1,23 @@
 import { Router, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import { loginSchema } from '../dtos/request/LoginRequestDto';
+import rateLimit from 'express-rate-limit';
+import { AuthController } from '../controllers/AuthController';
+import { authMiddleware } from '../middleware/AuthMiddleware';
 
-const JWT_SECRET = 'your-secret-key';
+const loginRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Too many login attempts, please try again later' },
+});
 
-export function authRoutes(): Router {
+export function authRoutes(controller: AuthController, jwtSecret: string): Router {
   const router = Router();
 
-  router.post('/login', (req: Request, res: Response) => {
-    const { username, password } = loginSchema.parse(req.body);
-
-    if (username === 'admin' && password === 'admin') {
-      const token = jwt.sign({ uid: 'admin-id-123' }, JWT_SECRET, { expiresIn: '1h' });
-      return res.status(200).json({ token });
-    }
-
-    return res.status(401).json({ message: 'Invalid credentials' });
+  router.post('/login', loginRateLimiter, (req, res, next) => controller.login(req, res, next));
+  router.post('/logout', (req, res, next) => controller.logout(req, res, next));
+  router.get('/me', authMiddleware(jwtSecret), (req: Request, res: Response) => {
+    res.status(200).json({ auth: req.auth });
   });
 
   return router;

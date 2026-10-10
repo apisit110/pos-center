@@ -334,8 +334,8 @@ export default function AddProductPage() {
     (async () => {
       const merchantRepo = new ApiMerchantRepository();
       const useCase = new GetMerchantsUseCase(merchantRepo);
-      const data = await useCase.execute();
-      setMerchants(data.map(m => ({ value: m.uid, label: m.name })));
+      const data = await useCase.execute(1, 1000);
+      setMerchants(data.merchants.map(m => ({ value: m.uid, label: m.name })));
     })();
   }, []);
 

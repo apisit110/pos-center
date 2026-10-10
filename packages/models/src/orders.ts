@@ -2,7 +2,7 @@ import { pgTable, varchar, decimal, timestamp, serial, integer, pgEnum, boolean 
 import { merchants } from './merchants';
 import { stores } from './stores';
 import { terminals } from './terminals';
-import { staff } from './staff';
+import { staff } from './centerStaff';
 
 export const orderStatusEnum = pgEnum('order_status', ['PENDING', 'PAID', 'CANCELLED']);
 

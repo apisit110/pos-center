@@ -6,9 +6,9 @@ export class ApiStaffRepository implements StaffRepository {
   public async getAllStaff(page: number, limit: number, filters?: StaffFilter): Promise<{ staff: Staff[], total: number }> {
     const params = { page, limit, ...filters };
     const response = await ApiClient.get('/staff', { params });
-    const { staff, total } = response.data;
+    const { items, total } = response.data;
     return {
-      staff: staff.map((s: any) => new Staff(
+      staff: items.map((s: any) => new Staff(
         s.id,
         s.merchantId ?? '',
         s.name,

@@ -10,7 +10,7 @@ const sql = postgres(connectionString);
 async function truncate() {
   console.log('🗑️ Truncating all tables...');
   try {
-    await sql`TRUNCATE TABLE merchants, stores, products, store_products, members, staff, running_numbers, sync_metadata, roles, branches CASCADE`;
+    await sql`TRUNCATE TABLE merchants, stores, products, store_products, staff, running_numbers, sync_metadata CASCADE`;
     console.log('✅ Truncation successful');
     process.exit(0);
   } catch (err) {

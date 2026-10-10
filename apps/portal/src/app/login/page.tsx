@@ -8,7 +8,7 @@ import { InputField, Button } from '@apisit110/pos-ui';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
 
@@ -20,11 +20,19 @@ export default function LoginPage() {
     const useCase = new LoginUseCase(repository);
 
     try {
-      const response = await useCase.execute(username, password);
-      console.log('Login successful, token:', response.token);
+      await useCase.execute(username, pin);
       router.push('/dashboard');
     } catch (err: any) {
-      setError(err.message);
+      const status = err?.response?.status;
+      if (status === 423) {
+        setError('บัญชีถูกล็อกชั่วคราว กรุณาลองใหม่ภายหลัง');
+      } else if (status === 429) {
+        setError('พยายามเข้าสู่ระบบบ่อยเกินไป กรุณาลองใหม่ภายหลัง');
+      } else if (status === 401) {
+        setError('Invalid credentials');
+      } else {
+        setError(err.message || 'เข้าสู่ระบบไม่สำเร็จ');
+      }
     }
   };
 
@@ -53,11 +61,11 @@ export default function LoginPage() {
             />
 
             <InputField
-              label="Password"
+              label="Pin"
               type="password"
               placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={pin}
+              onChange={(e) => setPin(e.target.value)}
             />
 
             {error && <p style={{ color: '#f87171', fontSize: '0.8rem', marginBottom: '1rem' }}>{error}</p>}

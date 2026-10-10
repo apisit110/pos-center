@@ -163,8 +163,8 @@ export default function MapProductStorePage() {
       try {
         const repo = new ApiMerchantRepository();
         const useCase = new GetMerchantsUseCase(repo);
-        const data = await useCase.execute();
-        setMerchants(data);
+        const data = await useCase.execute(1, 1000);
+        setMerchants(data.merchants);
       } catch (err) {
         console.error('Failed to fetch merchants', err);
       }

@@ -1,5 +1,5 @@
-import { db, merchants, eq } from '@pos-center/database';
-import { IMerchantRepository } from '../../domain/repositories/IMerchantRepository';
+import { db, merchants, eq, and, ilike, count } from '@pos-center/database';
+import { IMerchantRepository, MerchantFilter } from '../../domain/repositories/IMerchantRepository';
 import { Merchant } from '../../domain/entities/Merchant';
 
 export class DrizzleMerchantRepository implements IMerchantRepository {
@@ -13,9 +13,30 @@ export class DrizzleMerchantRepository implements IMerchantRepository {
     return new Merchant(result.uid, result.mid, result.name);
   }
 
-  async findAll(): Promise<Merchant[]> {
-    const results = await db.select().from(merchants);
-    return results.map(m => new Merchant(m.uid, m.mid, m.name));
+  async findAll(page: number, limit: number, filters?: MerchantFilter): Promise<{ merchants: Merchant[]; total: number }> {
+    const offset = (page - 1) * limit;
+    const conditions: any[] = [];
+
+    if (filters?.mid) {
+      conditions.push(ilike(merchants.mid, `%${filters.mid}%`));
+    }
+    if (filters?.name) {
+      conditions.push(ilike(merchants.name, `%${filters.name}%`));
+    }
+
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
+
+    const results = await db.select().from(merchants)
+      .where(whereClause)
+      .limit(limit)
+      .offset(offset);
+
+    const totalCount = await db.select({ value: count() }).from(merchants).where(whereClause);
+
+    return {
+      merchants: results.map(m => new Merchant(m.uid, m.mid, m.name)),
+      total: Number(totalCount[0].value),
+    };
   }
 
   async save(merchant: Merchant): Promise<void> {

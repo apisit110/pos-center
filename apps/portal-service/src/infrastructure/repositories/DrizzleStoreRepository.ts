@@ -2,6 +2,8 @@ import { db, stores, merchants, eq } from '@pos-center/database';
 import { IStoreRepository } from '../../domain/repositories/IStoreRepository';
 import { Store } from '../../domain/entities/Store';
 
+const MAX_MERCHANT_SCOPED_RESULTS = 500;
+
 export class DrizzleStoreRepository implements IStoreRepository {
   async getById(uid: string): Promise<Store | null> {
     const result = await db.select({
@@ -37,7 +39,8 @@ export class DrizzleStoreRepository implements IStoreRepository {
     })
     .from(stores)
     .innerJoin(merchants, eq(stores.merchantId, merchants.id))
-    .where(eq(merchants.uid, merchantId));
+    .where(eq(merchants.uid, merchantId))
+    .limit(MAX_MERCHANT_SCOPED_RESULTS);
 
     return result.map(({ store, merchantUid, mid }) => new Store(
       store.uid,

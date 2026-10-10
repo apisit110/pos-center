@@ -1,4 +1,4 @@
-import { createHash } from 'crypto';
+import bcrypt from 'bcryptjs';
 import { Merchant } from '../../domain/entities/Merchant';
 import { Store } from '../../domain/entities/Store';
 import { Staff } from '../../domain/entities/Staff';
@@ -44,7 +44,7 @@ export class RegisterMerchantUseCase {
 
     for (const staffReq of request.staffMembers) {
       const username = await this.runningNumberService.nextStaffUsername(mid);
-      const pinHash = createHash('sha256').update(staffReq.pin).digest('hex');
+      const pinHash = await bcrypt.hash(staffReq.pin, 10);
       const staff = new Staff(
         uuidv4(),
         merchantUid,

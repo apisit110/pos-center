@@ -156,12 +156,14 @@ export default function MerchantDetailPage() {
   const [stores, setStores] = useState<Store[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!params.id) return;
-      
+
       setLoading(true);
+      setError(null);
       const merchantRepo = new ApiMerchantRepository();
       const storeRepo = new ApiStoreRepository();
       const staffRepo = new ApiStaffRepository();
@@ -171,16 +173,22 @@ export default function MerchantDetailPage() {
       const getStaffUseCase = new GetStaffByMerchantUseCase(staffRepo);
 
       const merchantId = params.id as string;
-      const [merchantData, storesData, staffData] = await Promise.all([
-        getMerchantUseCase.execute(merchantId),
-        getStoresUseCase.execute(merchantId),
-        getStaffUseCase.execute(merchantId)
-      ]);
+      try {
+        const [merchantData, storesData, staffData] = await Promise.all([
+          getMerchantUseCase.execute(merchantId),
+          getStoresUseCase.execute(merchantId),
+          getStaffUseCase.execute(merchantId)
+        ]);
 
-      setMerchant(merchantData);
-      setStores(storesData);
-      setStaff(staffData);
-      setLoading(false);
+        setMerchant(merchantData);
+        setStores(storesData);
+        setStaff(staffData);
+      } catch (err: any) {
+        setMerchant(null);
+        setError(err?.response?.status === 403 ? 'Forbidden' : 'Merchant not found');
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
@@ -200,7 +208,7 @@ export default function MerchantDetailPage() {
   ];
 
   if (loading) return <div>Loading...</div>;
-  if (!merchant) return <div>Merchant not found</div>;
+  if (!merchant) return <div>{error ?? 'Merchant not found'}</div>;
 
   return (
     <PageContainer>
