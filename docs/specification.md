@@ -1,23 +1,35 @@
 # Agents
 
-## Project manager
+## Senior Frontend Engineer
 
-documentation: docs/agents/project-manager.md
+documentation: docs/agents/senior-frontend-engineer.md
 
-## Senior Software Engineer
+## Senior Backend Engineer
 
-documentation: docs/agents/senior-software-engineer.md
+documentation: docs/agents/senior-backend-engineer.md
 
 
 
-# Rules
 
-- หากมีข้อสงสัยให้ ห้ามตัดสินใจเอง ให้เขียนเป็นข้อไว้ในไฟล์ docs/question.md
+
+
+# Product Structure
+
+documentation: docs/project-structure/project-structure.md
+
+
+
 
 
 # Variables
 
 app_id: APP0001
+
+
+
+
+
+
 
 
 # API Specification
@@ -26,30 +38,20 @@ app_id: APP0001
 
 documentation: docs/portal/flow/auth/post-login.md
 
-
 ## Auth - logout
 
 documentation: docs/portal/flow/auth/post-logout.md
-Method: POST
-Path: /logout
-request: {
-
-}
-response: {
-
-}
 
 ## Auth - Get Profile
 
 documentation: docs/portal/flow/auth/get-profile.md
-Method: GET
-Path: /me
-request: {
 
-}
-response: {
 
-}
+
+
+
+
+
 
 ## Merchant - List Merchant
 

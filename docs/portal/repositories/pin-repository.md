@@ -39,7 +39,7 @@
 | VERIFY_PIN_SUCCESS | verify pin success              | verifyPin |
 | CHANGE_PIN_SUCCESS | change pin success              | changePin |
 
-implementation
+## Share function
 
 ```mermaid
 flowchart TD

@@ -1,16 +1,14 @@
-example description about this api endpoint
+this api use for login with username + pin. if success will response staff detail and access token to client.
 
 Method: POST
-Path: /login
+Path: /api/v1/auth/login
 
 example request body:
 
 ```json
 {
-  "request": {
-    "username": "",
-    "pin": ""
-  }
+  "username": "string",
+  "pin": "string"
 }
 ```
 
@@ -18,20 +16,18 @@ example response body:
 
 ```json
 {
-  "response": {
-    "token": "",
-    "user": {
-      "id": "",
-      "username": "",
-      "email": "",
-      "role": ""
-    }
+  "token": "string",
+  "user": {
+    "uid": "string",
+    "name": "string",
+    "merchant_id": "string"
   }
 }
 ```
 
 Logic:
 
+- DTO Request
 - Validate request payload with zod schema
   - username
     - type: string
@@ -58,5 +54,9 @@ Logic:
   - If incorrect, in case of pin not found, throw [ServiceError.ErrIncorrectUsernameOrPin](../../../apiresponse/ServiceError.ts)
   - If incorrect, in case of pin is locked, throw [ServiceError.ErrPinLocked](../../../apiresponse/ServiceError.ts)
   - If incorrect, in case of wrong pin, throw [ServiceError.ErrIncorrectUsernameOrPin](../../../apiresponse/ServiceError.ts)
-- Create a new JWT token contain uid, role, scope and expire in 30m
-- return staff detail follow these uid, name, merchant_id
+- Create a new JWT token contain uid, role, scope follow [uam](../../uam.md) and expire in 30m
+- DTO Response
+- response staff detail follow these uid, name, merchant_id
+- response token in cookie
+  - set secure = true if NODE_ENV === 'production'
+  
