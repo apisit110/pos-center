@@ -16,7 +16,7 @@ export class ApiStaffRepository implements StaffRepository {
         s.username ?? '',
         '',
         0,
-        s.status ?? 'active',
+        s.status ?? 'ACTIVE',
         null,
         s.createdAt ? new Date(s.createdAt) : new Date(),
         s.createdAt ? new Date(s.createdAt) : new Date(),
@@ -37,7 +37,7 @@ export class ApiStaffRepository implements StaffRepository {
       s.username ?? '',
       '',
       0,
-      s.status ?? 'active',
+      s.status ?? 'ACTIVE',
     ));
   }
 

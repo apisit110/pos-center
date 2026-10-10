@@ -39,15 +39,15 @@ const StatusBadge = styled.span<{ $status: string }>`
   font-weight: 600;
   background: ${props => {
     switch (props.$status) {
-      case 'active': return 'rgba(34, 197, 94, 0.15)';
-      case 'inactive': return 'rgba(239, 68, 68, 0.15)';
+      case 'ACTIVE': return 'rgba(34, 197, 94, 0.15)';
+      case 'INACTIVE': return 'rgba(239, 68, 68, 0.15)';
       default: return 'rgba(234, 179, 8, 0.15)';
     }
   }};
   color: ${props => {
     switch (props.$status) {
-      case 'active': return '#4ade80';
-      case 'inactive': return '#f87171';
+      case 'ACTIVE': return '#4ade80';
+      case 'INACTIVE': return '#f87171';
       default: return '#fbbf24';
     }
   }};
@@ -59,9 +59,10 @@ const roleOptions = [
 ];
 
 const statusOptions = [
-  { value: 'active', label: 'Active' },
-  { value: 'inactive', label: 'Inactive' },
-  { value: 'pending_sync', label: 'Pending Sync' },
+  { value: 'ACTIVE', label: 'Active' },
+  { value: 'PENDING', label: 'Pending' },
+  { value: 'INACTIVE', label: 'Inactive' },
+  { value: 'SUSPENDED', label: 'Suspended' },
 ];
 
 const EMPTY_FILTERS: StaffFilter = {
@@ -136,7 +137,7 @@ export default function StaffPage() {
       key: 'status',
       render: (s: Staff) => (
         <StatusBadge $status={s.status}>
-          {s.status === 'pending_sync' ? 'Pending Sync' : s.status.charAt(0).toUpperCase() + s.status.slice(1)}
+          {s.status.charAt(0) + s.status.slice(1).toLowerCase()}
         </StatusBadge>
       ),
     },

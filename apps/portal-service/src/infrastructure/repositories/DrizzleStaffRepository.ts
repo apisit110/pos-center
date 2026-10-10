@@ -2,8 +2,8 @@ import { db, staff, merchants, pins, role, staffRole } from '@pos-center/databas
 import { eq, like, and, count, gte, lte } from 'drizzle-orm';
 import { Staff } from '../../domain/entities/Staff';
 import { IStaffRepository, StaffFilter } from '../../domain/repositories/IStaffRepository';
+import { PORTAL_APP_ID } from '../../domain/constants/app';
 
-const PORTAL_APP_ID = 'APP1';
 const MAX_MERCHANT_SCOPED_RESULTS = 500;
 
 async function getOrCreateRoleId(roleName: string, tx: typeof db = db): Promise<number> {
@@ -86,7 +86,7 @@ export class DrizzleStaffRepository implements IStaffRepository {
         (s.role ?? 'cashier') as any,
         s.username ?? undefined,
         undefined,
-        (s.status ?? 'active') as any,
+        (s.status ?? 'ACTIVE') as any,
         s.createdAt ?? undefined,
         s.merchantName ?? undefined,
       )),
@@ -117,7 +117,7 @@ export class DrizzleStaffRepository implements IStaffRepository {
       (s.role ?? 'cashier') as any,
       s.username ?? undefined,
       undefined,
-      (s.status ?? 'active') as any,
+      (s.status ?? 'ACTIVE') as any,
     ));
   }
 
@@ -149,56 +149,41 @@ export class DrizzleStaffRepository implements IStaffRepository {
     );
   }
 
+  async getStaffByUid(uid: string): Promise<Staff | null> {
+    return this.findOneWithMerchantUid(eq(staff.uid, uid));
+  }
+
   async getStaffByUsername(username: string): Promise<Staff | null> {
+    return this.findOneWithMerchantUid(eq(staff.username, username));
+  }
+
+  private async findOneWithMerchantUid(condition: ReturnType<typeof eq>): Promise<Staff | null> {
     const result = await db.select({
       uid: staff.uid,
-      merchantId: staff.merchantId,
+      merchantUid: merchants.uid,
       name: staff.name,
+      username: staff.username,
       role: role.name,
       status: staff.status,
       createdAt: staff.createdAt,
-      pinHash: pins.pinHash,
-      pinFailedAttempts: pins.pinFailedAttempts,
-      pinLockedUntil: pins.pinLockedUntil,
     }).from(staff)
+      .innerJoin(merchants, eq(staff.merchantId, merchants.id))
       .leftJoin(staffRole, eq(staffRole.staffId, staff.id))
       .leftJoin(role, eq(role.id, staffRole.roleId))
-      .leftJoin(pins, and(eq(pins.username, staff.username), eq(pins.appId, PORTAL_APP_ID)))
-      .where(eq(staff.username, username)).limit(1);
+      .where(condition).limit(1);
     if (!result[0]) return null;
 
     const s = result[0];
     return new Staff(
       s.uid,
-      s.merchantId.toString(),
+      s.merchantUid,
       s.name,
       (s.role ?? 'cashier') as any,
-      username,
-      s.pinHash ?? undefined,
-      (s.status ?? 'active') as any,
-      s.createdAt ?? undefined,
+      s.username ?? undefined,
       undefined,
-      s.pinFailedAttempts ?? 0,
-      s.pinLockedUntil ?? null,
+      (s.status ?? 'ACTIVE') as any,
+      s.createdAt ?? undefined,
     );
-  }
-
-  async recordFailedLogin(id: string, failedAttempts: number, lockedUntil: Date | null): Promise<void> {
-    const staffRow = await db.select({ username: staff.username }).from(staff).where(eq(staff.uid, id)).limit(1);
-    if (!staffRow[0]?.username) return;
-
-    await db.update(pins)
-      .set({ pinFailedAttempts: failedAttempts, pinLockedUntil: lockedUntil, updatedAt: new Date() })
-      .where(and(eq(pins.username, staffRow[0].username), eq(pins.appId, PORTAL_APP_ID)));
-  }
-
-  async recordSuccessfulLogin(id: string): Promise<void> {
-    const staffRow = await db.select({ username: staff.username }).from(staff).where(eq(staff.uid, id)).limit(1);
-    if (!staffRow[0]?.username) return;
-
-    await db.update(pins)
-      .set({ pinFailedAttempts: 0, pinLockedUntil: null, updatedAt: new Date() })
-      .where(and(eq(pins.username, staffRow[0].username), eq(pins.appId, PORTAL_APP_ID)));
   }
 
   async save(staffMember: Staff): Promise<void> {

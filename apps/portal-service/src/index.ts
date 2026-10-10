@@ -13,6 +13,9 @@ import { DrizzleStaffRepository } from './infrastructure/repositories/DrizzleSta
 import { DrizzleTerminalRepository } from './infrastructure/repositories/DrizzleTerminalRepository';
 import { DrizzleStoreProductRepository } from './infrastructure/repositories/DrizzleStoreProductRepository';
 import { DrizzleTransactionRepository } from './infrastructure/repositories/DrizzleTransactionRepository';
+import { DrizzlePinRepository } from './infrastructure/repositories/DrizzlePinRepository';
+import { DrizzlePermissionRepository } from './infrastructure/repositories/DrizzlePermissionRepository';
+import { JwtTokenService } from './infrastructure/services/JwtTokenService';
 import { RunningNumberService } from './infrastructure/services/RunningNumberService';
 
 // Application: Use Cases
@@ -33,6 +36,8 @@ import { GetTerminalsByStoreUseCase } from './application/usecases/GetTerminalsB
 import { BatchUpsertStoreProductsUseCase } from './application/usecases/BatchUpsertStoreProductsUseCase';
 import { GetTransactionsUseCase } from './application/usecases/GetTransactionsUseCase';
 import { LoginUseCase } from './application/usecases/LoginUseCase';
+import { GetProfileUseCase } from './application/usecases/GetProfileUseCase';
+import { PORTAL_APP_ID } from './domain/constants/app';
 
 // Presentation: Controllers
 import { AuthController } from './presentation/controllers/AuthController';
@@ -73,6 +78,9 @@ const staffRepository = new DrizzleStaffRepository();
 const terminalRepository = new DrizzleTerminalRepository();
 const storeProductRepository = new DrizzleStoreProductRepository();
 const transactionRepository = new DrizzleTransactionRepository();
+const pinRepository = new DrizzlePinRepository();
+const permissionRepository = new DrizzlePermissionRepository();
+const tokenService = new JwtTokenService(JWT_SECRET);
 const runningNumberService = new RunningNumberService();
 
 // Initialize Application Use Cases
@@ -92,10 +100,11 @@ const registerMerchantUseCase = new RegisterMerchantUseCase(merchantRepository, 
 const getTerminalsByStoreUseCase = new GetTerminalsByStoreUseCase(terminalRepository);
 const batchUpsertStoreProductsUseCase = new BatchUpsertStoreProductsUseCase(storeProductRepository);
 const getTransactionsUseCase = new GetTransactionsUseCase(transactionRepository);
-const loginUseCase = new LoginUseCase(staffRepository, JWT_SECRET);
+const loginUseCase = new LoginUseCase(staffRepository, pinRepository, permissionRepository, tokenService, PORTAL_APP_ID);
+const getProfileUseCase = new GetProfileUseCase(staffRepository);
 
 // Initialize Presentation Controllers
-const authController = new AuthController(loginUseCase);
+const authController = new AuthController(loginUseCase, getProfileUseCase);
 const merchantController = new MerchantController(getMerchantsUseCase, getMerchantDetailUseCase, registerMerchantUseCase, getStaffByMerchantUseCase, staffRepository);
 const productController = new ProductController(getProductsUseCase, getProductDetailUseCase, getProductFilterMetadataUseCase, createProductUseCase, bulkCreateProductsUseCase);
 const storeController = new StoreController(getStoresUseCase, getStoreDetailUseCase, getTerminalsByStoreUseCase);
@@ -113,7 +122,7 @@ app.get('/health', (req: Request, res: Response) => {
 });
 
 // Public routes
-app.use('/', authRoutes(authController, JWT_SECRET));
+app.use('/api/v1/auth', authRoutes(authController, JWT_SECRET));
 
 // Protected routes (require a valid session cookie)
 const requireAuth = authMiddleware(JWT_SECRET);

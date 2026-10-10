@@ -80,4 +80,52 @@ class ServiceError {
       additional: undefined
     }
   }
+  public static ErrTokenInvalide(): ServiceError {
+    return {
+      name: this.name,
+      kind: ErrorKind.BAD_REQUEST,
+      resCode: "4006",
+      resDesc: {
+        en: "The token is invalid.",
+        th: "โทเค็นไม่ถูกต้อง"
+      },
+      additional: undefined
+    }
+  }
+  public static ErrTokenExpire(): ServiceError {
+    return {
+      name: this.name,
+      kind: ErrorKind.BAD_REQUEST,
+      resCode: "4007",
+      resDesc: {
+        en: "The token has expired.",
+        th: "โทเค็นหมดอายุแล้ว"
+      },
+      additional: undefined
+    }
+  }
+  public static ErrPermissionDenied(): ServiceError {
+    return {
+      name: this.name,
+      kind: ErrorKind.BAD_REQUEST,
+      resCode: "4008",
+      resDesc: {
+        en: "You do not have permission to perform this action.",
+        th: "คุณไม่มีสิทธิ์ในการดำเนินการนี้"
+      },
+      additional: undefined
+    }
+  }
+  public static ErrStaffNotFound(): ServiceError {
+    return {
+      name: this.name,
+      kind: ErrorKind.BAD_REQUEST,
+      resCode: "4009",
+      resDesc: {
+        en: "The specified staff member could not be found.",
+        th: "ไม่พบข้อมูลพนักงานในระบบ"
+      },
+      additional: undefined
+    }
+  }
 }

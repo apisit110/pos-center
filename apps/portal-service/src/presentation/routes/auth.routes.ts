@@ -1,7 +1,8 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import { AuthController } from '../controllers/AuthController';
-import { authMiddleware } from '../middleware/AuthMiddleware';
+import { serviceAuthMiddleware, requirePermission } from '../middleware/AuthMiddleware';
+import { PERMISSION_GET_PROFILE } from '../../domain/constants/token';
 
 const loginRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -16,9 +17,12 @@ export function authRoutes(controller: AuthController, jwtSecret: string): Route
 
   router.post('/login', loginRateLimiter, (req, res, next) => controller.login(req, res, next));
   router.post('/logout', (req, res, next) => controller.logout(req, res, next));
-  router.get('/me', authMiddleware(jwtSecret), (req: Request, res: Response) => {
-    res.status(200).json({ auth: req.auth });
-  });
+  router.get(
+    '/me',
+    serviceAuthMiddleware(jwtSecret),
+    requirePermission(PERMISSION_GET_PROFILE),
+    (req, res, next) => controller.getProfile(req, res, next),
+  );
 
   return router;
 }

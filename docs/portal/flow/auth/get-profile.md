@@ -29,10 +29,15 @@ example response body:
 Logic:
 
 - Verify access token
+  - if fail throw [ServiceError.ErrTokenInvalide](../../../apiresponse/ServiceError.ts)
 - Check access token expire
+  - throw [ServiceError.ErrTokenExpire](../../../apiresponse/ServiceError.ts)
 - Validate Permission
-- Validate Payload
+  - throw [ServiceError.ErrPermissionDenied](../../../apiresponse/ServiceError.ts)
+- Validate request payload with zod schema
+  - if validation fails, throw [ValidationError.ErrInvalidRequest](../../../apiresponse/ValidationError.ts)
 - Check Profile by uid
 - Find staff detail by uid in access token
+  - if not found staff throw throw [ServiceError.ErrStaffNotFound](../../../apiresponse/ServiceError.ts)
 - DTO Response
 - response staff detail follow these uid, name, merchant_id

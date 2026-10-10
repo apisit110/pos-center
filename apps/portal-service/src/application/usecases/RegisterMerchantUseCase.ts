@@ -52,7 +52,7 @@ export class RegisterMerchantUseCase {
         staffReq.role,
         username,
         pinHash,
-        'active'
+        'ACTIVE'
       );
       await this.staffRepository.save(staff);
     }

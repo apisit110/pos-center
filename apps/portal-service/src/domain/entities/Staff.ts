@@ -1,5 +1,5 @@
 export type StaffRole = 'manager' | 'cashier';
-export type StaffStatus = 'active' | 'pending_sync' | 'inactive';
+export type StaffStatus = 'ACTIVE' | 'PENDING' | 'INACTIVE' | 'SUSPENDED';
 
 export class Staff {
   constructor(
@@ -9,10 +9,8 @@ export class Staff {
     public role: StaffRole,
     public username?: string,
     public pinHash?: string,
-    public status: StaffStatus = 'active',
+    public status: StaffStatus = 'ACTIVE',
     public createdAt?: Date,
     public merchantName?: string,
-    public failedAttempts: number = 0,
-    public lockedUntil?: Date | null,
   ) {}
 }

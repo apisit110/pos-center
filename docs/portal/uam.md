@@ -4,6 +4,7 @@ User Access Matrix หรือ ตารางกำหนดสิทธิ์
 
 | Role/Permission         | Product Owner |
 | ----------------------- | ------------- |
+| me:get_profile          | x             |
 | dashboard:view          | x             |
 | merchants:view          | x             |
 | merchants:create        | x             |

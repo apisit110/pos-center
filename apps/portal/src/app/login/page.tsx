@@ -24,12 +24,11 @@ export default function LoginPage() {
       router.push('/dashboard');
     } catch (err: any) {
       const status = err?.response?.status;
-      if (status === 423) {
-        setError('บัญชีถูกล็อกชั่วคราว กรุณาลองใหม่ภายหลัง');
+      const message = err?.response?.data?.res_desc?.th;
+      if (message) {
+        setError(message);
       } else if (status === 429) {
         setError('พยายามเข้าสู่ระบบบ่อยเกินไป กรุณาลองใหม่ภายหลัง');
-      } else if (status === 401) {
-        setError('Invalid credentials');
       } else {
         setError(err.message || 'เข้าสู่ระบบไม่สำเร็จ');
       }

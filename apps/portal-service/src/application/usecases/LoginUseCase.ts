@@ -1,19 +1,16 @@
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import { IStaffRepository } from '../../domain/repositories/IStaffRepository';
-import { isFutureDate, addMillisecondsFromNow } from '../../infrastructure/utils/date';
-import { InvalidCredentialsError, AccountLockedError } from '../errors/AuthErrors';
-
-const MAX_FAILED_ATTEMPTS = 5;
-const LOCK_DURATION_MS = 15 * 60 * 1000;
-const TOKEN_EXPIRES_IN = '30m';
+import { IPinRepository } from '../../domain/repositories/IPinRepository';
+import { IPermissionRepository } from '../../domain/repositories/IPermissionRepository';
+import { ITokenService } from '../../domain/services/ITokenService';
+import { PinErrorMessage } from '../../domain/constants/pin';
+import { ServiceError } from '../errors/ServiceError';
+import { ValidationError } from '../errors/ValidationError';
 
 export interface LoginResult {
   token: string;
-  staff: {
+  user: {
     uid: string;
     name: string;
-    role: string;
     merchantId: string;
   };
 }
@@ -21,47 +18,39 @@ export interface LoginResult {
 export class LoginUseCase {
   constructor(
     private staffRepository: IStaffRepository,
-    private jwtSecret: string,
+    private pinRepository: IPinRepository,
+    private permissionRepository: IPermissionRepository,
+    private tokenService: ITokenService,
+    private appId: string,
   ) {}
 
   async execute(username: string, pin: string): Promise<LoginResult> {
-    const staffMember = await this.staffRepository.getStaffByUsername(username);
+    const staff = await this.staffRepository.getStaffByUsername(username);
+    if (!staff) throw ServiceError.ErrIncorrectUsernameOrPin();
 
-    if (!staffMember || !staffMember.pinHash) {
-      throw new InvalidCredentialsError();
+    switch (staff.status) {
+      case 'PENDING': throw ServiceError.ErrUserPending();
+      case 'INACTIVE': throw ServiceError.ErrUserInactive();
+      case 'SUSPENDED': throw ServiceError.ErrUserSuspended();
+      case 'ACTIVE': break;
+      default: throw ServiceError.ErrUserInactive();
     }
 
-    if (staffMember.lockedUntil && isFutureDate(staffMember.lockedUntil)) {
-      throw new AccountLockedError();
+    const verified = await this.pinRepository.verifyPin(this.appId, username, pin);
+    if (verified.status === 'failed') {
+      switch (verified.message) {
+        case PinErrorMessage.PIN_LOCKED: throw ServiceError.ErrPinLocked();
+        case PinErrorMessage.INVALID_FORMAT: throw ValidationError.ErrInvalidRequest();
+        default: throw ServiceError.ErrIncorrectUsernameOrPin();
+      }
     }
 
-    const pinMatches = await bcrypt.compare(pin, staffMember.pinHash);
-
-    if (!pinMatches) {
-      const failedAttempts = (staffMember.failedAttempts ?? 0) + 1;
-      const lockedUntil = failedAttempts >= MAX_FAILED_ATTEMPTS
-        ? addMillisecondsFromNow(LOCK_DURATION_MS)
-        : null;
-      await this.staffRepository.recordFailedLogin(staffMember.id, failedAttempts, lockedUntil);
-      throw new InvalidCredentialsError();
-    }
-
-    await this.staffRepository.recordSuccessfulLogin(staffMember.id);
-
-    const token = jwt.sign(
-      { uid: staffMember.id, role: staffMember.role },
-      this.jwtSecret,
-      { expiresIn: TOKEN_EXPIRES_IN },
-    );
+    const permissions = await this.permissionRepository.getPermissionsByStaffUid(staff.id);
+    const token = this.tokenService.signAccessToken({ uid: staff.id, role: staff.role, permissions });
 
     return {
       token,
-      staff: {
-        uid: staffMember.id,
-        name: staffMember.name,
-        role: staffMember.role,
-        merchantId: staffMember.merchantId,
-      },
+      user: { uid: staff.id, name: staff.name, merchantId: staff.merchantId },
     };
   }
 }

@@ -5,7 +5,7 @@ import { merchants, staff, role, staffRole, pins } from '@pos-center/models';
 import { eq, and } from 'drizzle-orm';
 import { PRODUCT_OWNER_ROLE } from './uamRoles.seed';
 
-const PORTAL_APP_ID = 'APP1';
+const PORTAL_APP_ID = 'APP0001';
 const SYSTEM_MERCHANT_MID = 'SYSTEM';
 const ADMIN_USERNAME = 'admin';
 const ADMIN_PIN = '123456';
@@ -28,7 +28,7 @@ export async function seedAdminStaff() {
         merchantId,
         name: 'Admin',
         username: ADMIN_USERNAME,
-        status: 'active',
+        status: 'ACTIVE',
       }).returning({ id: staff.id }))[0].id;
 
   const productOwnerRole = await db.select({ id: role.id }).from(role)

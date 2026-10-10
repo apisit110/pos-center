@@ -3,6 +3,7 @@ import { permission } from '@pos-center/models';
 import { eq } from 'drizzle-orm';
 
 export const PERMISSION_NAMES = [
+  'me:get_profile',
   'dashboard:view',
   'merchants:view',
   'merchants:create',
