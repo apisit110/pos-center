@@ -14,6 +14,7 @@ User Access Matrix หรือ ตารางกำหนดสิทธิ์
 | store_detail:view       | x             |
 | products:view           | x             |
 | products:create         | x             |
+| store_products:create   | x             |
 | product_detail:view     | x             |
 | members:view            | x             |
 | member_detail:view      | x             |

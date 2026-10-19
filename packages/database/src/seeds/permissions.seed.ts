@@ -13,6 +13,7 @@ export const PERMISSION_NAMES = [
   'store_detail:view',
   'products:view',
   'products:create',
+  'store_products:create',
   'product_detail:view',
   'staffs:view',
   'staffs:create',

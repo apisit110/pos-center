@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import { and, db, eq, inArray, products, sql, storeProducts, stores } from '@pos-center/database';
+import { and, db, eq, inArray, merchants, products, sql, storeProducts, stores } from '@pos-center/database';
 import {
   BatchUpsertResult,
   IStoreProductRepository,
@@ -126,15 +126,21 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
     });
   }
 
-  async batchUpsertByUids(inputs: UpsertStoreProductByUidInput[]): Promise<BatchUpsertResult> {
+  async batchUpsertByUids(inputs: UpsertStoreProductByUidInput[], onlyMerchantUid?: string): Promise<BatchUpsertResult> {
     if (inputs.length === 0) return { created: 0, updated: 0, errors: [] };
 
     const storeUids = [...new Set(inputs.map((i) => i.storeUid))];
     const productUids = [...new Set(inputs.map((i) => i.productUid))];
 
     const [storeRows, productRows] = await Promise.all([
-      db.select().from(stores).where(inArray(stores.uid, storeUids)),
-      db.select().from(products).where(inArray(products.uid, productUids)),
+      db.select({ id: stores.id, uid: stores.uid, merchantUid: merchants.uid })
+        .from(stores)
+        .innerJoin(merchants, eq(stores.merchantId, merchants.id))
+        .where(inArray(stores.uid, storeUids)),
+      db.select({ id: products.id, uid: products.uid, unitName: products.unitName, merchantUid: merchants.uid })
+        .from(products)
+        .innerJoin(merchants, eq(products.merchantId, merchants.id))
+        .where(inArray(products.uid, productUids)),
     ]);
 
     const storeMap = new Map(storeRows.map((s) => [s.uid, s]));
@@ -148,14 +154,18 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
       const store = storeMap.get(input.storeUid);
       const product = productMap.get(input.productUid);
       if (!store) {
-        errors.push({ index, message: `store_uid "${input.storeUid}" not found` });
+        errors.push({ index, code: 'STORE_NOT_FOUND', uid: input.storeUid });
         continue;
       }
       if (!product) {
-        errors.push({ index, message: `product_uid "${input.productUid}" not found` });
+        errors.push({ index, code: 'PRODUCT_NOT_FOUND', uid: input.productUid });
         continue;
       }
-      valid.push({ input, storeId: store.id, productId: product.id, unitName: product.unitName ?? null });
+      if (onlyMerchantUid !== undefined && (store.merchantUid !== onlyMerchantUid || product.merchantUid !== onlyMerchantUid)) {
+        errors.push({ index, code: 'FORBIDDEN' });
+        continue;
+      }
+      valid.push({ input, storeId: store.id, productId: product.id, unitName: product.unitName || null });
     }
 
     if (valid.length === 0) return { created: 0, updated: 0, errors };
@@ -163,27 +173,27 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
     const storeIds = [...new Set(valid.map((v) => v.storeId))];
     const productIds = [...new Set(valid.map((v) => v.productId))];
 
-    const existingRows = await db
-      .select()
-      .from(storeProducts)
-      .where(
-        and(
-          inArray(storeProducts.storeId, storeIds),
-          inArray(storeProducts.productId, productIds)
-        )
-      );
-
-    const existingMap = new Map(existingRows.map((r) => [`${r.storeId}:${r.productId}`, r]));
-
     let created = 0;
     let updated = 0;
 
     await db.transaction(async (tx) => {
-      const toInsert: typeof storeProducts.$inferInsert[] = [];
+      const existingRows = await tx
+        .select()
+        .from(storeProducts)
+        .where(
+          and(
+            inArray(storeProducts.storeId, storeIds),
+            inArray(storeProducts.productId, productIds)
+          )
+        );
+
+      const existingMap = new Map(existingRows.map((r) => [`${r.storeId}:${r.productId}`, r]));
+      const pendingInserts = new Map<string, typeof storeProducts.$inferInsert>();
 
       for (const item of valid) {
         const key = `${item.storeId}:${item.productId}`;
         const existing = existingMap.get(key);
+        const pending = pendingInserts.get(key);
 
         if (existing) {
           await tx
@@ -197,8 +207,13 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
             })
             .where(eq(storeProducts.id, existing.id));
           updated++;
+        } else if (pending) {
+          // same (store, product) twice in one chunk: the later row wins, like a row of the next chunk would
+          pending.stock = item.input.stock;
+          pending.price = item.input.price.toString();
+          updated++;
         } else {
-          toInsert.push({
+          pendingInserts.set(key, {
             uid: randomUUID(),
             storeId: item.storeId,
             productId: item.productId,
@@ -210,12 +225,11 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
         }
       }
 
-      if (toInsert.length > 0) {
-        await tx.insert(storeProducts).values(toInsert);
+      if (pendingInserts.size > 0) {
+        await tx.insert(storeProducts).values([...pendingInserts.values()]);
       }
     });
 
     return { created, updated, errors };
   }
 }
-

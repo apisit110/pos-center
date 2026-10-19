@@ -13,6 +13,5 @@ export interface StaffFilter {
 export interface StaffRepository {
   getStaffByMerchant(merchantId: string): Promise<Staff[]>;
   getStaffById(id: string): Promise<Staff | null>;
-  saveStaff(staff: Staff): Promise<void>;
   getAllStaff(page: number, limit: number, filters?: StaffFilter): Promise<{ staff: Staff[], total: number }>;
 }

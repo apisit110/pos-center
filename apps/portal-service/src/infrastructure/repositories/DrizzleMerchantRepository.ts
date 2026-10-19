@@ -1,11 +1,22 @@
-import { db, merchants, eq, and, ilike, count } from '@pos-center/database';
+import { merchantUidIs } from '../utils/merchant';
+import { db, merchants, eq, and, ilike, count, asc } from '@pos-center/database';
 import { IMerchantRepository, MerchantFilter } from '../../domain/repositories/IMerchantRepository';
 import { Merchant } from '../../domain/entities/Merchant';
 
 export class DrizzleMerchantRepository implements IMerchantRepository {
   async getById(uid: string): Promise<Merchant | null> {
     const result = await db.query.merchants.findFirst({
-      where: eq(merchants.uid, uid),
+      where: merchantUidIs(uid),
+    });
+
+    if (!result) return null;
+
+    return new Merchant(result.uid, result.mid, result.name);
+  }
+
+  async getByMid(mid: string): Promise<Merchant | null> {
+    const result = await db.query.merchants.findFirst({
+      where: eq(merchants.mid, mid),
     });
 
     if (!result) return null;
@@ -28,6 +39,7 @@ export class DrizzleMerchantRepository implements IMerchantRepository {
 
     const results = await db.select().from(merchants)
       .where(whereClause)
+      .orderBy(asc(merchants.id))
       .limit(limit)
       .offset(offset);
 

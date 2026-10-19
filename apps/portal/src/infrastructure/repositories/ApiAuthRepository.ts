@@ -1,7 +1,7 @@
 import { AuthRepository, AuthenticatedStaff } from '../../domain/repositories/AuthRepository';
-import ApiClient from '../api/ApiClient';
+import ApiClient, { API_V1, unwrap } from '../api/ApiClient';
 
-const AUTH_BASE_PATH = '/api/v1/auth';
+const AUTH_BASE_PATH = `${API_V1}/auth`;
 
 interface UserResponse {
   uid: string;
@@ -17,8 +17,13 @@ const toAuthenticatedStaff = (user: UserResponse): AuthenticatedStaff => ({
 
 export class ApiAuthRepository implements AuthRepository {
   public async login(username: string, pin: string): Promise<{ staff: AuthenticatedStaff }> {
-    const response = await ApiClient.post(`${AUTH_BASE_PATH}/login`, { username, pin });
-    return { staff: toAuthenticatedStaff(response.data.data.user) };
+    const response = await ApiClient.post(
+      `${AUTH_BASE_PATH}/login`,
+      { username, pin },
+      // the login screen shows Thai messages
+      { headers: { 'Accept-Language': 'th' } },
+    );
+    return { staff: toAuthenticatedStaff(unwrap<{ user: UserResponse }>(response).user) };
   }
 
   public async logout(): Promise<void> {
@@ -28,7 +33,7 @@ export class ApiAuthRepository implements AuthRepository {
   public async getSession(): Promise<AuthenticatedStaff | null> {
     try {
       const response = await ApiClient.get(`${AUTH_BASE_PATH}/me`);
-      return toAuthenticatedStaff(response.data.data.user);
+      return toAuthenticatedStaff(unwrap<{ user: UserResponse }>(response).user);
     } catch {
       return null;
     }

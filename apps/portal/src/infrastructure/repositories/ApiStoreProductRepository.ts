@@ -1,36 +1,34 @@
-import { StoreProduct } from '../../domain/entities/StoreProduct';
 import {
   BatchStoreProductMappingRequest,
   BatchStoreProductMappingResponse,
   StoreProductRepository
 } from '../../domain/repositories/StoreProductRepository';
-import ApiClient from '../api/ApiClient';
+import ApiClient, { API_V1, unwrap } from '../api/ApiClient';
+
+const STORE_PRODUCTS_PATH = `${API_V1}/store-products`;
+// max items per batch request (see docs/portal/flow/store-product/post-store-products-batch.md)
+const BATCH_CHUNK_SIZE = 1000;
 
 export class ApiStoreProductRepository implements StoreProductRepository {
-  public async getProductsByStore(storeId: string): Promise<StoreProduct[]> {
-    const response = await ApiClient.get(`/stores/${storeId}/products`);
-    const data = response.data;
-    return data.map((sp: any) => new StoreProduct(
-      sp.id,
-      sp.storeId,
-      sp.productId,
-      sp.stock,
-      sp.price
-    ));
-  }
-
-  public async updateStock(storeProductId: string, newStock: number): Promise<void> {
-    await ApiClient.patch(`/store-products/${storeProductId}/stock`, { stock: newStock });
-  }
-
-  public async updatePrice(storeProductId: string, newPrice: number): Promise<void> {
-    await ApiClient.patch(`/store-products/${storeProductId}/price`, { price: newPrice });
-  }
-
   public async batchUpsertMappings(
     mappings: BatchStoreProductMappingRequest[]
   ): Promise<BatchStoreProductMappingResponse> {
-    const response = await ApiClient.post('/store-products/batch', { mappings });
-    return response.data;
+    let created = 0;
+    let updated = 0;
+    const errors: string[] = [];
+
+    for (let offset = 0; offset < mappings.length; offset += BATCH_CHUNK_SIZE) {
+      const chunk = mappings.slice(offset, offset + BATCH_CHUNK_SIZE);
+      const response = await ApiClient.post(`${STORE_PRODUCTS_PATH}/batch`, { mappings: chunk });
+      const data = unwrap<BatchStoreProductMappingResponse>(response);
+      created += data.created ?? 0;
+      updated += data.updated ?? 0;
+      for (const message of data.errors ?? []) {
+        // messages are `Row <n>: <reason>` with n relative to the chunk; shift n by the chunk offset
+        errors.push(message.replace(/^Row (\d+):/, (_, n) => `Row ${Number(n) + offset}:`));
+      }
+    }
+
+    return { created, updated, errors };
   }
 }

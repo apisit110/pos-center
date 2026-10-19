@@ -1,30 +1,36 @@
 import { Store } from '../../domain/entities/Store';
 import { StoreRepository } from '../../domain/repositories/StoreRepository';
-import ApiClient from '../api/ApiClient';
+import ApiClient, { API_V1, cleanParams, unwrap } from '../api/ApiClient';
+
+const STORES_PATH = `${API_V1}/stores`;
+
+interface StoreResponse {
+  uid: string;
+  sid: string;
+  merchant_uid: string;
+  mid: string;
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+}
+
+const toStore = (s: StoreResponse): Store =>
+  new Store(s.uid, s.sid, s.merchant_uid, s.mid, s.name, s.address, s.latitude || 0, s.longitude || 0);
 
 export class ApiStoreRepository implements StoreRepository {
   public async getStores(merchantId?: string): Promise<Store[]> {
-    const params = merchantId ? { merchantId } : {};
-    const response = await ApiClient.get('/stores', { params });
-    const data = response.data;
-    return data.map((s: any) => new Store(s.uid || s.id, s.sid, s.merchantId, s.mid, s.name, s.address, s.latitude || 0, s.longitude || 0));
+    const params = cleanParams({ merchant_uid: merchantId });
+    const response = await ApiClient.get(STORES_PATH, { params });
+    return unwrap<StoreResponse[]>(response).map(toStore);
   }
 
   public async getStoreById(uid: string): Promise<Store | null> {
     try {
-      const response = await ApiClient.get(`/stores/${uid}`);
-      const s = response.data;
-      return new Store(s.uid || s.id, s.sid, s.merchantId, s.mid, s.name, s.address, s.latitude || 0, s.longitude || 0);
-    } catch (error) {
+      const response = await ApiClient.get(`${STORES_PATH}/${uid}`);
+      return toStore(unwrap<StoreResponse>(response));
+    } catch {
       return null;
-    }
-  }
-
-  public async saveStore(store: Store): Promise<void> {
-    if (store.uid) {
-      await ApiClient.put(`/stores/${store.uid}`, store);
-    } else {
-      await ApiClient.post('/stores', store);
     }
   }
 }

@@ -26,7 +26,16 @@ documentation: docs/project-structure/project-structure.md
 app_id: APP0001
 
 
+# Code style
 
+- internal variable `camelCase`
+- external variable like request payload, response body `snake_case`
+
+# Date and time
+
+- client and backend communicate date time in UTC+0 (ISO 8601, e.g. `2026-01-01T00:00:00.000Z`), stored in database as UTC
+- a date filter `YYYY-MM-DD` (e.g. `start_date`, `end_date`) is a calendar date in `Asia/Bangkok` (UTC+7): start of day is `00:00:00.000+07:00`, end of day is `23:59:59.999+07:00`
+- portal displays date time in `Asia/Bangkok`
 
 
 
@@ -46,100 +55,66 @@ documentation: docs/portal/flow/auth/post-logout.md
 
 documentation: docs/portal/flow/auth/get-profile.md
 
-
-
-
-
-
-
-
 ## Merchant - List Merchant
 
 documentation: docs/portal/flow/merchant/get-merchants.md
-Method: GET
-Path: /merchants
 
 ## Merchant - Merchant Detail Staff
 
 documentation: docs/portal/flow/merchant/get-merchant-detail-staff.md
-Method: GET
-Path: /merchants/:id/staff
 
 ## Merchant - Merchant Detail
 
 documentation: docs/portal/flow/merchant/get-merchant-detail.md
-Method: GET
-Path: /merchants/:id
 
 ## Merchant - Create Merchant
 
 documentation: docs/portal/flow/merchant/post-merchant.md
-Method: POST
-Path: /merchants
 
 ## Product - List Product
 
-documentation: docs/portal/flow/merchant/get-products.md
-Method: GET
-Path: /products
+documentation: docs/portal/flow/product/get-products.md
 
 ## Product - MetaData
 
-Select Option Values - Brand
-Select Option Values - Unit
-
-Method: GET
-Path: /products/metadata
+documentation: docs/portal/flow/product/get-products-metadata.md
 
 ## Product - Create Product - Batch
 
-Method: POST
-Path: /products/batch
+documentation: docs/portal/flow/product/post-products-batch.md
 
 ## Product - Create Product - Keyin
 
-Method: POST
-Path: /products
+documentation: docs/portal/flow/product/post-product.md
 
 ## Product - Product Detail
 
-Method: GET
-Path: /products/:id
-
+documentation: docs/portal/flow/product/get-product-detail.md
 
 ## Stores Product - Add products to store
 
-Method: POST
-Path: /store-products/batch
-
+documentation: docs/portal/flow/store-product/post-store-products-batch.md
 
 ## Stores - List Store
 
-Method: GET
-Path: /stores
+documentation: docs/portal/flow/store/get-stores.md
 
 ## Stores - Store Detail
 
-Method: GET
-Path: /stores/:id
+documentation: docs/portal/flow/store/get-store-detail.md
 
 ## Stores - Store Detail - Terminal
 
-Method: GET
-Path: /stores/:id/terminals
-
+documentation: docs/portal/flow/store/get-store-terminals.md
 
 ## Staff - List Staff
 
-Method: GET
-Path: /staff
+documentation: docs/portal/flow/staff/get-staffs.md
 
 ## Staff - Staff Detail
 
-Method: GET
-Path: /staff/:id
+documentation: docs/portal/flow/staff/get-staff-detail.md
 
-## transactions
+## Transaction - List Transaction
 
-Method: GET
-Path: /transactions
+documentation: docs/portal/flow/transaction/get-transactions.md

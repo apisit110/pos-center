@@ -1,8 +1,15 @@
-import { IStoreProductRepository } from '../../domain/repositories/IStoreProductRepository';
+import {
+  IStoreProductRepository,
+  StoreProductRowError,
+  UpsertStoreProductByUidInput,
+} from '../../domain/repositories/IStoreProductRepository';
+import { IStaffRepository } from '../../domain/repositories/IStaffRepository';
+import { Actor, findOwnMerchantUid, isProductOwner } from '../auth/Actor';
 
+/** One row of the request; the DTO coerces `stock` and `price` to numbers (NaN / undefined when invalid). */
 export interface BatchStoreProductMappingRequest {
-  store_uid?: string;
-  product_uid?: string;
+  storeUid?: string;
+  productUid?: string;
   stock?: number;
   price?: number;
 }
@@ -15,54 +22,79 @@ export interface BatchStoreProductMappingResult {
 
 const CHUNK_SIZE = 500;
 
-export class BatchUpsertStoreProductsUseCase {
-  constructor(private readonly storeProductRepository: IStoreProductRepository) {}
+const isNonNegativeNumber = (value: number | undefined): value is number =>
+  value !== undefined && Number.isFinite(value) && value >= 0;
 
-  async execute(mappings: BatchStoreProductMappingRequest[]): Promise<BatchStoreProductMappingResult> {
+export class BatchUpsertStoreProductsUseCase {
+  constructor(
+    private readonly storeProductRepository: IStoreProductRepository,
+    private readonly staffRepository: IStaffRepository,
+  ) {}
+
+  async execute(actor: Actor, mappings: BatchStoreProductMappingRequest[]): Promise<BatchStoreProductMappingResult> {
     let created = 0;
     let updated = 0;
-    const errors: string[] = [];
+    const rowErrors: Array<{ row: number; message: string }> = [];
+    const addError = (index: number, reason: string) => rowErrors.push({ row: index + 1, message: `Row ${index + 1}: ${reason}` });
+    const buildResult = (): BatchStoreProductMappingResult => ({
+      created,
+      updated,
+      errors: rowErrors.sort((a, b) => a.row - b.row).map((e) => e.message),
+    });
 
-    type ValidItem = { storeUid: string; productUid: string; stock: number; price: number; originalIndex: number };
+    type ValidItem = UpsertStoreProductByUidInput & { originalIndex: number };
     const validItems: ValidItem[] = [];
 
     for (const [index, mapping] of mappings.entries()) {
-      const storeUid = mapping.store_uid;
-      const productUid = mapping.product_uid;
-      const stock = Number(mapping.stock);
-      const price = Number(mapping.price);
+      const { storeUid, productUid, stock, price } = mapping;
 
       if (!storeUid || !productUid) {
-        errors.push(`Row ${index + 1}: store_uid and product_uid are required`);
+        addError(index, 'store_uid and product_uid are required');
         continue;
       }
-      if (!Number.isFinite(stock) || stock < 0) {
-        errors.push(`Row ${index + 1}: stock must be a non-negative number`);
+      if (!isNonNegativeNumber(stock)) {
+        addError(index, 'stock must be a non-negative number');
         continue;
       }
-      if (!Number.isFinite(price) || price < 0) {
-        errors.push(`Row ${index + 1}: price must be a non-negative number`);
+      if (!isNonNegativeNumber(price)) {
+        addError(index, 'price must be a non-negative number');
         continue;
       }
-
       validItems.push({ storeUid, productUid, stock, price, originalIndex: index });
+    }
+
+    // PRODUCT_OWNER may use any store and product, other roles only those of their own merchant
+    let onlyMerchantUid: string | undefined;
+    if (!isProductOwner(actor)) {
+      const ownMerchantUid = await findOwnMerchantUid(this.staffRepository, actor);
+      if (!ownMerchantUid) {
+        for (const item of validItems) addError(item.originalIndex, 'forbidden');
+        return buildResult();
+      }
+      onlyMerchantUid = ownMerchantUid;
     }
 
     for (let i = 0; i < validItems.length; i += CHUNK_SIZE) {
       const chunk = validItems.slice(i, i + CHUNK_SIZE);
       const result = await this.storeProductRepository.batchUpsertByUids(
-        chunk.map(({ storeUid, productUid, stock, price }) => ({ storeUid, productUid, stock, price }))
+        chunk.map(({ storeUid, productUid, stock, price }) => ({ storeUid, productUid, stock, price })),
+        onlyMerchantUid,
       );
-
       created += result.created;
       updated += result.updated;
-
       for (const err of result.errors) {
-        const originalIndex = chunk[err.index].originalIndex;
-        errors.push(`Row ${originalIndex + 1}: ${err.message}`);
+        addError(chunk[err.index].originalIndex, this.describe(err));
       }
     }
 
-    return { created, updated, errors };
+    return buildResult();
+  }
+
+  private describe(error: StoreProductRowError): string {
+    switch (error.code) {
+      case 'STORE_NOT_FOUND': return `store_uid "${error.uid}" not found`;
+      case 'PRODUCT_NOT_FOUND': return `product_uid "${error.uid}" not found`;
+      case 'FORBIDDEN': return 'forbidden';
+    }
   }
 }

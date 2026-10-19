@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoginUseCase } from '../../domain/usecases/LoginUseCase';
 import { ApiAuthRepository } from '../../infrastructure/repositories/ApiAuthRepository';
+import { getResDescMessage } from '../../infrastructure/api/ApiClient';
 import { InputField, Button } from '@apisit110/pos-ui';
 
 export default function LoginPage() {
@@ -24,7 +25,7 @@ export default function LoginPage() {
       router.push('/dashboard');
     } catch (err: any) {
       const status = err?.response?.status;
-      const message = err?.response?.data?.res_desc?.th;
+      const message = getResDescMessage(err?.response?.data);
       if (message) {
         setError(message);
       } else if (status === 429) {

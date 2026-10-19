@@ -3,7 +3,7 @@ import { Store } from '../../../domain/entities/Store';
 export interface StoreResponseDto {
   uid: string;
   sid: string;
-  merchantId: string;
+  merchant_uid: string;
   mid: string;
   name: string;
   address: string;
@@ -15,7 +15,7 @@ export function toStoreResponseDto(store: Store): StoreResponseDto {
   return {
     uid: store.uid,
     sid: store.sid,
-    merchantId: store.merchantId,
+    merchant_uid: store.merchantId,
     mid: store.mid,
     name: store.name,
     address: store.address,

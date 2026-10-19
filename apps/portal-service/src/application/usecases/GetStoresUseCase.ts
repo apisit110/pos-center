@@ -1,20 +1,33 @@
 import { IStoreRepository } from '../../domain/repositories/IStoreRepository';
 import { IMerchantRepository } from '../../domain/repositories/IMerchantRepository';
+import { IStaffRepository } from '../../domain/repositories/IStaffRepository';
 import { Store } from '../../domain/entities/Store';
-import { NotFoundError } from '../errors/CommonErrors';
+import { Actor, findOwnMerchantUid, isProductOwner } from '../auth/Actor';
+import { ServiceError } from '../errors/ServiceError';
 
 export class GetStoresUseCase {
   constructor(
     private storeRepository: IStoreRepository,
-    private merchantRepository: IMerchantRepository
+    private merchantRepository: IMerchantRepository,
+    private staffRepository: IStaffRepository,
   ) {}
 
-  async execute(merchantId?: string): Promise<Store[]> {
-    if (merchantId) {
-      const merchant = await this.merchantRepository.getById(merchantId);
-      if (!merchant) throw new NotFoundError('Merchant not found');
-      return this.storeRepository.getByMerchantId(merchantId);
+  async execute(actor: Actor, merchantUid?: string): Promise<Store[]> {
+    let scopedMerchantUid = merchantUid;
+
+    if (!isProductOwner(actor)) {
+      const ownMerchantUid = await findOwnMerchantUid(this.staffRepository, actor);
+      if (!ownMerchantUid) return [];
+      if (scopedMerchantUid && scopedMerchantUid !== ownMerchantUid) throw ServiceError.ErrForbidden();
+      scopedMerchantUid = ownMerchantUid;
     }
+
+    if (scopedMerchantUid) {
+      const merchant = await this.merchantRepository.getById(scopedMerchantUid);
+      if (!merchant) throw ServiceError.ErrMerchantNotFound();
+      return this.storeRepository.getByMerchantId(scopedMerchantUid);
+    }
+
     return this.storeRepository.findAll();
   }
 }

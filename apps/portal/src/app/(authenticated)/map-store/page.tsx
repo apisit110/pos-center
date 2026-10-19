@@ -133,6 +133,18 @@ const SuccessText = styled.p`
   margin-top: 0.5rem;
 `;
 
+const ErrorList = styled.ul`
+  margin: 0.75rem 0 0 0;
+  padding: 0.75rem 1rem 0.75rem 2rem;
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--bg-card);
+  color: var(--text-sub);
+  font-size: 0.85rem;
+`;
+
 const FormGroup = styled.div`
   display: flex;
   flex-direction: column;
@@ -163,7 +175,7 @@ export default function MapProductStorePage() {
       try {
         const repo = new ApiMerchantRepository();
         const useCase = new GetMerchantsUseCase(repo);
-        const data = await useCase.execute(1, 1000);
+        const data = await useCase.execute(1, 100);
         setMerchants(data.merchants);
       } catch (err) {
         console.error('Failed to fetch merchants', err);
@@ -201,6 +213,7 @@ export default function MapProductStorePage() {
   // Import State
   const [importedData, setImportedData] = useState<any[] | null>(null);
   const [importError, setImportError] = useState<string>('');
+  const [importRowErrors, setImportRowErrors] = useState<string[]>([]);
   const [importSuccess, setImportSuccess] = useState<string>('');
   const [isImporting, setIsImporting] = useState(false);
 
@@ -213,6 +226,7 @@ export default function MapProductStorePage() {
 
   const processJsonFile = (file: File) => {
     setImportError('');
+    setImportRowErrors([]);
     setImportSuccess('');
     setImportedData(null);
 
@@ -272,6 +286,7 @@ export default function MapProductStorePage() {
     }
 
     setImportError('');
+    setImportRowErrors([]);
     setImportSuccess('');
     setIsImporting(true);
 
@@ -292,6 +307,7 @@ export default function MapProductStorePage() {
       setImportSuccess(
         `Successfully processed mappings. Created: ${createdCount}, Updated: ${updatedCount}.`
       );
+      setImportRowErrors(response.errors ?? []);
       setImportedData(null);
     } catch (err: unknown) {
       const apiError = err as {
@@ -433,6 +449,13 @@ export default function MapProductStorePage() {
 
             {importError && <ErrorText>{importError}</ErrorText>}
             {importSuccess && <SuccessText>{importSuccess}</SuccessText>}
+            {importRowErrors.length > 0 && (
+              <ErrorList>
+                {importRowErrors.map((message, i) => (
+                  <li key={i}>{message}</li>
+                ))}
+              </ErrorList>
+            )}
 
             {importedData && (
               <>

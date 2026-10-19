@@ -119,11 +119,71 @@ class ServiceError {
   public static ErrStaffNotFound(): ServiceError {
     return {
       name: this.name,
-      kind: ErrorKind.BAD_REQUEST,
+      kind: ErrorKind.NOT_FOUND,
       resCode: "4009",
       resDesc: {
         en: "The specified staff member could not be found.",
         th: "ไม่พบข้อมูลพนักงานในระบบ"
+      },
+      additional: undefined
+    }
+  }
+  public static ErrForbidden(): ServiceError {
+    return {
+      name: this.name,
+      kind: ErrorKind.FORBIDDEN,
+      resCode: "4010",
+      resDesc: {
+        en: "You are not allowed to access this resource.",
+        th: "คุณไม่มีสิทธิ์เข้าถึงข้อมูลนี้"
+      },
+      additional: undefined
+    }
+  }
+  public static ErrMerchantNotFound(): ServiceError {
+    return {
+      name: this.name,
+      kind: ErrorKind.NOT_FOUND,
+      resCode: "4011",
+      resDesc: {
+        en: "The specified merchant could not be found.",
+        th: "ไม่พบข้อมูลร้านค้า (merchant) ในระบบ"
+      },
+      additional: undefined
+    }
+  }
+  public static ErrStoreNotFound(): ServiceError {
+    return {
+      name: this.name,
+      kind: ErrorKind.NOT_FOUND,
+      resCode: "4012",
+      resDesc: {
+        en: "The specified store could not be found.",
+        th: "ไม่พบข้อมูลสาขา (store) ในระบบ"
+      },
+      additional: undefined
+    }
+  }
+  public static ErrProductNotFound(): ServiceError {
+    return {
+      name: this.name,
+      kind: ErrorKind.NOT_FOUND,
+      resCode: "4013",
+      resDesc: {
+        en: "The specified product could not be found.",
+        th: "ไม่พบข้อมูลสินค้าในระบบ"
+      },
+      additional: undefined
+    }
+  }
+  public static ErrProductBarcodeDuplicate(): ServiceError {
+    return {
+      name: this.name,
+      kind: ErrorKind.BAD_REQUEST,
+      resCode: "4014",
+      resDesc: {
+        en: "The barcode already exists in this merchant.",
+        th: "บาร์โค้ดนี้มีอยู่แล้วในร้านค้า (merchant) นี้"
       },
       additional: undefined
     }

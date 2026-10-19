@@ -1,5 +1,6 @@
+import { merchantUidIs } from '../utils/merchant';
 import { db, staff, merchants, pins, role, staffRole } from '@pos-center/database';
-import { eq, like, and, count, gte, lte } from 'drizzle-orm';
+import { eq, like, and, count, gte, lte, desc, SQL } from 'drizzle-orm';
 import { Staff } from '../../domain/entities/Staff';
 import { IStaffRepository, StaffFilter } from '../../domain/repositories/IStaffRepository';
 import { PORTAL_APP_ID } from '../../domain/constants/app';
@@ -17,14 +18,10 @@ async function getOrCreateRoleId(roleName: string, tx: typeof db = db): Promise<
 export class DrizzleStaffRepository implements IStaffRepository {
   async getStaff(page: number, limit: number, filters?: StaffFilter): Promise<{ staff: Staff[], total: number }> {
     const offset = (page - 1) * limit;
-    const conditions: any[] = [];
+    const conditions: SQL[] = [];
 
-    if (filters?.merchantId) {
-      const merchant = await db.select({ id: merchants.id }).from(merchants)
-        .where(eq(merchants.uid, filters.merchantId)).limit(1);
-      if (merchant[0]) {
-        conditions.push(eq(staff.merchantId, merchant[0].id));
-      }
+    if (filters?.merchantUid) {
+      conditions.push(merchantUidIs(filters.merchantUid));
     }
 
     if (filters?.role) {
@@ -44,20 +41,18 @@ export class DrizzleStaffRepository implements IStaffRepository {
     }
 
     if (filters?.startDate) {
-      conditions.push(gte(staff.createdAt, new Date(filters.startDate)));
+      conditions.push(gte(staff.createdAt, filters.startDate));
     }
 
     if (filters?.endDate) {
-      const end = new Date(filters.endDate);
-      end.setHours(23, 59, 59, 999);
-      conditions.push(lte(staff.createdAt, end));
+      conditions.push(lte(staff.createdAt, filters.endDate));
     }
 
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
     const results = await db.select({
       uid: staff.uid,
-      merchantId: staff.merchantId,
+      merchantUid: merchants.uid,
       merchantName: merchants.name,
       name: staff.name,
       role: role.name,
@@ -65,15 +60,16 @@ export class DrizzleStaffRepository implements IStaffRepository {
       status: staff.status,
       createdAt: staff.createdAt,
     }).from(staff)
-      .leftJoin(merchants, eq(staff.merchantId, merchants.id))
+      .innerJoin(merchants, eq(staff.merchantId, merchants.id))
       .leftJoin(staffRole, eq(staffRole.staffId, staff.id))
       .leftJoin(role, eq(role.id, staffRole.roleId))
       .where(whereClause)
+      .orderBy(desc(staff.id))
       .limit(limit)
       .offset(offset);
 
     const totalCount = await db.select({ value: count() }).from(staff)
-      .leftJoin(merchants, eq(staff.merchantId, merchants.id))
+      .innerJoin(merchants, eq(staff.merchantId, merchants.id))
       .leftJoin(staffRole, eq(staffRole.staffId, staff.id))
       .leftJoin(role, eq(role.id, staffRole.roleId))
       .where(whereClause);
@@ -81,21 +77,21 @@ export class DrizzleStaffRepository implements IStaffRepository {
     return {
       staff: results.map(s => new Staff(
         s.uid,
-        s.merchantId.toString(),
+        s.merchantUid,
         s.name,
         (s.role ?? 'cashier') as any,
         s.username ?? undefined,
         undefined,
         (s.status ?? 'ACTIVE') as any,
         s.createdAt ?? undefined,
-        s.merchantName ?? undefined,
+        s.merchantName,
       )),
       total: Number(totalCount[0].value),
     };
   }
 
   async getStaffByMerchant(merchantUid: string): Promise<Staff[]> {
-    const merchant = await db.select({ id: merchants.id }).from(merchants).where(eq(merchants.uid, merchantUid)).limit(1);
+    const merchant = await db.select({ id: merchants.id }).from(merchants).where(merchantUidIs(merchantUid)).limit(1);
     if (!merchant[0]) return [];
 
     const results = await db.select({
@@ -128,27 +124,6 @@ export class DrizzleStaffRepository implements IStaffRepository {
     return result[0]?.merchantUid ?? null;
   }
 
-  async getStaffById(id: string): Promise<Staff | null> {
-    const result = await db.select({
-      uid: staff.uid,
-      merchantId: staff.merchantId,
-      name: staff.name,
-      role: role.name,
-    }).from(staff)
-      .leftJoin(staffRole, eq(staffRole.staffId, staff.id))
-      .leftJoin(role, eq(role.id, staffRole.roleId))
-      .where(eq(staff.uid, id)).limit(1);
-    if (!result[0]) return null;
-
-    const s = result[0];
-    return new Staff(
-      s.uid,
-      s.merchantId.toString(),
-      s.name,
-      (s.role ?? 'cashier') as any
-    );
-  }
-
   async getStaffByUid(uid: string): Promise<Staff | null> {
     return this.findOneWithMerchantUid(eq(staff.uid, uid));
   }
@@ -161,6 +136,7 @@ export class DrizzleStaffRepository implements IStaffRepository {
     const result = await db.select({
       uid: staff.uid,
       merchantUid: merchants.uid,
+      merchantName: merchants.name,
       name: staff.name,
       username: staff.username,
       role: role.name,
@@ -183,6 +159,7 @@ export class DrizzleStaffRepository implements IStaffRepository {
       undefined,
       (s.status ?? 'ACTIVE') as any,
       s.createdAt ?? undefined,
+      s.merchantName,
     );
   }
 

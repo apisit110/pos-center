@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { SCOPE_SEPARATOR, TOKEN_AUDIENCE, TOKEN_ISSUER } from '../../domain/constants/token';
 import { ServiceError } from '../../application/errors/ServiceError';
 import { ValidationError } from '../../application/errors/ValidationError';
+import { Actor } from '../../application/auth/Actor';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -54,19 +55,7 @@ function verifyAccessToken(req: Request, jwtSecret: string): NonNullable<Request
   };
 }
 
-/** Legacy behaviour (401 { message }) used by endpoints that have not been refactored yet. */
-export function authMiddleware(jwtSecret: string) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      req.auth = verifyAccessToken(req, jwtSecret);
-      next();
-    } catch {
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
-  };
-}
-
-/** Same verification, but forwards ServiceError / ValidationError to ErrorMiddleware. */
+/** Verifies the access token and forwards ServiceError / ValidationError to ErrorMiddleware. */
 export function serviceAuthMiddleware(jwtSecret: string) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -85,4 +74,10 @@ export function requirePermission(permission: string) {
     }
     next();
   };
+}
+
+/** The authenticated caller; only valid behind serviceAuthMiddleware. */
+export function actorOf(req: Request): Actor {
+  if (!req.auth) throw ServiceError.ErrTokenInvalide();
+  return { uid: req.auth.uid, role: req.auth.role };
 }

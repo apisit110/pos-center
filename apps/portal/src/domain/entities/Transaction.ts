@@ -1,5 +1,6 @@
-export type TransactionStatus = 'success' | 'pending' | 'failed' | 'refunded';
-export type TransactionMethod = 'cash' | 'credit_card' | 'qr_code' | 'bank_transfer' | 'wallet';
+// lower-case form of the API enums (`PENDING|APPROVED|FAILED|VOIDED|REFUNDED`, `CASH|QR`)
+export type TransactionStatus = 'pending' | 'approved' | 'failed' | 'voided' | 'refunded';
+export type TransactionMethod = 'cash' | 'qr';
 
 export class Transaction {
   constructor(

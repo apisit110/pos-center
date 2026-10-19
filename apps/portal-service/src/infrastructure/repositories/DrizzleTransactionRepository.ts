@@ -1,12 +1,16 @@
 import { db, transactions, stores, orders } from '@pos-center/database';
-import { eq, and, like, gte, lte, count } from 'drizzle-orm';
+import { eq, and, like, gte, lte, count, desc, SQL } from 'drizzle-orm';
 import { Transaction } from '../../domain/entities/Transaction';
 import { ITransactionRepository, TransactionFilter } from '../../domain/repositories/ITransactionRepository';
 
 export class DrizzleTransactionRepository implements ITransactionRepository {
   async getTransactions(page: number, limit: number, filters?: TransactionFilter): Promise<{ transactions: Transaction[]; total: number }> {
     const offset = (page - 1) * limit;
-    const conditions: any[] = [];
+    const conditions: SQL[] = [];
+
+    if (filters?.merchantMid) {
+      conditions.push(eq(transactions.merchantId, filters.merchantMid));
+    }
 
     if (filters?.transactionId) {
       conditions.push(like(transactions.uid, `%${filters.transactionId}%`));
@@ -25,13 +29,11 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
     }
 
     if (filters?.startDate) {
-      conditions.push(gte(transactions.createdAt, new Date(filters.startDate)));
+      conditions.push(gte(transactions.createdAt, filters.startDate));
     }
 
     if (filters?.endDate) {
-      const end = new Date(filters.endDate);
-      end.setHours(23, 59, 59, 999);
-      conditions.push(lte(transactions.createdAt, end));
+      conditions.push(lte(transactions.createdAt, filters.endDate));
     }
 
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
@@ -51,7 +53,7 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
       .leftJoin(orders, eq(transactions.orderId, orders.id))
       .leftJoin(stores, eq(transactions.storeId, stores.id))
       .where(whereClause)
-      .orderBy(transactions.createdAt)
+      .orderBy(desc(transactions.createdAt), desc(transactions.id))
       .limit(limit)
       .offset(offset);
 
@@ -59,6 +61,7 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
       .select({ value: count() })
       .from(transactions)
       .leftJoin(orders, eq(transactions.orderId, orders.id))
+      .leftJoin(stores, eq(transactions.storeId, stores.id))
       .where(whereClause);
 
     return {

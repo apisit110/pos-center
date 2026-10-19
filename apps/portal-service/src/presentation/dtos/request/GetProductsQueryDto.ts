@@ -1,20 +1,16 @@
 import { z } from 'zod';
-
-const toArray = (val: unknown): string[] => {
-  if (val === undefined) return [];
-  return Array.isArray(val) ? (val as string[]) : [val as string];
-};
+import { limitSchema, pageSchema, stringArraySchema } from './CommonRequestDto';
 
 export const getProductsQuerySchema = z.object({
-  page: z.coerce.number().optional().default(1),
-  limit: z.coerce.number().optional().default(10),
+  page: pageSchema,
+  limit: limitSchema,
   barcode: z.string().optional(),
   name: z.string().optional(),
-  merchantId: z.string().optional(),
-  brands: z.preprocess(toArray, z.array(z.string())).optional().default([]),
-  price: z.coerce.number().optional(),
-  units: z.preprocess(toArray, z.array(z.string())).optional().default([]),
-  storeId: z.string().optional(),
+  merchant_uid: z.string().optional(),
+  brands: stringArraySchema,
+  units: stringArraySchema,
+  price: z.coerce.number().min(0).optional(),
+  store_uid: z.string().optional(),
 });
 
 export type GetProductsQueryDto = z.infer<typeof getProductsQuerySchema>;

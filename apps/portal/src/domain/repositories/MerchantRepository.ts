@@ -28,6 +28,5 @@ export interface MerchantFilter {
 export interface MerchantRepository {
   getMerchant(uid: string): Promise<Merchant | null>;
   getMerchants(page: number, limit: number, filters?: MerchantFilter): Promise<{ merchants: Merchant[]; total: number }>;
-  updateMerchant(merchant: Merchant): Promise<void>;
   registerMerchant(request: MerchantRegistrationRequest): Promise<Merchant>;
 }

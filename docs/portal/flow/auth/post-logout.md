@@ -17,8 +17,14 @@ example request body:
 example response body:
 
 ```json
+{
+  "res_code": "0000",
+  "res_desc": ""
+}
 ```
 
 Logic:
 
 - clear cookie
+- DTO Response
+- wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), no `data`

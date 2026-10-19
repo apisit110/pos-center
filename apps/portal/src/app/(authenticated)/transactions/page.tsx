@@ -38,7 +38,7 @@ const StatusBadge = styled.span<{ $status: string }>`
   font-weight: 600;
   background: ${props => {
     switch (props.$status.toLowerCase()) {
-      case 'success': return 'rgba(34, 197, 94, 0.15)';
+      case 'approved': return 'rgba(34, 197, 94, 0.15)';
       case 'failed': return 'rgba(239, 68, 68, 0.15)';
       case 'pending': return 'rgba(234, 179, 8, 0.15)';
       case 'refunded': return 'rgba(99, 102, 241, 0.15)';
@@ -47,7 +47,7 @@ const StatusBadge = styled.span<{ $status: string }>`
   }};
   color: ${props => {
     switch (props.$status.toLowerCase()) {
-      case 'success': return '#4ade80';
+      case 'approved': return '#4ade80';
       case 'failed': return '#f87171';
       case 'pending': return '#fbbf24';
       case 'refunded': return '#818cf8';
@@ -67,18 +67,18 @@ const EMPTY_FILTERS: TransactionFilter = {
 
 const methodOptions = [
   { value: 'cash', label: 'Cash' },
-  { value: 'credit_card', label: 'Credit Card' },
-  { value: 'qr_code', label: 'QR Code' },
-  { value: 'bank_transfer', label: 'Bank Transfer' },
-  { value: 'wallet', label: 'Wallet' },
+  { value: 'qr', label: 'QR' },
 ];
 
 const statusOptions = [
-  { value: 'success', label: 'Success' },
   { value: 'pending', label: 'Pending' },
+  { value: 'approved', label: 'Approved' },
   { value: 'failed', label: 'Failed' },
+  { value: 'voided', label: 'Voided' },
   { value: 'refunded', label: 'Refunded' },
 ];
+
+const methodLabels = Object.fromEntries(methodOptions.map(o => [o.value, o.label]));
 
 const columns = [
   {
@@ -103,7 +103,7 @@ const columns = [
   {
     header: 'Method',
     key: 'paymentMethod',
-    render: (tx: Transaction) => tx.paymentMethod,
+    render: (tx: Transaction) => methodLabels[tx.paymentMethod] ?? tx.paymentMethod,
   },
   {
     header: 'Amount',

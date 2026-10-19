@@ -8,8 +8,8 @@ erDiagram
         int store_id "no FK, external reference"
         int terminal_id "no FK, external reference"
         decimal amount "10,2"
-        string payment_method "CASH, QR, CARD"
-        string status "PENDING, PAID, VOID, REFUNDED"
+        string payment_method "CASH, QR"
+        string status "PENDING, APPROVED, FAILED, VOIDED, REFUNDED"
         string staff_name
         datetime created_at
     }

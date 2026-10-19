@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-import express, { Request, Response } from 'express';
+import express, { Request, Response, Router } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 
@@ -31,7 +31,7 @@ import { GetStoreDetailUseCase } from './application/usecases/GetStoreDetailUseC
 import { GetStaffUseCase } from './application/usecases/GetStaffUseCase';
 import { GetStaffDetailUseCase } from './application/usecases/GetStaffDetailUseCase';
 import { GetStaffByMerchantUseCase } from './application/usecases/GetStaffByMerchantUseCase';
-import { RegisterMerchantUseCase } from './application/usecases/RegisterMerchantUseCase';
+import { CreateMerchantUseCase } from './application/usecases/CreateMerchantUseCase';
 import { GetTerminalsByStoreUseCase } from './application/usecases/GetTerminalsByStoreUseCase';
 import { BatchUpsertStoreProductsUseCase } from './application/usecases/BatchUpsertStoreProductsUseCase';
 import { GetTransactionsUseCase } from './application/usecases/GetTransactionsUseCase';
@@ -51,7 +51,7 @@ import { TransactionController } from './presentation/controllers/TransactionCon
 // Presentation: Middleware
 import { loggerMiddleware } from './presentation/middleware/LoggerMiddleware';
 import { errorMiddleware } from './presentation/middleware/ErrorMiddleware';
-import { authMiddleware } from './presentation/middleware/AuthMiddleware';
+import { serviceAuthMiddleware } from './presentation/middleware/AuthMiddleware';
 
 // Presentation: Routes
 import { authRoutes } from './presentation/routes/auth.routes';
@@ -84,28 +84,28 @@ const tokenService = new JwtTokenService(JWT_SECRET);
 const runningNumberService = new RunningNumberService();
 
 // Initialize Application Use Cases
-const getMerchantsUseCase = new GetMerchantsUseCase(merchantRepository);
-const getMerchantDetailUseCase = new GetMerchantDetailUseCase(merchantRepository);
-const getProductsUseCase = new GetProductsUseCase(productRepository);
-const getProductDetailUseCase = new GetProductDetailUseCase(productRepository);
-const getProductFilterMetadataUseCase = new GetProductFilterMetadataUseCase(productRepository);
-const createProductUseCase = new CreateProductUseCase(productRepository, merchantRepository);
-const bulkCreateProductsUseCase = new BulkCreateProductsUseCase(productRepository, merchantRepository);
-const getStoresUseCase = new GetStoresUseCase(storeRepository, merchantRepository);
-const getStoreDetailUseCase = new GetStoreDetailUseCase(storeRepository);
-const getStaffUseCase = new GetStaffUseCase(staffRepository);
+const getMerchantsUseCase = new GetMerchantsUseCase(merchantRepository, staffRepository);
+const getMerchantDetailUseCase = new GetMerchantDetailUseCase(merchantRepository, staffRepository);
+const getProductsUseCase = new GetProductsUseCase(productRepository, staffRepository);
+const getProductDetailUseCase = new GetProductDetailUseCase(productRepository, staffRepository);
+const getProductFilterMetadataUseCase = new GetProductFilterMetadataUseCase(productRepository, staffRepository);
+const createProductUseCase = new CreateProductUseCase(productRepository, merchantRepository, staffRepository);
+const bulkCreateProductsUseCase = new BulkCreateProductsUseCase(productRepository, merchantRepository, staffRepository);
+const getStoresUseCase = new GetStoresUseCase(storeRepository, merchantRepository, staffRepository);
+const getStoreDetailUseCase = new GetStoreDetailUseCase(storeRepository, staffRepository);
+const getStaffUseCase = new GetStaffUseCase(staffRepository, merchantRepository);
 const getStaffDetailUseCase = new GetStaffDetailUseCase(staffRepository);
 const getStaffByMerchantUseCase = new GetStaffByMerchantUseCase(staffRepository, merchantRepository);
-const registerMerchantUseCase = new RegisterMerchantUseCase(merchantRepository, storeRepository, terminalRepository, runningNumberService, staffRepository);
-const getTerminalsByStoreUseCase = new GetTerminalsByStoreUseCase(terminalRepository);
-const batchUpsertStoreProductsUseCase = new BatchUpsertStoreProductsUseCase(storeProductRepository);
-const getTransactionsUseCase = new GetTransactionsUseCase(transactionRepository);
+const createMerchantUseCase = new CreateMerchantUseCase(merchantRepository, staffRepository, storeRepository, terminalRepository, runningNumberService);
+const getTerminalsByStoreUseCase = new GetTerminalsByStoreUseCase(terminalRepository, storeRepository, staffRepository);
+const batchUpsertStoreProductsUseCase = new BatchUpsertStoreProductsUseCase(storeProductRepository, staffRepository);
+const getTransactionsUseCase = new GetTransactionsUseCase(transactionRepository, staffRepository, merchantRepository);
 const loginUseCase = new LoginUseCase(staffRepository, pinRepository, permissionRepository, tokenService, PORTAL_APP_ID);
 const getProfileUseCase = new GetProfileUseCase(staffRepository);
 
 // Initialize Presentation Controllers
 const authController = new AuthController(loginUseCase, getProfileUseCase);
-const merchantController = new MerchantController(getMerchantsUseCase, getMerchantDetailUseCase, registerMerchantUseCase, getStaffByMerchantUseCase, staffRepository);
+const merchantController = new MerchantController(getMerchantsUseCase, getMerchantDetailUseCase, createMerchantUseCase, getStaffByMerchantUseCase);
 const productController = new ProductController(getProductsUseCase, getProductDetailUseCase, getProductFilterMetadataUseCase, createProductUseCase, bulkCreateProductsUseCase);
 const storeController = new StoreController(getStoresUseCase, getStoreDetailUseCase, getTerminalsByStoreUseCase);
 const staffController = new StaffController(getStaffUseCase, getStaffDetailUseCase);
@@ -124,14 +124,16 @@ app.get('/health', (req: Request, res: Response) => {
 // Public routes
 app.use('/api/v1/auth', authRoutes(authController, JWT_SECRET));
 
-// Protected routes (require a valid session cookie)
-const requireAuth = authMiddleware(JWT_SECRET);
-app.use('/', requireAuth, merchantRoutes(merchantController, staffRepository));
-app.use('/', requireAuth, productRoutes(productController));
-app.use('/', requireAuth, storeProductRoutes(storeProductController));
-app.use('/', requireAuth, storeRoutes(storeController, staffRepository));
-app.use('/', requireAuth, staffRoutes(staffController));
-app.use('/', requireAuth, transactionRoutes(transactionController));
+// Protected routes (require a valid access token, permission is checked per route)
+const protectedApi = Router();
+protectedApi.use(serviceAuthMiddleware(JWT_SECRET));
+protectedApi.use(merchantRoutes(merchantController));
+protectedApi.use(productRoutes(productController));
+protectedApi.use(storeProductRoutes(storeProductController));
+protectedApi.use(storeRoutes(storeController));
+protectedApi.use(staffRoutes(staffController));
+protectedApi.use(transactionRoutes(transactionController));
+app.use('/api/v1', protectedApi);
 
 // Error Handling Middleware (must be after all routes)
 app.use(errorMiddleware);

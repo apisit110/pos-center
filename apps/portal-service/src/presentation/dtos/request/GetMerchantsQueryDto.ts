@@ -1,8 +1,9 @@
 import { z } from 'zod';
+import { limitSchema, pageSchema } from './CommonRequestDto';
 
 export const getMerchantsQuerySchema = z.object({
-  page: z.coerce.number().optional().default(1),
-  limit: z.coerce.number().optional().default(10),
+  page: pageSchema,
+  limit: limitSchema,
   mid: z.string().optional(),
   name: z.string().optional(),
 });

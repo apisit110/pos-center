@@ -283,6 +283,17 @@ const ResultBanner = styled.div<{ $type: 'success' | 'error' }>`
   animation: ${fadeIn} 0.3s ease;
 `;
 
+const ErrorList = styled.ul`
+  margin: 0.75rem 0 0 0;
+  padding: 0.75rem 1rem 0.75rem 2rem;
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--bg-card);
+  color: var(--text-sub);
+  font-size: 0.85rem;
+`;
 
 /* ─── JSON product type (from master_product.json) ─────────── */
 
@@ -329,12 +340,13 @@ export default function AddProductPage() {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
   const [result, setResult] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [importErrors, setImportErrors] = useState<string[]>([]);
 
   useEffect(() => {
     (async () => {
       const merchantRepo = new ApiMerchantRepository();
       const useCase = new GetMerchantsUseCase(merchantRepo);
-      const data = await useCase.execute(1, 1000);
+      const data = await useCase.execute(1, 100);
       setMerchants(data.merchants.map(m => ({ value: m.uid, label: m.name })));
     })();
   }, []);
@@ -432,6 +444,7 @@ export default function AddProductPage() {
     setLoading(true);
     setProgress(null);
     setResult(null);
+    setImportErrors([]);
 
     try {
       const repo = new ApiProductRepository();
@@ -451,6 +464,7 @@ export default function AddProductPage() {
       const msg = `Successfully created ${res.created} product(s).` +
         (res.errors.length > 0 ? ` ${res.errors.length} error(s).` : '');
       setResult({ type: res.errors.length === 0 ? 'success' : 'error', message: msg });
+      setImportErrors(res.errors);
 
       if (res.created > 0) {
         setJsonProducts([]);
@@ -660,6 +674,14 @@ export default function AddProductPage() {
 
           {result && (
             <ResultBanner $type={result.type}>{result.message}</ResultBanner>
+          )}
+
+          {importErrors.length > 0 && (
+            <ErrorList>
+              {importErrors.map((message, i) => (
+                <li key={i}>{message}</li>
+              ))}
+            </ErrorList>
           )}
         </FormCard>
       )}

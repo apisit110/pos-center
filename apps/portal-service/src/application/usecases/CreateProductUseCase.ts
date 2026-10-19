@@ -1,50 +1,56 @@
 import { Product } from '../../domain/entities/Product';
 import { IProductRepository } from '../../domain/repositories/IProductRepository';
 import { IMerchantRepository } from '../../domain/repositories/IMerchantRepository';
+import { IStaffRepository } from '../../domain/repositories/IStaffRepository';
+import { Actor, assertMerchantAccess } from '../auth/Actor';
+import { ServiceError } from '../errors/ServiceError';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface CreateProductRequest {
-  uid?: string;
-  merchantId: string;
+  merchantUid: string;
   name: string;
-  sku: string;
-  barcode: string;
+  barcode?: string;
   basePrice: number;
-  imageUrl: string[];
-  brand: string;
-  unitName: string;
+  imageUrl?: string[];
+  brand?: string;
+  unitName?: string;
 }
 
 export class CreateProductUseCase {
   constructor(
     private readonly productRepository: IProductRepository,
-    private readonly merchantRepository: IMerchantRepository
+    private readonly merchantRepository: IMerchantRepository,
+    private readonly staffRepository: IStaffRepository,
   ) {}
 
-  public async execute(request: CreateProductRequest): Promise<Product> {
-    const uid = request.uid || uuidv4();
+  public async execute(actor: Actor, request: CreateProductRequest): Promise<Product> {
+    await assertMerchantAccess(this.staffRepository, actor, request.merchantUid);
 
-    // Resolve merchant to get mid
-    const merchant = await this.merchantRepository.getById(request.merchantId);
-    if (!merchant) {
-      throw new Error(`Merchant not found: ${request.merchantId}`);
+    const merchant = await this.merchantRepository.getById(request.merchantUid);
+    if (!merchant) throw ServiceError.ErrMerchantNotFound();
+
+    const uid = uuidv4();
+    const barcode = request.barcode || '';
+
+    if (barcode) {
+      const owners = await this.productRepository.findBarcodeOwners(request.merchantUid, [barcode]);
+      if (owners.length > 0) throw ServiceError.ErrProductBarcodeDuplicate();
     }
 
     const product = new Product(
       uid,
-      request.merchantId,
+      request.merchantUid,
       merchant.mid,
       request.name,
-      request.sku,
-      request.barcode,
+      barcode, // sku = barcode
+      barcode,
       request.basePrice,
-      request.imageUrl,
-      request.brand,
-      request.unitName
+      request.imageUrl ?? [],
+      request.brand ?? '',
+      request.unitName ?? '',
     );
 
     await this.productRepository.save(product);
-
     return product;
   }
 }

@@ -1,10 +1,61 @@
 import { IStaffRepository, StaffFilter } from '../../domain/repositories/IStaffRepository';
+import { IMerchantRepository } from '../../domain/repositories/IMerchantRepository';
 import { Staff } from '../../domain/entities/Staff';
+import { Actor, findOwnMerchantUid, isProductOwner } from '../auth/Actor';
+import { ServiceError } from '../errors/ServiceError';
+import { toRangeEnd, toRangeStart } from '../utils/dateRange';
+
+export interface GetStaffInput {
+  page: number;
+  limit: number;
+  merchantUid?: string;
+  role?: string;
+  username?: string;
+  status?: string;
+  query?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface GetStaffOutput {
+  staff: Staff[];
+  total: number;
+  page: number;
+  limit: number;
+}
 
 export class GetStaffUseCase {
-  constructor(private staffRepository: IStaffRepository) {}
+  constructor(
+    private staffRepository: IStaffRepository,
+    private merchantRepository: IMerchantRepository,
+  ) {}
 
-  async execute(page: number, limit: number, filters?: StaffFilter): Promise<{ staff: Staff[], total: number }> {
-    return this.staffRepository.getStaff(page, limit, filters);
+  async execute(actor: Actor, input: GetStaffInput): Promise<GetStaffOutput> {
+    const empty: GetStaffOutput = { staff: [], total: 0, page: input.page, limit: input.limit };
+    let merchantUid = input.merchantUid;
+
+    if (!isProductOwner(actor)) {
+      const ownMerchantUid = await findOwnMerchantUid(this.staffRepository, actor);
+      if (!ownMerchantUid) return empty;
+      if (merchantUid && merchantUid !== ownMerchantUid) throw ServiceError.ErrForbidden();
+      merchantUid = ownMerchantUid;
+    }
+
+    if (merchantUid) {
+      const merchant = await this.merchantRepository.getById(merchantUid);
+      if (!merchant) return empty;
+    }
+
+    const filters: StaffFilter = {
+      merchantUid,
+      role: input.role,
+      username: input.username,
+      status: input.status,
+      query: input.query,
+      startDate: toRangeStart(input.startDate),
+      endDate: toRangeEnd(input.endDate),
+    };
+    const { staff, total } = await this.staffRepository.getStaff(input.page, input.limit, filters);
+    return { staff, total, page: input.page, limit: input.limit };
   }
 }

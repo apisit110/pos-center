@@ -1,0 +1,13 @@
+export const PERMISSION_MERCHANTS_VIEW = 'merchants:view';
+export const PERMISSION_MERCHANTS_CREATE = 'merchants:create';
+export const PERMISSION_MERCHANT_DETAIL_VIEW = 'merchant_detail:view';
+export const PERMISSION_STORES_VIEW = 'stores:view';
+export const PERMISSION_STORE_DETAIL_VIEW = 'store_detail:view';
+export const PERMISSION_TERMINALS_VIEW = 'terminals:view';
+export const PERMISSION_PRODUCTS_VIEW = 'products:view';
+export const PERMISSION_PRODUCTS_CREATE = 'products:create';
+export const PERMISSION_PRODUCT_DETAIL_VIEW = 'product_detail:view';
+export const PERMISSION_STORE_PRODUCTS_CREATE = 'store_products:create';
+export const PERMISSION_STAFFS_VIEW = 'staffs:view';
+export const PERMISSION_STAFF_DETAIL_VIEW = 'staff_detail:view';
+export const PERMISSION_TRANSACTIONS_VIEW = 'transactions:view';

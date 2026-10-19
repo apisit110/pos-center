@@ -1,3 +1,4 @@
+import { merchantUidIs } from '../utils/merchant';
 import { db, stores, merchants, eq } from '@pos-center/database';
 import { IStoreRepository } from '../../domain/repositories/IStoreRepository';
 import { Store } from '../../domain/entities/Store';
@@ -39,7 +40,7 @@ export class DrizzleStoreRepository implements IStoreRepository {
     })
     .from(stores)
     .innerJoin(merchants, eq(stores.merchantId, merchants.id))
-    .where(eq(merchants.uid, merchantId))
+    .where(merchantUidIs(merchantId))
     .limit(MAX_MERCHANT_SCOPED_RESULTS);
 
     return result.map(({ store, merchantUid, mid }) => new Store(

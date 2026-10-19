@@ -1,13 +1,13 @@
 class Ok {
   httpStatus: number
   resCode: string
-  resDesc: Record<string, string>
+  resDesc: string
   data: any
 
   constructor(
     httpStatus: number,
     resCode: string,
-    resDesc: Record<string, string>,
+    resDesc: string,
     data: any,
   ) {
     this.httpStatus = httpStatus

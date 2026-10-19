@@ -1,8 +1,9 @@
 import { db, runningNumbers, eq, sql } from '@pos-center/database';
+import { IRunningNumberService } from '../../domain/services/IRunningNumberService';
 
 const DIGITS = { mid: 4, sid: 4, tid: 2, staff: 4 } as const;
 
-export class RunningNumberService {
+export class RunningNumberService implements IRunningNumberService {
   private async next(key: string, digits: number): Promise<string> {
     await db
       .insert(runningNumbers)

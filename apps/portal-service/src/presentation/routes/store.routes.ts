@@ -1,18 +1,18 @@
 import { Router } from 'express';
 import { StoreController } from '../controllers/StoreController';
-import { IStaffRepository } from '../../domain/repositories/IStaffRepository';
-import { requireMerchantOwnership } from '../middleware/RbacMiddleware';
+import { requirePermission } from '../middleware/AuthMiddleware';
+import {
+  PERMISSION_STORES_VIEW,
+  PERMISSION_STORE_DETAIL_VIEW,
+  PERMISSION_TERMINALS_VIEW,
+} from '../../domain/constants/permissions';
 
-export function storeRoutes(controller: StoreController, staffRepository: IStaffRepository): Router {
+export function storeRoutes(controller: StoreController): Router {
   const router = Router();
-  const ownershipByMerchantIdQuery = requireMerchantOwnership(
-    staffRepository,
-    (req) => (req.query.merchantId as string | undefined) || undefined
-  );
 
-  router.get('/stores', ownershipByMerchantIdQuery, (req, res, next) => controller.getAll(req, res, next));
-  router.get('/stores/:id', (req, res, next) => controller.getById(req, res, next));
-  router.get('/stores/:id/terminals', (req, res, next) => controller.getTerminals(req, res, next));
+  router.get('/stores', requirePermission(PERMISSION_STORES_VIEW), (req, res, next) => controller.getAll(req, res, next));
+  router.get('/stores/:id/terminals', requirePermission(PERMISSION_TERMINALS_VIEW), (req, res, next) => controller.getTerminals(req, res, next));
+  router.get('/stores/:id', requirePermission(PERMISSION_STORE_DETAIL_VIEW), (req, res, next) => controller.getById(req, res, next));
 
   return router;
 }

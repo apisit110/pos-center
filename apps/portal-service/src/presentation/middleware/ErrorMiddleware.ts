@@ -10,11 +10,18 @@ const LOGGER = pino({
   base: null
 });
 
+/** `th` when the request header `Accept-Language` starts with `th`, otherwise `en`. */
+function languageOf(req: Request): 'th' | 'en' {
+  return req.header('Accept-Language')?.trim().toLowerCase().startsWith('th') ? 'th' : 'en';
+}
+
 export const errorMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {
+  const lang = languageOf(req);
+
   if (err instanceof ValidationError || err instanceof ServiceError || err instanceof InternalServiceError) {
     return res.status(Number(err.kind)).json({
       res_code: err.resCode,
-      res_desc: err.resDesc,
+      res_desc: err.resDesc[lang],
       details: err instanceof ValidationError ? err.details : undefined,
       additional: err instanceof ServiceError ? err.additional : undefined,
       request_id: req.requestId
@@ -22,9 +29,13 @@ export const errorMiddleware = (err: any, req: Request, res: Response, next: Nex
   }
 
   if (err instanceof ZodError) {
-    return res.status(400).json({
-      message: 'Validation failed',
-      errors: err.issues.map(e => ({ path: e.path, message: e.message })),
+    const invalid = ValidationError.ErrInvalidRequest(
+      err.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`).join('; '),
+    );
+    return res.status(Number(invalid.kind)).json({
+      res_code: invalid.resCode,
+      res_desc: invalid.resDesc[lang],
+      details: invalid.details,
       request_id: req.requestId
     });
   }

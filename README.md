@@ -176,8 +176,14 @@ todos
 
 center
 admin
-admin
+123456 admin
 
 cashier
 00010001
 123456
+
+---
+
+```bash
+docker compose -f ./docker-compose-dev.yml up
+```

@@ -18,10 +18,14 @@ example response body:
 
 ```json
 {
-  "user": {
-    "uid": "string",
-    "name": "string",
-    "merchant_id": "string"
+  "res_code": "0000",
+  "res_desc": "",
+  "data": {
+    "user": {
+      "uid": "string",
+      "name": "string",
+      "merchant_id": "string"
+    }
   }
 }
 ```
@@ -40,4 +44,5 @@ Logic:
 - Find staff detail by uid in access token
   - if not found staff throw throw [ServiceError.ErrStaffNotFound](../../../apiresponse/ServiceError.ts)
 - DTO Response
+- wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
 - response staff detail follow these uid, name, merchant_id

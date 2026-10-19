@@ -67,9 +67,44 @@ export class ServiceError {
   }
 
   static ErrStaffNotFound(): ServiceError {
-    return new ServiceError(ErrorKind.BAD_REQUEST, '4009', {
+    return new ServiceError(ErrorKind.NOT_FOUND, '4009', {
       en: 'The specified staff member could not be found.',
       th: 'ไม่พบข้อมูลพนักงานในระบบ',
+    });
+  }
+
+  static ErrForbidden(): ServiceError {
+    return new ServiceError(ErrorKind.FORBIDDEN, '4010', {
+      en: 'You are not allowed to access this resource.',
+      th: 'คุณไม่มีสิทธิ์เข้าถึงข้อมูลนี้',
+    });
+  }
+
+  static ErrMerchantNotFound(): ServiceError {
+    return new ServiceError(ErrorKind.NOT_FOUND, '4011', {
+      en: 'The specified merchant could not be found.',
+      th: 'ไม่พบข้อมูลร้านค้า (merchant) ในระบบ',
+    });
+  }
+
+  static ErrStoreNotFound(): ServiceError {
+    return new ServiceError(ErrorKind.NOT_FOUND, '4012', {
+      en: 'The specified store could not be found.',
+      th: 'ไม่พบข้อมูลสาขา (store) ในระบบ',
+    });
+  }
+
+  static ErrProductNotFound(): ServiceError {
+    return new ServiceError(ErrorKind.NOT_FOUND, '4013', {
+      en: 'The specified product could not be found.',
+      th: 'ไม่พบข้อมูลสินค้าในระบบ',
+    });
+  }
+
+  static ErrProductBarcodeDuplicate(): ServiceError {
+    return new ServiceError(ErrorKind.BAD_REQUEST, '4014', {
+      en: 'The barcode already exists in this merchant.',
+      th: 'บาร์โค้ดนี้มีอยู่แล้วในร้านค้า (merchant) นี้',
     });
   }
 }
