@@ -101,6 +101,20 @@ export class ServiceError {
     });
   }
 
+  static ErrPayloadTooLarge(): ServiceError {
+    return new ServiceError(ErrorKind.PAYLOAD_TOO_LARGE, '4130', {
+      en: 'The request body is too large.',
+      th: 'ขนาดข้อมูลที่ส่งมาใหญ่เกินกำหนด',
+    });
+  }
+
+  static ErrTooManyRequests(): ServiceError {
+    return new ServiceError(ErrorKind.TOO_MANY_REQUESTS, '4290', {
+      en: 'Too many requests. Please try again later.',
+      th: 'มีการส่งคำขอมากเกินไป กรุณาลองใหม่อีกครั้งในภายหลัง',
+    });
+  }
+
   static ErrProductBarcodeDuplicate(): ServiceError {
     return new ServiceError(ErrorKind.BAD_REQUEST, '4014', {
       en: 'The barcode already exists in this merchant.',

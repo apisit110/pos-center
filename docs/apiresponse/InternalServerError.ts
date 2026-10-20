@@ -10,4 +10,11 @@ class InternalServiceError {
     this.resCode = resCode
     this.resDesc = resDesc
   }
+
+  public static ErrInternalServerError(): InternalServiceError {
+    return new InternalServiceError("500", "5000", {
+      en: "Internal server error",
+      th: "เกิดข้อผิดพลาดภายในระบบ"
+    })
+  }
 }

@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
+import { ServiceError } from '../../application/errors/ServiceError';
 import { AuthController } from '../controllers/AuthController';
-import { serviceAuthMiddleware, requirePermission } from '../middleware/AuthMiddleware';
+import { serviceAuthMiddleware } from '../middleware/AuthMiddleware';
+import { requirePermission } from '../middleware/RbacMiddleware';
 import { PERMISSION_GET_PROFILE } from '../../domain/constants/token';
 
 const loginRateLimiter = rateLimit({
@@ -9,7 +11,7 @@ const loginRateLimiter = rateLimit({
   limit: 20,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { message: 'Too many login attempts, please try again later' },
+  handler: (_req, _res, next) => next(ServiceError.ErrTooManyRequests()),
 });
 
 export function authRoutes(controller: AuthController, jwtSecret: string): Router {

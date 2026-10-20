@@ -1,14 +1,22 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import styled, { keyframes, css } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useRouter } from 'next/navigation';
-import { CreateProductUseCase } from '../../../../domain/usecases/CreateProductUseCase';
 import { BatchCreateProductsUseCase } from '../../../../domain/usecases/BatchCreateProductsUseCase';
 import { GetMerchantsUseCase } from '../../../../domain/usecases/GetMerchantsUseCase';
+import { GetStoresUseCase } from '../../../../domain/usecases/GetStoresUseCase';
+import { BatchUpsertStoreProductsUseCase } from '../../../../domain/usecases/BatchUpsertStoreProductsUseCase';
 import { ApiProductRepository } from '../../../../infrastructure/repositories/ApiProductRepository';
 import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
-import { InputField, SelectFilter, Button } from '@apisit110/pos-ui';
+import { ApiStoreRepository } from '../../../../infrastructure/repositories/ApiStoreRepository';
+import { ApiStoreProductRepository } from '../../../../infrastructure/repositories/ApiStoreProductRepository';
+import {
+  MasterProduct,
+  MasterStoreProduct,
+  parseMasterProductXlsx
+} from '../../../../infrastructure/parsers/MasterProductXlsxParser';
+import { SelectFilter, Button } from '@apisit110/pos-ui';
 
 /* ─── Animations ───────────────────────────────────────────── */
 
@@ -25,11 +33,6 @@ const shimmer = keyframes`
 const pulse = keyframes`
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.02); }
-`;
-
-const checkmark = keyframes`
-  0% { stroke-dashoffset: 50; }
-  100% { stroke-dashoffset: 0; }
 `;
 
 /* ─── Layout ───────────────────────────────────────────────── */
@@ -57,91 +60,6 @@ const Title = styled.h1`
   color: var(--text-main);
 `;
 
-/* ─── Mode Selector ────────────────────────────────────────── */
-
-const ModeSelector = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-`;
-
-const ModeCard = styled.button<{ $active?: boolean }>`
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  padding: 2rem 1.5rem;
-  background: ${props => props.$active
-    ? 'linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(139, 92, 246, 0.10))'
-    : 'var(--bg-card)'};
-  border: 2px solid ${props => props.$active ? 'var(--primary)' : 'var(--border)'};
-  border-radius: 1.25rem;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  overflow: hidden;
-
-  &:hover {
-    border-color: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.15);
-  }
-
-  ${props => props.$active && css`
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), 0 8px 25px rgba(99, 102, 241, 0.15);
-  `}
-`;
-
-const ModeIcon = styled.div<{ $active?: boolean }>`
-  width: 56px;
-  height: 56px;
-  border-radius: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.6rem;
-  background: ${props => props.$active
-    ? 'linear-gradient(135deg, var(--primary), #8b5cf6)'
-    : 'rgba(255, 255, 255, 0.05)'};
-  transition: all 0.25s ease;
-`;
-
-const ModeTitle = styled.span`
-  font-weight: 600;
-  font-size: 1.05rem;
-  color: var(--text-main);
-`;
-
-const ModeDescription = styled.span`
-  font-size: 0.85rem;
-  color: var(--text-sub);
-  text-align: center;
-  line-height: 1.4;
-`;
-
-const ActiveBadge = styled.div`
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  svg {
-    width: 12px;
-    height: 12px;
-    stroke: white;
-    stroke-width: 3;
-    fill: none;
-    stroke-dasharray: 50;
-    animation: ${checkmark} 0.3s ease forwards;
-  }
-`;
-
 /* ─── Forms ────────────────────────────────────────────────── */
 
 const FormCard = styled.div`
@@ -149,30 +67,26 @@ const FormCard = styled.div`
   padding: 2.5rem;
   border-radius: 1.5rem;
   border: 1px solid var(--border);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   animation: ${fadeIn} 0.3s ease;
 `;
 
-
-const TwoCol = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-`;
-
-
-/* ─── JSON Upload Zone ─────────────────────────────────────── */
+/* ─── Import Upload Zone ─────────────────────────────────────── */
 
 const DropZone = styled.div<{ $dragActive?: boolean }>`
-  border: 2px dashed ${props => props.$dragActive ? 'var(--primary)' : 'var(--border)'};
+  border: 2px dashed
+    ${(props) => (props.$dragActive ? 'var(--primary)' : 'var(--border)')};
   border-radius: 1.25rem;
   padding: 3rem 2rem;
   text-align: center;
   cursor: pointer;
   transition: all 0.25s ease;
-  background: ${props => props.$dragActive
-    ? 'rgba(99, 102, 241, 0.08)'
-    : 'rgba(255, 255, 255, 0.015)'};
+  background: ${(props) =>
+    props.$dragActive
+      ? 'rgba(99, 102, 241, 0.08)'
+      : 'rgba(255, 255, 255, 0.015)'};
 
   &:hover {
     border-color: var(--primary);
@@ -245,7 +159,8 @@ const Table = styled.table`
   border-collapse: collapse;
   font-size: 0.85rem;
 
-  th, td {
+  th,
+  td {
     padding: 0.75rem 1rem;
     text-align: left;
     white-space: nowrap;
@@ -272,13 +187,16 @@ const ResultBanner = styled.div<{ $type: 'success' | 'error' }>`
   padding: 1rem 1.5rem;
   border-radius: 0.75rem;
   margin-top: 1rem;
-  background: ${props => props.$type === 'success'
-    ? 'rgba(34, 197, 94, 0.12)'
-    : 'rgba(239, 68, 68, 0.12)'};
-  border: 1px solid ${props => props.$type === 'success'
-    ? 'rgba(34, 197, 94, 0.3)'
-    : 'rgba(239, 68, 68, 0.3)'};
-  color: ${props => props.$type === 'success' ? '#22c55e' : '#ef4444'};
+  background: ${(props) =>
+    props.$type === 'success'
+      ? 'rgba(34, 197, 94, 0.12)'
+      : 'rgba(239, 68, 68, 0.12)'};
+  border: 1px solid
+    ${(props) =>
+      props.$type === 'success'
+        ? 'rgba(34, 197, 94, 0.3)'
+        : 'rgba(239, 68, 68, 0.3)'};
+  color: ${(props) => (props.$type === 'success' ? '#22c55e' : '#ef4444')};
   font-weight: 500;
   animation: ${fadeIn} 0.3s ease;
 `;
@@ -295,51 +213,36 @@ const ErrorList = styled.ul`
   font-size: 0.85rem;
 `;
 
-/* ─── JSON product type (from master_product.json) ─────────── */
-
-interface MasterProduct {
-  uid: string;
-  image_url: string[];
-  name_en: string | null;
-  name_th: string;
-  brand_en: string | null;
-  brand_th: string;
-  company_name_en: string | null;
-  company_name_th: string | null;
-  base_price: number;
-  unit_name: string;
-  barcode: string;
-  qrcode: string | null;
-  merchant_id: number;
-}
-
 /* ═══════════════════════════════════════════════════════════ */
 
 export default function AddProductPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Mode state
-  const [mode, setMode] = useState<'keyin' | 'json'>('keyin');
-
-  const [merchants, setMerchants] = useState<{ value: string; label: string }[]>([]);
+  const [merchants, setMerchants] = useState<
+    { value: string; label: string }[]
+  >([]);
   const [selectedMerchant, setSelectedMerchant] = useState('');
 
-  // Key-in form state
-  const [name, setName] = useState('');
-  const [barcode, setBarcode] = useState('');
-  const [basePrice, setBasePrice] = useState('');
-  const [brand, setBrand] = useState('');
-  const [unitName, setUnitName] = useState('');
-
-  // JSON import state
-  const [jsonProducts, setJsonProducts] = useState<MasterProduct[]>([]);
+  // Excel import state
+  const [importProducts, setImportProducts] = useState<MasterProduct[]>([]);
+  const [importStoreProducts, setImportStoreProducts] = useState<
+    MasterStoreProduct[]
+  >([]);
+  const [stores, setStores] = useState<{ value: string; label: string }[]>([]);
+  const [selectedStore, setSelectedStore] = useState('');
   const [dragActive, setDragActive] = useState(false);
 
   // Shared
   const [loading, setLoading] = useState(false);
-  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
-  const [result, setResult] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [progress, setProgress] = useState<{
+    done: number;
+    total: number;
+  } | null>(null);
+  const [result, setResult] = useState<{
+    type: 'success' | 'error';
+    message: string;
+  } | null>(null);
   const [importErrors, setImportErrors] = useState<string[]>([]);
 
   useEffect(() => {
@@ -347,97 +250,101 @@ export default function AddProductPage() {
       const merchantRepo = new ApiMerchantRepository();
       const useCase = new GetMerchantsUseCase(merchantRepo);
       const data = await useCase.execute(1, 100);
-      setMerchants(data.merchants.map(m => ({ value: m.uid, label: m.name })));
+      setMerchants(
+        data.merchants.map((m) => ({ value: m.uid, label: m.name }))
+      );
     })();
   }, []);
 
-  /* ─── Key-in Submit ──────────────────────────────────────── */
-
-  const handleKeyinSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedMerchant) {
-      setResult({ type: 'error', message: 'Please select a merchant' });
-      return;
-    }
-    setLoading(true);
-    setResult(null);
-    try {
-      const repo = new ApiProductRepository();
-      const useCase = new CreateProductUseCase(repo);
-      await useCase.execute({
-        merchantId: selectedMerchant,
-        name,
-        barcode,
-        basePrice: Number(basePrice),
-        imageUrl: [],
-        brand,
-        unitName
-      });
-      setResult({ type: 'success', message: 'Product created successfully!' });
-      // Reset form
-      setName('');
-      setBarcode('');
-      setBasePrice('');
-      setBrand('');
-      setUnitName('');
-    } catch (err: any) {
-      setResult({ type: 'error', message: err?.response?.data?.message || err.message || 'Failed to create product' });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  /* ─── JSON file handling ─────────────────────────────────── */
-
-  const processJsonFile = (file: File) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
+  // stores are only needed to map the store_product sheet
+  useEffect(() => {
+    if (!selectedMerchant || importStoreProducts.length === 0) return;
+    let cancelled = false;
+    (async () => {
       try {
-        const parsed = JSON.parse(e.target?.result as string);
-        const items: MasterProduct[] = Array.isArray(parsed) ? parsed : [parsed];
-        setJsonProducts(items);
-        setResult(null);
+        const data = await new GetStoresUseCase(
+          new ApiStoreRepository()
+        ).execute(selectedMerchant);
+        if (!cancelled)
+          setStores(data.map((st) => ({ value: st.uid, label: st.name })));
       } catch {
-        setResult({ type: 'error', message: 'Invalid JSON file' });
+        if (!cancelled)
+          setResult({ type: 'error', message: 'Failed to load stores' });
       }
+    })();
+    return () => {
+      cancelled = true;
     };
-    reader.readAsText(file);
+  }, [selectedMerchant, importStoreProducts.length]);
+
+  const handleMerchantChange = (uid: string) => {
+    setSelectedMerchant(uid);
+    setSelectedStore('');
+    setStores([]);
   };
+
+  /* ─── File handling ─────────────────────────────────── */
+
+  const loadParsedFile = async (buffer: ArrayBuffer) => {
+    try {
+      const parsed = await parseMasterProductXlsx(buffer);
+      if (parsed.products.length === 0) {
+        setResult({
+          type: 'error',
+          message: 'No products found in sheet "product"'
+        });
+        return;
+      }
+      setImportProducts(parsed.products);
+      setImportStoreProducts(parsed.storeProducts);
+      setImportErrors([]);
+      setResult(null);
+    } catch (err) {
+      const message =
+        err instanceof Error &&
+        err.message.startsWith('Invalid master product file')
+          ? err.message
+          : 'Invalid Excel file';
+      setResult({ type: 'error', message });
+    }
+  };
+
+  const processFile = async (file: File) =>
+    loadParsedFile(await file.arrayBuffer());
 
   const handleFileDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragActive(false);
     const file = e.dataTransfer.files[0];
-    if (file && file.name.endsWith('.json')) {
-      processJsonFile(file);
+    if (file && file.name.endsWith('.xlsx')) {
+      processFile(file);
     }
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) processJsonFile(file);
+    if (file) processFile(file);
+    e.target.value = '';
   };
 
-  const handleLoadMaster = async () => {
-    try {
-      const res = await fetch('/constants/master_product.json');
-      const data = await res.json();
-      setJsonProducts(data);
-      setResult(null);
-    } catch {
-      setResult({ type: 'error', message: 'Failed to load master product list' });
-    }
+  const clearImport = () => {
+    setImportProducts([]);
+    setImportStoreProducts([]);
   };
 
-  /* ─── JSON batch submit ──────────────────────────────────── */
+  /* ─── Import submit ──────────────────────────────────── */
 
-  const handleJsonSubmit = async () => {
+  const handleImportSubmit = async () => {
     if (!selectedMerchant) {
       setResult({ type: 'error', message: 'Please select a merchant' });
       return;
     }
-    if (!jsonProducts.length) {
+    if (!importProducts.length) {
       setResult({ type: 'error', message: 'No products to import' });
+      return;
+    }
+    if (importStoreProducts.length > 0 && !selectedStore) {
+      setResult({ type: 'error', message: 'Please select a store' });
       return;
     }
 
@@ -449,7 +356,7 @@ export default function AddProductPage() {
     try {
       const repo = new ApiProductRepository();
       const useCase = new BatchCreateProductsUseCase(repo);
-      const requests = jsonProducts.map(p => ({
+      const requests = importProducts.map((p) => ({
         uid: p.uid,
         merchantId: selectedMerchant,
         name: p.name_th || p.name_en || '',
@@ -460,17 +367,56 @@ export default function AddProductPage() {
         unitName: p.unit_name || ''
       }));
 
-      const res = await useCase.execute(requests, (done, total) => setProgress({ done, total }));
-      const msg = `Successfully created ${res.created} product(s).` +
-        (res.errors.length > 0 ? ` ${res.errors.length} error(s).` : '');
-      setResult({ type: res.errors.length === 0 ? 'success' : 'error', message: msg });
-      setImportErrors(res.errors);
+      const res = await useCase.execute(requests, (done, total) =>
+        setProgress({ done, total })
+      );
+      const errors = [...res.errors];
+      let message = `Successfully created ${res.created} product(s).`;
+
+      // map price/stock for the products in the file (rows of products that failed above are reported by the API)
+      if (importStoreProducts.length > 0 && res.created > 0) {
+        const productUids = new Set(importProducts.map((p) => p.uid));
+        const mappings = [];
+        for (const sp of importStoreProducts) {
+          if (productUids.has(sp.product_uid)) {
+            mappings.push({
+              store_uid: selectedStore,
+              product_uid: sp.product_uid,
+              stock: sp.stock,
+              price: sp.price
+            });
+          } else {
+            errors.push(
+              `Store product ${sp.product_uid}: product not found in sheet "product"`
+            );
+          }
+        }
+        setProgress(null);
+        const mapped = await new BatchUpsertStoreProductsUseCase(
+          new ApiStoreProductRepository()
+        ).execute(mappings);
+        message += ` Store products: ${mapped.created} added, ${mapped.updated} updated.`;
+        errors.push(...mapped.errors.map((m) => `Store product ${m}`));
+      }
+
+      setResult({
+        type: errors.length === 0 ? 'success' : 'error',
+        message:
+          message + (errors.length > 0 ? ` ${errors.length} error(s).` : '')
+      });
+      setImportErrors(errors);
 
       if (res.created > 0) {
-        setJsonProducts([]);
+        clearImport();
       }
     } catch (err: any) {
-      setResult({ type: 'error', message: err?.response?.data?.message || err.message || 'Failed to import products' });
+      setResult({
+        type: 'error',
+        message:
+          err?.response?.data?.message ||
+          err.message ||
+          'Failed to import products'
+      });
     } finally {
       setLoading(false);
     }
@@ -483,208 +429,161 @@ export default function AddProductPage() {
       {/* Header */}
       <Header>
         <Title>Add Product</Title>
-        <Button variant="secondary" style={{ width: 'auto' }} onClick={() => router.push('/products')}>
+        <Button
+          variant="secondary"
+          style={{ width: 'auto' }}
+          onClick={() => router.push('/products')}
+        >
           ← Back to Products
         </Button>
       </Header>
-
-      {/* Mode Selector */}
-      <ModeSelector>
-        <ModeCard $active={mode === 'keyin'} onClick={() => setMode('keyin')}>
-          {mode === 'keyin' && (
-            <ActiveBadge>
-              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
-            </ActiveBadge>
-          )}
-          <ModeIcon $active={mode === 'keyin'}>⌨️</ModeIcon>
-          <ModeTitle>Key-in</ModeTitle>
-          <ModeDescription>Manually enter product details one by one</ModeDescription>
-        </ModeCard>
-
-        <ModeCard $active={mode === 'json'} onClick={() => setMode('json')}>
-          {mode === 'json' && (
-            <ActiveBadge>
-              <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
-            </ActiveBadge>
-          )}
-          <ModeIcon $active={mode === 'json'}>📦</ModeIcon>
-          <ModeTitle>Import from JSON</ModeTitle>
-          <ModeDescription>Bulk import products from a JSON file or master list</ModeDescription>
-        </ModeCard>
-      </ModeSelector>
 
       {/* Merchant Selector (shared) */}
       <FormCard>
         <SelectFilter
           label="Merchant *"
           value={selectedMerchant}
-          onChange={setSelectedMerchant}
+          onChange={handleMerchantChange}
           options={merchants}
           placeholder="Select a merchant..."
         />
       </FormCard>
 
-      {/* ─── Mode: Key-in ────────────────────────────────── */}
-      {mode === 'keyin' && (
-        <FormCard>
-          <form onSubmit={handleKeyinSubmit}>
-            <InputField
-              label="Product Name *"
-              required
-              value={name}
-              onChange={e => setName(e.target.value)}
-              placeholder="e.g. เป๊ปซี่ 345มล"
+      <FormCard>
+        {importProducts.length === 0 ? (
+          <>
+            <DropZone
+              $dragActive={dragActive}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragActive(true);
+              }}
+              onDragLeave={() => setDragActive(false)}
+              onDrop={handleFileDrop}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <DropIcon>📄</DropIcon>
+              <DropText>
+                Drag & drop an Excel (.xlsx) file here, or{' '}
+                <strong>browse</strong>
+              </DropText>
+              <DropHint>
+                Sheet &quot;product&quot; (required) and sheet
+                &quot;store_product&quot; (optional: stock/price)
+              </DropHint>
+            </DropZone>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".xlsx"
+              hidden
+              onChange={handleFileSelect}
             />
-
-            <TwoCol>
-              <InputField
-                label="Barcode"
-                value={barcode}
-                onChange={e => setBarcode(e.target.value)}
-                placeholder="e.g. 8858998581221"
-              />
-              <InputField
-                label="Base Price *"
-                required
-                type="number"
-                step="0.01"
-                min="0"
-                value={basePrice}
-                onChange={e => setBasePrice(e.target.value)}
-                placeholder="0.00"
-              />
-            </TwoCol>
-
-            <TwoCol>
-              <InputField
-                label="Brand"
-                value={brand}
-                onChange={e => setBrand(e.target.value)}
-                placeholder="e.g. เป๊ปซี่"
-              />
-              <InputField
-                label="Unit"
-                value={unitName}
-                onChange={e => setUnitName(e.target.value)}
-                placeholder="e.g. ขวด, กระป๋อง"
-              />
-            </TwoCol>
-
-            <Button type="submit" isLoading={loading} style={{ marginTop: '1rem' }}>
-              {loading ? 'Creating...' : 'Create Product'}
-            </Button>
-          </form>
-
-          {result && (
-            <ResultBanner $type={result.type}>{result.message}</ResultBanner>
-          )}
-        </FormCard>
-      )}
-
-      {/* ─── Mode: JSON Import ───────────────────────────── */}
-      {mode === 'json' && (
-        <FormCard>
-          {jsonProducts.length === 0 ? (
-            <>
-              <DropZone
-                $dragActive={dragActive}
-                onDragOver={e => { e.preventDefault(); setDragActive(true); }}
-                onDragLeave={() => setDragActive(false)}
-                onDrop={handleFileDrop}
-                onClick={() => fileInputRef.current?.click()}
+          </>
+        ) : (
+          <PreviewContainer>
+            <PreviewHeader>
+              <PreviewTitle>Preview Products</PreviewTitle>
+              <div
+                style={{
+                  display: 'flex',
+                  gap: '0.75rem',
+                  alignItems: 'center'
+                }}
               >
-                <DropIcon>📄</DropIcon>
-                <DropText>
-                  Drag & drop a JSON file here, or <strong>browse</strong>
-                </DropText>
-                <DropHint>Accepts .json files matching the master_product structure</DropHint>
-              </DropZone>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".json"
-                hidden
-                onChange={handleFileSelect}
-              />
-
-              <div style={{ textAlign: 'center', margin: '1.5rem 0 0' }}>
-                <span style={{ color: 'var(--text-sub)', fontSize: '0.85rem' }}>or</span>
-              </div>
-
-              <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-                <Button type="button" style={{ width: 'auto' }} onClick={handleLoadMaster}>
-                  📋 Load Master Product List
+                <PreviewBadge>{importProducts.length} items</PreviewBadge>
+                {importStoreProducts.length > 0 && (
+                  <PreviewBadge>
+                    {importStoreProducts.length} store product(s)
+                  </PreviewBadge>
+                )}
+                <Button
+                  variant="danger"
+                  style={{ width: 'auto' }}
+                  onClick={clearImport}
+                >
+                  Clear
                 </Button>
               </div>
-            </>
-          ) : (
-            <PreviewContainer>
-              <PreviewHeader>
-                <PreviewTitle>Preview Products</PreviewTitle>
-                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                  <PreviewBadge>{jsonProducts.length} items</PreviewBadge>
-                  <Button variant="danger" style={{ width: 'auto' }} onClick={() => setJsonProducts([])}>
-                    Clear
-                  </Button>
-                </div>
-              </PreviewHeader>
+            </PreviewHeader>
 
-              <TableWrapper>
-                <Table>
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Name</th>
-                      <th>Brand</th>
-                      <th>Barcode</th>
-                      <th>Price</th>
-                      <th>Unit</th>
+            <TableWrapper>
+              <Table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Brand</th>
+                    <th>Barcode</th>
+                    <th>Price</th>
+                    <th>Unit</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {importProducts.map((p, idx) => (
+                    <tr key={idx}>
+                      <td style={{ color: 'var(--text-sub)' }}>{idx + 1}</td>
+                      <td>{p.name_th || p.name_en || '—'}</td>
+                      <td>{p.brand_th || p.brand_en || '—'}</td>
+                      <td style={{ fontFamily: 'monospace' }}>
+                        {p.barcode || '—'}
+                      </td>
+                      <td>{p.base_price?.toLocaleString()} ฿</td>
+                      <td>{p.unit_name || '—'}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {jsonProducts.map((p, idx) => (
-                      <tr key={idx}>
-                        <td style={{ color: 'var(--text-sub)' }}>{idx + 1}</td>
-                        <td>{p.name_th || p.name_en || '—'}</td>
-                        <td>{p.brand_th || p.brand_en || '—'}</td>
-                        <td style={{ fontFamily: 'monospace' }}>{p.barcode || '—'}</td>
-                        <td>{p.base_price?.toLocaleString()} ฿</td>
-                        <td>{p.unit_name || '—'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </Table>
-              </TableWrapper>
+                  ))}
+                </tbody>
+              </Table>
+            </TableWrapper>
 
-              <Button
-                type="button"
-                isLoading={loading}
-                disabled={loading || !selectedMerchant}
-                style={{ marginTop: '1rem' }}
-                onClick={handleJsonSubmit}
-              >
-                {loading
-                  ? progress
-                    ? `Importing... ${progress.done} / ${progress.total}`
-                    : 'Preparing...'
-                  : `Import ${jsonProducts.length} Product(s)`}
-              </Button>
-            </PreviewContainer>
-          )}
+            {importStoreProducts.length > 0 && (
+              <div style={{ marginTop: '1rem' }}>
+                <SelectFilter
+                  label="Store * (price & stock will be mapped to this store)"
+                  value={selectedStore}
+                  onChange={setSelectedStore}
+                  options={stores}
+                  placeholder={
+                    selectedMerchant
+                      ? 'Select a store...'
+                      : 'Select a merchant first'
+                  }
+                />
+              </div>
+            )}
 
-          {result && (
-            <ResultBanner $type={result.type}>{result.message}</ResultBanner>
-          )}
+            <Button
+              type="button"
+              isLoading={loading}
+              disabled={
+                loading ||
+                !selectedMerchant ||
+                (importStoreProducts.length > 0 && !selectedStore)
+              }
+              style={{ marginTop: '1rem' }}
+              onClick={handleImportSubmit}
+            >
+              {loading
+                ? progress
+                  ? `Importing... ${progress.done} / ${progress.total}`
+                  : 'Preparing...'
+                : `Import ${importProducts.length} Product(s)`}
+            </Button>
+          </PreviewContainer>
+        )}
 
-          {importErrors.length > 0 && (
-            <ErrorList>
-              {importErrors.map((message, i) => (
-                <li key={i}>{message}</li>
-              ))}
-            </ErrorList>
-          )}
-        </FormCard>
-      )}
+        {result && (
+          <ResultBanner $type={result.type}>{result.message}</ResultBanner>
+        )}
+
+        {importErrors.length > 0 && (
+          <ErrorList>
+            {importErrors.map((message, i) => (
+              <li key={i}>{message}</li>
+            ))}
+          </ErrorList>
+        )}
+      </FormCard>
     </PageContainer>
   );
 }

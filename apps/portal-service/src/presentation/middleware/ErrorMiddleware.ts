@@ -40,8 +40,26 @@ export const errorMiddleware = (err: any, req: Request, res: Response, next: Nex
     });
   }
 
-  const statusCode = err.status || 500;
-  
+  // request body over the size limit (body-parser)
+  if (err?.type === 'entity.too.large') {
+    const tooLarge = ServiceError.ErrPayloadTooLarge();
+    return res.status(Number(tooLarge.kind)).json({
+      res_code: tooLarge.resCode,
+      res_desc: tooLarge.resDesc[lang],
+      request_id: req.requestId
+    });
+  }
+
+  // malformed JSON body (body-parser) is an invalid request
+  if (err?.type === 'entity.parse.failed') {
+    const invalid = ValidationError.ErrInvalidRequest();
+    return res.status(Number(invalid.kind)).json({
+      res_code: invalid.resCode,
+      res_desc: invalid.resDesc[lang],
+      request_id: req.requestId
+    });
+  }
+
   LOGGER.error({
     type: 'error',
     request_id: req.requestId,
@@ -55,8 +73,10 @@ export const errorMiddleware = (err: any, req: Request, res: Response, next: Nex
     }
   });
 
-  res.status(statusCode).json({
-    message: statusCode === 500 ? 'Internal server error' : err.message,
+  const internal = InternalServiceError.ErrInternalServerError();
+  res.status(Number(internal.kind)).json({
+    res_code: internal.resCode,
+    res_desc: internal.resDesc[lang],
     request_id: req.requestId
   });
 };

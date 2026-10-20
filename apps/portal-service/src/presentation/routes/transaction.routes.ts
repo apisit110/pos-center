@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { TransactionController } from '../controllers/TransactionController';
-import { requirePermission } from '../middleware/AuthMiddleware';
+import { requirePermission } from '../middleware/RbacMiddleware';
 import { PERMISSION_TRANSACTIONS_VIEW } from '../../domain/constants/permissions';
 
 export function transactionRoutes(controller: TransactionController): Router {

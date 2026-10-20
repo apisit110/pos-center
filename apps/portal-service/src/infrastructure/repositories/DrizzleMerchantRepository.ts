@@ -1,5 +1,9 @@
 import { merchantUidIs } from '../utils/merchant';
-import { db, merchants, eq, and, ilike, count, asc } from '@pos-center/database';
+import { db, merchants, stores as storesTable, terminals as terminalsTable, staff as staffTable, staffRole, pins, role, eq, and, ilike, count, asc } from '@pos-center/database';
+import { PORTAL_APP_ID } from '../../domain/constants/app';
+import { Staff } from '../../domain/entities/Staff';
+import { Store } from '../../domain/entities/Store';
+import { Terminal } from '../../domain/entities/Terminal';
 import { IMerchantRepository, MerchantFilter } from '../../domain/repositories/IMerchantRepository';
 import { Merchant } from '../../domain/entities/Merchant';
 
@@ -63,6 +67,61 @@ export class DrizzleMerchantRepository implements IMerchantRepository {
         name: merchant.name,
         mid: merchant.mid
       },
+    });
+  }
+
+  async createWithMembers(
+    merchant: Merchant,
+    staffMembers: Staff[],
+    stores: { store: Store; terminals: Terminal[] }[],
+  ): Promise<void> {
+    await db.transaction(async (tx) => {
+      const [insertedMerchant] = await tx.insert(merchants).values({
+        uid: merchant.uid,
+        mid: merchant.mid,
+        name: merchant.name,
+      }).returning({ id: merchants.id });
+
+      for (const member of staffMembers) {
+        const [insertedStaff] = await tx.insert(staffTable).values({
+          uid: member.id,
+          merchantId: insertedMerchant.id,
+          name: member.name,
+          username: member.username,
+          status: member.status,
+        }).returning({ id: staffTable.id });
+
+        const existingRole = await tx.select({ id: role.id }).from(role).where(eq(role.name, member.role)).limit(1);
+        const roleId = existingRole[0]
+          ? existingRole[0].id
+          : (await tx.insert(role).values({ name: member.role }).returning({ id: role.id }))[0].id;
+        await tx.insert(staffRole).values({ staffId: insertedStaff.id, roleId });
+
+        if (member.pinHash && member.username) {
+          await tx.insert(pins).values({ appId: PORTAL_APP_ID, username: member.username, pinHash: member.pinHash });
+        }
+      }
+
+      for (const { store, terminals } of stores) {
+        const [insertedStore] = await tx.insert(storesTable).values({
+          uid: store.uid,
+          sid: store.sid,
+          merchantId: insertedMerchant.id,
+          name: store.name,
+          address: store.address,
+          latitude: store.latitude.toString(),
+          longitude: store.longitude.toString(),
+        }).returning({ id: storesTable.id });
+
+        for (const terminal of terminals) {
+          await tx.insert(terminalsTable).values({
+            uid: terminal.id,
+            storeId: insertedStore.id,
+            tid: terminal.tid,
+            name: terminal.name,
+          });
+        }
+      }
     });
   }
 }

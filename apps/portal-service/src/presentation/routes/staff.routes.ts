@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { StaffController } from '../controllers/StaffController';
-import { requirePermission } from '../middleware/AuthMiddleware';
+import { requirePermission } from '../middleware/RbacMiddleware';
 import { PERMISSION_STAFFS_VIEW, PERMISSION_STAFF_DETAIL_VIEW } from '../../domain/constants/permissions';
 
 export function staffRoutes(controller: StaffController): Router {

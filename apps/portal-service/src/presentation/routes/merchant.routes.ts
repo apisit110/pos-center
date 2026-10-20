@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { MerchantController } from '../controllers/MerchantController';
-import { requirePermission } from '../middleware/AuthMiddleware';
+import { requirePermission } from '../middleware/RbacMiddleware';
 import {
   PERMISSION_MERCHANTS_CREATE,
   PERMISSION_MERCHANTS_VIEW,

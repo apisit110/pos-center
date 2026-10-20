@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { StoreProductController } from '../controllers/StoreProductController';
-import { requirePermission } from '../middleware/AuthMiddleware';
+import { requirePermission } from '../middleware/RbacMiddleware';
 import { PERMISSION_STORE_PRODUCTS_CREATE } from '../../domain/constants/permissions';
 
 export function storeProductRoutes(controller: StoreProductController): Router {

@@ -4,7 +4,7 @@ import { merchants } from './merchants';
 export const staff = pgTable('center_staff', {
   id: serial('id').primaryKey(),
   uid: varchar('uid', { length: 255 }).unique().notNull(),
-  merchantId: integer('merchant_id').references(() => merchants.id).notNull(),
+  merchantId: integer('merchant_id').references(() => merchants.id),
   name: varchar('name', { length: 255 }).notNull(),
   username: varchar('username', { length: 100 }),
   status: varchar('status', { length: 20 }).default('ACTIVE'),

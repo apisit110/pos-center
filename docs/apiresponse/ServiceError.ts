@@ -188,4 +188,28 @@ class ServiceError {
       additional: undefined
     }
   }
+  public static ErrPayloadTooLarge(): ServiceError {
+    return {
+      name: this.name,
+      kind: ErrorKind.PAYLOAD_TOO_LARGE,
+      resCode: "4130",
+      resDesc: {
+        en: "The request body is too large.",
+        th: "ขนาดข้อมูลที่ส่งมาใหญ่เกินกำหนด"
+      },
+      additional: undefined
+    }
+  }
+  public static ErrTooManyRequests(): ServiceError {
+    return {
+      name: this.name,
+      kind: ErrorKind.TOO_MANY_REQUESTS,
+      resCode: "4290",
+      resDesc: {
+        en: "Too many requests. Please try again later.",
+        th: "มีการส่งคำขอมากเกินไป กรุณาลองใหม่อีกครั้งในภายหลัง"
+      },
+      additional: undefined
+    }
+  }
 }

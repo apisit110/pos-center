@@ -31,6 +31,15 @@ response to client with status code from `kind` of the error ([ErrorKind](ErrorK
 | BAD_REQUEST | 400 |
 | FORBIDDEN | 403 |
 | NOT_FOUND | 404 |
+| PAYLOAD_TOO_LARGE | 413 |
+| TOO_MANY_REQUESTS | 429 |
+
+| error | res_code | when |
+| ----- | -------- | ---- |
+| [ServiceError.ErrPayloadTooLarge](ServiceError.ts) | `4130` | request body larger than 10 MB |
+| [ServiceError.ErrTooManyRequests](ServiceError.ts) | `4290` | login rate limit: more than 20 requests per 15 minutes (per client) on `POST /api/v1/auth/login` |
+
+both use the standard error body (`res_code`, `res_desc`, `request_id`), `res_desc` follows `Accept-Language`
 
 # InternalServiceError
 
@@ -40,7 +49,7 @@ response to client with status code 500
 
 # else
 
-response to client with status code 500
+any other unexpected error: log the error, then respond with status code 500 and [InternalServiceError.ErrInternalServerError](InternalServerError.ts) (`res_code` `5000`), same body as above. never expose the error message or stack to the client
 
 # Ok
 

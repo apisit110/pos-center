@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 import { SCOPE_SEPARATOR, TOKEN_AUDIENCE, TOKEN_ISSUER } from '../../domain/constants/token';
 import { ServiceError } from '../../application/errors/ServiceError';
-import { ValidationError } from '../../application/errors/ValidationError';
 import { Actor } from '../../application/auth/Actor';
 
 declare global {
@@ -46,7 +45,7 @@ function verifyAccessToken(req: Request, jwtSecret: string): NonNullable<Request
   }
 
   const claims = tokenPayloadSchema.safeParse(payload);
-  if (!claims.success) throw ValidationError.ErrInvalidRequest();
+  if (!claims.success) throw ServiceError.ErrTokenInvalide();
 
   return {
     uid: claims.data.sub,
@@ -64,15 +63,6 @@ export function serviceAuthMiddleware(jwtSecret: string) {
     } catch (error) {
       next(error);
     }
-  };
-}
-
-export function requirePermission(permission: string) {
-  return (req: Request, res: Response, next: NextFunction) => {
-    if (!req.auth?.scope.includes(permission)) {
-      return next(ServiceError.ErrPermissionDenied());
-    }
-    next();
   };
 }
 

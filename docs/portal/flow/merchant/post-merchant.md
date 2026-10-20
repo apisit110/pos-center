@@ -28,7 +28,7 @@ request body:
 | name                             | string | true     | merchant name, trimmed, min length 1                                     |
 | staff_members                    | array  | true     | list of staff of the merchant (can be empty)                             |
 | staff_members[].full_name        | string | true     | staff name, min length 1                                                 |
-| staff_members[].pin              | string | true     | staff pin, min length 1 (stored as bcrypt hash)                          |
+| staff_members[].pin              | string | true     | staff pin, must pass the PIN policy of [pin-repository](../../repositories/pin-repository.md) (6 digits, not weak), stored as bcrypt hash |
 | staff_members[].role             | string | true     | `manager` or `cashier`                                                   |
 | stores                           | array  | false    | list of store, default `[]`                                              |
 | stores[].name                    | string | true     | store name, min length 1                                                 |
@@ -100,16 +100,19 @@ Logic:
     - min: 1
     - required: true
   - staff_members
-    - type: array of object (full_name: string min 1, pin: string min 1, role: enum `manager` | `cashier`)
+    - type: array of object (full_name: string min 1, pin: string, role: enum `manager` | `cashier`)
     - required: true
   - stores
     - type: array of object (name: string min 1, address: string, latitude: number, longitude: number, terminals: array of object (name: string min 1), default [])
     - required: false
     - default: []
   - If validation fails, throw [ValidationError.ErrInvalidRequest](../../../apiresponse/ValidationError.ts)
+- Validate the `pin` of every staff with `validatePinPolicy` of [pin-repository](../../repositories/pin-repository.md)
+  - if fail throw [ValidationError.ErrInvalidRequest](../../../apiresponse/ValidationError.ts), `details` = `staff_members.<index>.pin: <message>`
 - Generate merchant `uid` (uuid v4)
 - Generate merchant `mid` from the running number (unique)
   - if `mid` already exists, generate a new one and retry
+- Generate every `username`, `sid` and `tid` below first (running numbers are not rolled back, gaps are allowed), then save everything below in one database transaction, if any insert fails nothing is saved
 - Create merchant in database (uid, mid, name)
 - Create each staff of `staff_members`
   - `uid` = uuid v4

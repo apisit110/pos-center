@@ -119,7 +119,7 @@ export class DrizzleStaffRepository implements IStaffRepository {
 
   async getMerchantUidByStaffId(staffId: string): Promise<string | null> {
     const result = await db.select({ merchantUid: merchants.uid }).from(staff)
-      .innerJoin(merchants, eq(staff.merchantId, merchants.id))
+      .leftJoin(merchants, eq(staff.merchantId, merchants.id))
       .where(eq(staff.uid, staffId)).limit(1);
     return result[0]?.merchantUid ?? null;
   }
@@ -143,7 +143,7 @@ export class DrizzleStaffRepository implements IStaffRepository {
       status: staff.status,
       createdAt: staff.createdAt,
     }).from(staff)
-      .innerJoin(merchants, eq(staff.merchantId, merchants.id))
+      .leftJoin(merchants, eq(staff.merchantId, merchants.id))
       .leftJoin(staffRole, eq(staffRole.staffId, staff.id))
       .leftJoin(role, eq(role.id, staffRole.roleId))
       .where(condition).limit(1);
@@ -152,14 +152,14 @@ export class DrizzleStaffRepository implements IStaffRepository {
     const s = result[0];
     return new Staff(
       s.uid,
-      s.merchantUid,
+      s.merchantUid ?? '',
       s.name,
       (s.role ?? 'cashier') as any,
       s.username ?? undefined,
       undefined,
       (s.status ?? 'ACTIVE') as any,
       s.createdAt ?? undefined,
-      s.merchantName,
+      s.merchantName ?? undefined,
     );
   }
 

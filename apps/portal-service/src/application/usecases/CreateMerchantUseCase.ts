@@ -4,10 +4,9 @@ import { Merchant } from '../../domain/entities/Merchant';
 import { Staff, StaffRole } from '../../domain/entities/Staff';
 import { Store } from '../../domain/entities/Store';
 import { Terminal } from '../../domain/entities/Terminal';
+import { ValidationError } from '../errors/ValidationError';
+import { validatePinPolicy } from '../../domain/services/PinPolicy';
 import { IMerchantRepository } from '../../domain/repositories/IMerchantRepository';
-import { IStaffRepository } from '../../domain/repositories/IStaffRepository';
-import { IStoreRepository } from '../../domain/repositories/IStoreRepository';
-import { ITerminalRepository } from '../../domain/repositories/ITerminalRepository';
 import { IRunningNumberService } from '../../domain/services/IRunningNumberService';
 
 export interface CreateMerchantRequest {
@@ -29,40 +28,44 @@ const PIN_HASH_ROUNDS = 10;
 export class CreateMerchantUseCase {
   constructor(
     private readonly merchantRepository: IMerchantRepository,
-    private readonly staffRepository: IStaffRepository,
-    private readonly storeRepository: IStoreRepository,
-    private readonly terminalRepository: ITerminalRepository,
     private readonly runningNumberService: IRunningNumberService,
   ) {}
 
   public async execute(request: CreateMerchantRequest): Promise<Merchant> {
+    request.staffMembers.forEach((staffReq, index) => {
+      const policy = validatePinPolicy(staffReq.pin);
+      if (policy.status === 'failed') {
+        throw ValidationError.ErrInvalidRequest(`staff_members.${index}.pin: ${policy.message}`);
+      }
+    });
+
     const merchantUid = uuidv4();
     const mid = await this.generateUniqueMid();
-
     const merchant = new Merchant(merchantUid, mid, request.name);
-    await this.merchantRepository.save(merchant);
 
+    const staffMembers: Staff[] = [];
     for (const staffReq of request.staffMembers) {
       const username = await this.runningNumberService.nextStaffUsername(mid);
       const pinHash = await bcrypt.hash(staffReq.pin, PIN_HASH_ROUNDS);
-      await this.staffRepository.save(
-        new Staff(uuidv4(), merchantUid, staffReq.fullName, staffReq.role, username, pinHash, 'ACTIVE'),
-      );
+      staffMembers.push(new Staff(uuidv4(), merchantUid, staffReq.fullName, staffReq.role, username, pinHash, 'ACTIVE'));
     }
 
+    const stores: { store: Store; terminals: Terminal[] }[] = [];
     for (const storeReq of request.stores) {
       const storeUid = uuidv4();
       const sid = await this.runningNumberService.nextSid(mid);
-      await this.storeRepository.save(
-        new Store(storeUid, sid, merchantUid, mid, storeReq.name, storeReq.address, storeReq.latitude, storeReq.longitude),
-      );
-
+      const terminals: Terminal[] = [];
       for (const terminalReq of storeReq.terminals) {
         const tid = await this.runningNumberService.nextTid(sid);
-        await this.terminalRepository.create(new Terminal(uuidv4(), storeUid, tid, terminalReq.name));
+        terminals.push(new Terminal(uuidv4(), storeUid, tid, terminalReq.name));
       }
+      stores.push({
+        store: new Store(storeUid, sid, merchantUid, mid, storeReq.name, storeReq.address, storeReq.latitude, storeReq.longitude),
+        terminals,
+      });
     }
 
+    await this.merchantRepository.createWithMembers(merchant, staffMembers, stores);
     return merchant;
   }
 

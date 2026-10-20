@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { StoreController } from '../controllers/StoreController';
-import { requirePermission } from '../middleware/AuthMiddleware';
+import { requirePermission } from '../middleware/RbacMiddleware';
 import {
   PERMISSION_STORES_VIEW,
   PERMISSION_STORE_DETAIL_VIEW,

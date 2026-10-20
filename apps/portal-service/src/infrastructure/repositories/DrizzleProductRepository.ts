@@ -11,6 +11,17 @@ function toImageUrls(value: unknown): string[] {
   return [];
 }
 
+/** Increases running number `product_version` by 1; creates the row with 1 when it does not exist. */
+async function nextProductVersion(tx: Pick<typeof db, 'insert'>) {
+  return tx.insert(runningNumbers)
+    .values({ type: 'product_version', number: 1 })
+    .onConflictDoUpdate({
+      target: runningNumbers.type,
+      set: { number: sql`${runningNumbers.number} + 1`, updatedAt: new Date() },
+    })
+    .returning({ newVersion: runningNumbers.number });
+}
+
 export class DrizzleProductRepository implements IProductRepository {
   private toEntity(product: ProductRow, merchantUid: string, mid: string): Product {
     return new Product(
@@ -199,13 +210,7 @@ export class DrizzleProductRepository implements IProductRepository {
       if (!productId) return;
 
       // 3. Increment product_version and get new version
-      const versionResult = await tx.update(runningNumbers)
-        .set({ 
-          number: sql`${runningNumbers.number} + 1`,
-          updatedAt: new Date()
-        })
-        .where(eq(runningNumbers.type, 'product_version'))
-        .returning({ newVersion: runningNumbers.number });
+      const versionResult = await nextProductVersion(tx);
 
       const newVersion = versionResult[0]?.newVersion;
 
@@ -266,10 +271,7 @@ export class DrizzleProductRepository implements IProductRepository {
 
         if (inserted.length === 0) return;
 
-        const versionResult = await tx.update(runningNumbers)
-          .set({ number: sql`${runningNumbers.number} + 1`, updatedAt: new Date() })
-          .where(eq(runningNumbers.type, 'product_version'))
-          .returning({ newVersion: runningNumbers.number });
+        const versionResult = await nextProductVersion(tx);
 
         const newVersion = versionResult[0]?.newVersion;
         if (newVersion !== undefined) {

@@ -1,4 +1,4 @@
-import { pgTable, varchar, decimal, timestamp, integer, serial, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, decimal, timestamp, integer, serial, jsonb, unique } from 'drizzle-orm/pg-core';
 import { stores } from './stores';
 import { products } from './products';
 
@@ -14,4 +14,6 @@ export const storeProducts = pgTable('store_products', {
   rowVersion: integer('row_version').notNull().default(0),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
-});
+}, (t) => ({
+  storeProductUnique: unique('store_products_store_id_product_id_unique').on(t.storeId, t.productId),
+}));

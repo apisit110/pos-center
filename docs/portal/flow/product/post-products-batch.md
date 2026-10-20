@@ -142,7 +142,7 @@ Logic:
   - `image_url` = `[]`, `brand` = empty string, `unit_name` = empty string if not provided
 - Save valid products in database, chunk of 500 products, each chunk in one transaction
   - upsert product by `uid` (insert, or update when `uid` already exists)
-  - increase running number `product_version` by 1
+  - increase running number `product_version` by 1 (create the `product_version` row with number `1` if it does not exist yet)
   - update `row_version` of every `store_product` of the saved products to the new `product_version`
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`

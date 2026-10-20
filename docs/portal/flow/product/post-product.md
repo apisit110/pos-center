@@ -136,7 +136,7 @@ Logic:
   - `brand`, `unit_name` = empty string if not provided
 - Save product in database, in one transaction
   - upsert product by `uid` (insert, or update when `uid` already exists)
-  - increase running number `product_version` by 1
+  - increase running number `product_version` by 1 (create the `product_version` row with number `1` if it does not exist yet)
   - update `row_version` of every `store_product` of this product to the new `product_version` (so pos can sync the changed product)
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
