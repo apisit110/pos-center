@@ -8,6 +8,7 @@ import { GetProductUseCase } from '../../../../domain/usecases/GetProductUseCase
 import { ApiProductRepository } from '../../../../infrastructure/repositories/ApiProductRepository';
 import { Product } from '../../../../domain/entities/Product';
 import { formatAmount } from '../../../../lib/formatAmount';
+import { useTranslation } from '../../../../presentation/i18n/LanguageContext';
 import { FiArrowLeft, FiPackage, FiTag, FiDollarSign, FiBox, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 const fadeIn = keyframes`
@@ -242,6 +243,8 @@ const NavButton = styled.button`
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { t } = useTranslation();
+  const td = t.productDetail;
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -277,7 +280,7 @@ export default function ProductDetailPage() {
   }, [params.id]);
 
   if (loading) return <LoadingSpinner />;
-  if (!product) return <div style={{ padding: '2rem', textAlign: 'center' }}>Product not found</div>;
+  if (!product) return <div style={{ padding: '2rem', textAlign: 'center' }}>{td.notFound}</div>;
 
   return (
     <Container>
@@ -285,7 +288,7 @@ export default function ProductDetailPage() {
         <Button variant="secondary" style={{ width: 'auto', padding: '0.75rem' }} onClick={() => router.back()}>
           <FiArrowLeft size={20} />
         </Button>
-        <Title>Product Details</Title>
+        <Title>{td.title}</Title>
       </Header>
 
       <Grid>
@@ -344,12 +347,12 @@ export default function ProductDetailPage() {
             <InfoRow>
               <IconWrapper><FiTag /></IconWrapper>
               <div>
-                <Label>Product Name</Label>
+                <Label>{td.productName}</Label>
                 <Value>{product.name}</Value>
               </div>
             </InfoRow>
             <div style={{ marginTop: '1rem' }}>
-              <Label>Brand</Label>
+              <Label>{td.brand}</Label>
               <Badge>{product.brand}</Badge>
             </div>
           </Card>
@@ -358,7 +361,7 @@ export default function ProductDetailPage() {
             <InfoRow>
               <IconWrapper><FiDollarSign /></IconWrapper>
               <div>
-                <Label>Base Price</Label>
+                <Label>{td.basePrice}</Label>
                 <PriceValue>{formatAmount(product.basePrice)} ฿</PriceValue>
               </div>
             </InfoRow>
@@ -368,12 +371,12 @@ export default function ProductDetailPage() {
             <InfoRow>
               <IconWrapper><FiBox /></IconWrapper>
               <div>
-                <Label>Barcode</Label>
+                <Label>{td.barcode}</Label>
                 <Value style={{ fontFamily: 'monospace' }}>{product.barcode}</Value>
               </div>
             </InfoRow>
             <div style={{ marginTop: '1rem' }}>
-              <Label>Product SKU</Label>
+              <Label>{td.productSku}</Label>
               <Value style={{ fontSize: '0.8rem', opacity: 0.7 }}>{product.sku}</Value>
             </div>
             <div style={{ marginTop: '0.5rem' }}>
@@ -383,23 +386,23 @@ export default function ProductDetailPage() {
       </Grid>
 
       <Card style={{ padding: '2rem' }}>
-        <h3 style={{ margin: '0 0 1.5rem 0', color: 'var(--text-main)' }}>Additional Information</h3>
+        <h3 style={{ margin: '0 0 1.5rem 0', color: 'var(--text-main)' }}>{td.additionalInfo}</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
           <div>
-            <Label>Merchant MID</Label>
+            <Label>{td.merchantMid}</Label>
             <Value>{product.mid}</Value>
           </div>
           <div>
-            <Label>SKU</Label>
+            <Label>{td.sku}</Label>
             <Value>{product.sku}</Value>
           </div>
           <div>
-            <Label>Company</Label>
-            <Value>N/A</Value>
+            <Label>{td.company}</Label>
+            <Value>{td.notAvailable}</Value>
           </div>
           <div>
-            <Label>Status</Label>
-            <Value style={{ color: '#10b981' }}>Active</Value>
+            <Label>{td.status}</Label>
+            <Value style={{ color: '#10b981' }}>{td.active}</Value>
           </div>
         </div>
       </Card>

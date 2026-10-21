@@ -13,6 +13,7 @@ import { Merchant } from '../../../../domain/entities/Merchant';
 import { Store } from '../../../../domain/entities/Store';
 import { Staff } from '../../../../domain/entities/Staff';
 import { DataTable, Button } from '@apisit110/pos-ui';
+import { useTranslation } from '../../../../presentation/i18n/LanguageContext';
 
 import { FiArrowLeft, FiGrid, FiHash, FiInfo, FiUsers } from 'react-icons/fi';
 
@@ -152,11 +153,12 @@ const Badge = styled.span`
 export default function MerchantDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { t } = useTranslation();
   const [merchant, setMerchant] = useState<Merchant | null>(null);
   const [stores, setStores] = useState<Store[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<'forbidden' | 'notFound' | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -185,7 +187,7 @@ export default function MerchantDetailPage() {
         setStaff(staffData);
       } catch (err: any) {
         setMerchant(null);
-        setError(err?.response?.status === 403 ? 'Forbidden' : 'Merchant not found');
+        setError(err?.response?.status === 403 ? 'forbidden' : 'notFound');
       } finally {
         setLoading(false);
       }
@@ -195,20 +197,29 @@ export default function MerchantDetailPage() {
   }, [params.id]);
 
   const storeColumns = [
-    { header: 'SID', key: 'sid', width: '150px' },
-    { header: 'Store Name', key: 'name' },
-    { header: 'Address', key: 'address' },
+    { header: t.merchantDetail.columnSid, key: 'sid', width: '150px' },
+    { header: t.merchantDetail.columnStoreName, key: 'name' },
+    { header: t.merchantDetail.columnAddress, key: 'address' },
   ];
 
   const staffColumns = [
-    { header: 'Name', key: 'name' },
-    { header: 'Username', key: 'username' },
-    { header: 'Role', key: 'role' },
-    { header: 'Status', key: 'status', width: '120px' },
+    { header: t.merchantDetail.columnName, key: 'name' },
+    { header: t.merchantDetail.columnUsername, key: 'username' },
+    {
+      header: t.merchantDetail.columnRole,
+      key: 'role',
+      render: (s: Staff) => t.staffRole[s.role?.toLowerCase() as keyof typeof t.staffRole] ?? s.role,
+    },
+    {
+      header: t.merchantDetail.columnStatus,
+      key: 'status',
+      width: '120px',
+      render: (s: Staff) => t.staffStatus[s.status?.toLowerCase() as keyof typeof t.staffStatus] ?? s.status,
+    },
   ];
 
-  if (loading) return <div>Loading...</div>;
-  if (!merchant) return <div>{error ?? 'Merchant not found'}</div>;
+  if (loading) return <div>{t.common.loading}</div>;
+  if (!merchant) return <div>{error === 'forbidden' ? t.merchantDetail.forbidden : t.merchantDetail.notFound}</div>;
 
   return (
     <PageContainer>
@@ -218,7 +229,7 @@ export default function MerchantDetailPage() {
             <FiArrowLeft />
           </Button>
           <TitleContainer>
-            <Subtitle>MERCHANT MANAGEMENT</Subtitle>
+            <Subtitle>{t.merchantDetail.subtitle}</Subtitle>
             <Title>{merchant.name}</Title>
           </TitleContainer>
         </HeaderLeft>
@@ -228,7 +239,7 @@ export default function MerchantDetailPage() {
         <Card>
           <CardHeader>
             <CardTitle>
-              <FiInfo /> Merchant Information
+              <FiInfo /> {t.merchantDetail.information}
             </CardTitle>
           </CardHeader>
           <InfoGrid>
@@ -237,7 +248,7 @@ export default function MerchantDetailPage() {
                 <FiHash />
               </IconWrapper>
               <InfoContent>
-                <Label>Merchant ID (MID)</Label>
+                <Label>{t.merchantDetail.mid}</Label>
                 <Value>{merchant.mid}</Value>
               </InfoContent>
             </InfoItem>
@@ -246,7 +257,7 @@ export default function MerchantDetailPage() {
                 <FiGrid />
               </IconWrapper>
               <InfoContent>
-                <Label>Unique ID (UID)</Label>
+                <Label>{t.merchantDetail.uid}</Label>
                 <Value style={{ fontSize: '0.9rem', fontFamily: 'monospace' }}>{merchant.uid}</Value>
               </InfoContent>
             </InfoItem>
@@ -256,7 +267,7 @@ export default function MerchantDetailPage() {
         <Card>
           <CardHeader>
             <CardTitle>
-              <FiGrid /> Related Stores
+              <FiGrid /> {t.merchantDetail.relatedStores}
               <Badge>{stores.length}</Badge>
             </CardTitle>
           </CardHeader>
@@ -271,7 +282,7 @@ export default function MerchantDetailPage() {
         <Card>
           <CardHeader>
             <CardTitle>
-              <FiUsers /> Staff
+              <FiUsers /> {t.merchantDetail.staff}
               <Badge>{staff.length}</Badge>
             </CardTitle>
           </CardHeader>

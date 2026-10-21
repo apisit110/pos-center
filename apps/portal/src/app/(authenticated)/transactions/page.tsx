@@ -14,6 +14,7 @@ import { GetMerchantsUseCase } from '../../../domain/usecases/GetMerchantsUseCas
 import { GetStoresUseCase } from '../../../domain/usecases/GetStoresUseCase';
 import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiMerchantRepository';
 import { ApiStoreRepository } from '../../../infrastructure/repositories/ApiStoreRepository';
+import { useTranslation } from '../../../presentation/i18n/LanguageContext';
 import { TransactionFilter } from '../../../domain/repositories/TransactionRepository';
 
 const PageContainer = styled.div`
@@ -65,67 +66,57 @@ const getEmptyFilters = (): TransactionFilter => ({
   storeId: '',
 });
 
-const methodOptions = [
-  { value: 'cash', label: 'Cash' },
-  { value: 'qr', label: 'QR' },
-];
-
-const statusOptions = [
-  { value: 'pending', label: 'Pending' },
-  { value: 'approved', label: 'Approved' },
-  { value: 'failed', label: 'Failed' },
-  { value: 'voided', label: 'Voided' },
-  { value: 'refunded', label: 'Refunded' },
-];
-
-const methodLabels = Object.fromEntries(methodOptions.map(o => [o.value, o.label]));
-
-const columns = [
-  {
-    header: 'Date',
-    key: 'createdAt',
-    render: (tx: Transaction) => formatDateTime(tx.createdAt),
-  },
-  {
-    header: 'Transaction ID',
-    key: 'id',
-    render: (tx: Transaction) => (
-      <span style={{ fontFamily: 'monospace', fontWeight: 600 }}>{tx.id}</span>
-    ),
-  },
-  {
-    header: 'Order ID',
-    key: 'orderId',
-    render: (tx: Transaction) => (
-      <span style={{ fontFamily: 'monospace' }}>{tx.orderId || '-'}</span>
-    ),
-  },
-  {
-    header: 'Method',
-    key: 'paymentMethod',
-    render: (tx: Transaction) => methodLabels[tx.paymentMethod] ?? tx.paymentMethod,
-  },
-  {
-    header: 'Amount',
-    key: 'amount',
-    render: (tx: Transaction) => (
-      <span style={{ fontWeight: 600 }}>
-        {formatAmount(tx.amount)} {tx.currency}
-      </span>
-    ),
-  },
-  { header: 'Store', key: 'storeName' },
-  {
-    header: 'Status',
-    key: 'status',
-    render: (tx: Transaction) => (
-      <TransactionStatusBadge status={tx.status} />
-    ),
-  },
-];
+const statusValues = ['pending', 'approved', 'failed', 'voided', 'refunded'];
 
 export default function TransactionsPage() {
   const router = useRouter();
+  const { t } = useTranslation();
+  const methodOptions = [
+    { value: 'cash', label: t.transactionList.methodCash },
+    { value: 'qr', label: t.transactionList.methodQr },
+  ];
+  const statusOptions = statusValues.map(value => ({
+    value,
+    label: t.transactionStatus[value as keyof typeof t.transactionStatus],
+  }));
+  const methodLabels = Object.fromEntries(methodOptions.map(o => [o.value, o.label]));
+  const columns = [
+    { header: t.transactionList.columnDate, key: 'createdAt', render: (tx: Transaction) => formatDateTime(tx.createdAt) },
+    {
+      header: t.transactionList.transactionId,
+      key: 'id',
+      render: (tx: Transaction) => (
+        <span style={{ fontFamily: 'monospace', fontWeight: 600 }}>{tx.id}</span>
+      ),
+    },
+    {
+      header: t.transactionList.orderId,
+      key: 'orderId',
+      render: (tx: Transaction) => (
+        <span style={{ fontFamily: 'monospace' }}>{tx.orderId || '-'}</span>
+      ),
+    },
+    {
+      header: t.transactionList.method,
+      key: 'paymentMethod',
+      render: (tx: Transaction) => methodLabels[tx.paymentMethod] ?? tx.paymentMethod,
+    },
+    {
+      header: t.transactionList.columnAmount,
+      key: 'amount',
+      render: (tx: Transaction) => (
+        <span style={{ fontWeight: 600 }}>
+          {formatAmount(tx.amount)} {tx.currency}
+        </span>
+      ),
+    },
+    { header: t.transactionList.store, key: 'storeName' },
+    {
+      header: t.transactionList.status,
+      key: 'status',
+      render: (tx: Transaction) => <TransactionStatusBadge status={tx.status} />,
+    },
+  ];
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -195,69 +186,69 @@ export default function TransactionsPage() {
 
   return (
     <PageContainer>
-      <Title>Transactions</Title>
+      <Title>{t.transactionList.title}</Title>
 
       <FilterBar style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', alignItems: 'start' }}>
         <div style={{ gridColumn: 'span 2' }}>
           <DateRangeFilter
-            label="Date Range"
+            label={t.transactionList.dateRange}
             value={{ start: pendingFilters.startDate ?? '', end: pendingFilters.endDate ?? '' }}
             onChange={({ start, end }) => setPendingFilters(f => ({ ...f, startDate: clampToOneYear(start), endDate: clampToOneYear(end) }))}
           />
         </div>
 
         <TextFilter
-          label="Transaction ID"
-          placeholder="Search by transaction ID..."
+          label={t.transactionList.transactionId}
+          placeholder={t.transactionList.transactionIdPlaceholder}
           value={pendingFilters.transactionId ?? ''}
           onChange={value => setPendingFilters(f => ({ ...f, transactionId: value }))}
         />
 
         <TextFilter
-          label="Order ID"
-          placeholder="Search by order ID..."
+          label={t.transactionList.orderId}
+          placeholder={t.transactionList.orderIdPlaceholder}
           value={pendingFilters.orderId ?? ''}
           onChange={value => setPendingFilters(f => ({ ...f, orderId: value }))}
         />
 
         <SearchCell>
-          <Button onClick={handleSearch}>Search</Button>
+          <Button onClick={handleSearch}>{t.common.search}</Button>
         </SearchCell>
 
         <SelectFilter
-          label="Method"
+          label={t.transactionList.method}
           value={pendingFilters.method ?? ''}
           onChange={value => setPendingFilters(f => ({ ...f, method: value }))}
           options={methodOptions}
-          placeholder="All methods"
+          placeholder={t.transactionList.methodAll}
         />
 
         <SelectFilter
-          label="Status"
+          label={t.transactionList.status}
           value={pendingFilters.status ?? ''}
           onChange={value => setPendingFilters(f => ({ ...f, status: value }))}
           options={statusOptions}
-          placeholder="All statuses"
+          placeholder={t.transactionList.statusAll}
         />
 
         <SelectFilter
-          label="Merchant"
+          label={t.transactionList.merchant}
           value={pendingFilters.merchantId ?? ''}
           onChange={handleMerchantChange}
           options={merchants}
-          placeholder="All Merchants"
+          placeholder={t.transactionList.merchantAll}
         />
 
         <SelectFilter
-          label="Store"
+          label={t.transactionList.store}
           value={pendingFilters.storeId ?? ''}
           onChange={value => setPendingFilters(f => ({ ...f, storeId: value }))}
           options={stores}
-          placeholder="All Stores"
+          placeholder={t.transactionList.storeAll}
         />
 
         <ButtonGroup>
-          <ClearFilterButton onClick={handleClear}>Clear</ClearFilterButton>
+          <ClearFilterButton onClick={handleClear}>{t.common.clear}</ClearFilterButton>
         </ButtonGroup>
       </FilterBar>
 
@@ -274,7 +265,7 @@ export default function TransactionsPage() {
       />
 
       {loading && (
-        <div style={{ textAlign: 'center', color: 'var(--text-sub)', padding: '1rem' }}>Loading...</div>
+        <div style={{ textAlign: 'center', color: 'var(--text-sub)', padding: '1rem' }}>{t.common.loading}</div>
       )}
     </PageContainer>
   );

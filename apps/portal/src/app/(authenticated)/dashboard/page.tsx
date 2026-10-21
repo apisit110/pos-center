@@ -1,6 +1,11 @@
+'use client';
+
 import React from 'react';
+import { useTranslation } from '../../../presentation/i18n/LanguageContext';
 
 export default function DashboardPage() {
+  const { t } = useTranslation();
+
   return (
     <div>
       {/* Body leave it empty as requested, just a placeholder for visual confirmation */}
@@ -13,7 +18,7 @@ export default function DashboardPage() {
         justifyContent: 'center',
         color: 'var(--text-sub)'
       }}>
-        Content will be placed here
+        {t.dashboard.placeholder}
       </div>
     </div>
   );

@@ -12,6 +12,8 @@ import { formatDateTime } from '../../../../lib/dayjs';
 import { formatAmount } from '../../../../lib/formatAmount';
 import { TransactionStatusBadge } from '../../../../presentation/components/TransactionStatusBadge';
 import { FiArrowLeft } from 'react-icons/fi';
+import { useTranslation } from '../../../../presentation/i18n/LanguageContext';
+import { formatMessage } from '../../../../presentation/i18n/format';
 
 const fadeIn = keyframes`
   from { opacity: 0; transform: translateY(10px); }
@@ -103,25 +105,30 @@ const LoadingSpinner = styled.div`
 
 const capitalize = (value: string) => (value ? value.charAt(0).toUpperCase() + value.slice(1).toLowerCase() : '-');
 
-const methodLabels: Record<string, string> = { cash: 'Cash', qr: 'QR' };
-
-const itemColumns = [
-  { header: '#', key: 'index', render: (_: TransactionItem, index?: number) => (index ?? 0) + 1 },
-  { header: 'Product', key: 'name' },
-  { header: 'SKU', key: 'sku', render: (i: TransactionItem) => i.sku || '-' },
-  { header: 'Barcode', key: 'barcode', render: (i: TransactionItem) => i.barcode || '-' },
-  { header: 'Quantity', key: 'quantity' },
-  { header: 'Unit Price', key: 'price', render: (i: TransactionItem) => formatAmount(i.price) },
-  {
-    header: 'Total',
-    key: 'total',
-    render: (i: TransactionItem) => <span style={{ fontWeight: 600 }}>{formatAmount(i.total)}</span>,
-  },
-];
-
 export default function TransactionDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { t } = useTranslation();
+  const td = t.transactionDetail;
+  const methodLabels: Record<string, string> = {
+    cash: t.transactionList.methodCash,
+    qr: t.transactionList.methodQr,
+  };
+  const statusLabel = (status: string) =>
+    t.transactionStatus[status?.toLowerCase() as keyof typeof t.transactionStatus] ?? capitalize(status);
+  const itemColumns = [
+    { header: '#', key: 'index', render: (_: TransactionItem, index?: number) => (index ?? 0) + 1 },
+    { header: td.columnProduct, key: 'name' },
+    { header: td.columnSku, key: 'sku', render: (i: TransactionItem) => i.sku || '-' },
+    { header: td.columnBarcode, key: 'barcode', render: (i: TransactionItem) => i.barcode || '-' },
+    { header: td.columnQuantity, key: 'quantity' },
+    { header: td.columnUnitPrice, key: 'price', render: (i: TransactionItem) => formatAmount(i.price) },
+    {
+      header: td.columnTotal,
+      key: 'total',
+      render: (i: TransactionItem) => <span style={{ fontWeight: 600 }}>{formatAmount(i.total)}</span>,
+    },
+  ];
   const [detail, setDetail] = useState<TransactionDetail | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -146,14 +153,14 @@ export default function TransactionDetailPage() {
   }, [params.id]);
 
   if (loading) return <LoadingSpinner />;
-  if (!detail) return <div style={{ padding: '2rem', textAlign: 'center' }}>Transaction not found</div>;
+  if (!detail) return <div style={{ padding: '2rem', textAlign: 'center' }}>{td.notFound}</div>;
 
   const tx = detail.transaction;
   const approved = tx.status === 'approved';
   // only created_at is recorded, so no time is shown for the status step
   const steps: TimelineStep[] = [
-    { label: 'Created', time: formatDateTime(tx.createdAt), done: true },
-    { label: approved ? 'Approved' : capitalize(tx.status), done: approved },
+    { label: td.timelineCreated, time: formatDateTime(tx.createdAt), done: true },
+    { label: statusLabel(tx.status), done: approved },
   ];
 
   return (
@@ -162,73 +169,73 @@ export default function TransactionDetailPage() {
         <Button variant="secondary" style={{ width: 'auto', padding: '0.75rem' }} onClick={() => router.back()}>
           <FiArrowLeft size={20} />
         </Button>
-        <Title>Transaction Details</Title>
+        <Title>{td.title}</Title>
       </Header>
 
       <TwoColumns>
         <Card>
-          <SectionTitle>Details</SectionTitle>
+          <SectionTitle>{td.details}</SectionTitle>
           <InfoGrid>
             <div>
-              <Label>Transaction ID</Label>
+              <Label>{td.transactionId}</Label>
               <Value style={{ fontFamily: 'monospace' }}>{tx.uid}</Value>
             </div>
             <div>
-              <Label>Order ID</Label>
+              <Label>{td.orderId}</Label>
               <Value style={{ fontFamily: 'monospace' }}>{tx.orderId || '-'}</Value>
             </div>
             <div>
-              <Label>Merchant MID</Label>
+              <Label>{td.merchantMid}</Label>
               <Value>{detail.mid}</Value>
             </div>
             <div>
-              <Label>Store</Label>
+              <Label>{td.store}</Label>
               <Value>{tx.storeName || '-'}</Value>
             </div>
             <div>
-              <Label>Terminal</Label>
+              <Label>{td.terminal}</Label>
               <Value>{detail.terminalId || '-'}</Value>
             </div>
             <div>
-              <Label>Staff</Label>
+              <Label>{td.staff}</Label>
               <Value>{detail.staffName || '-'}</Value>
             </div>
           </InfoGrid>
         </Card>
 
         <Card>
-          <SectionTitle>Amount</SectionTitle>
+          <SectionTitle>{td.amountSection}</SectionTitle>
           <InfoGrid>
             <div>
-              <Label>Status</Label>
+              <Label>{td.status}</Label>
               <TransactionStatusBadge status={tx.status} />
             </div>
             <div>
-              <Label>Order Status</Label>
-              <Value>{capitalize(detail.orderStatus)}</Value>
+              <Label>{td.orderStatus}</Label>
+              <Value>{statusLabel(detail.orderStatus)}</Value>
             </div>
             <div>
-              <Label>Payment Method</Label>
+              <Label>{td.paymentMethod}</Label>
               <Value>{methodLabels[tx.paymentMethod] ?? tx.paymentMethod}</Value>
             </div>
             <div>
-              <Label>Amount</Label>
+              <Label>{td.amount}</Label>
               <Value>{formatAmount(tx.amount)} {tx.currency}</Value>
             </div>
           </InfoGrid>
         </Card>
 
         <Card>
-          <SectionTitle>Timeline</SectionTitle>
+          <SectionTitle>{td.timeline}</SectionTitle>
           <StatusTimeline steps={steps} />
         </Card>
       </TwoColumns>
 
       <Card>
-        <SectionTitle>Items ({detail.items.length})</SectionTitle>
+        <SectionTitle>{formatMessage(td.items, { count: detail.items.length })}</SectionTitle>
         <DataTable columns={itemColumns} data={detail.items} rowKey="productUid" />
         <TotalRow>
-          <Label style={{ margin: 0 }}>Order Total</Label>
+          <Label style={{ margin: 0 }}>{td.orderTotal}</Label>
           <Value>{formatAmount(detail.orderTotalAmount)} {tx.currency}</Value>
         </TotalRow>
       </Card>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import StyledComponentsRegistry from "../lib/registry";
+import { LanguageProvider } from "../presentation/i18n/LanguageProvider";
 
 const prompt = localFont({
   variable: "--font-prompt",
@@ -28,7 +29,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${prompt.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
+        <StyledComponentsRegistry>
+          <LanguageProvider>{children}</LanguageProvider>
+        </StyledComponentsRegistry>
       </body>
     </html>
   );

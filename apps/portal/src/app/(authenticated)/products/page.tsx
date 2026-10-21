@@ -14,6 +14,7 @@ import { ProductFilter } from '../../../domain/repositories/ProductRepository';
 import { formatAmount } from '../../../lib/formatAmount';
 import { DataTable, FilterBar, TextFilter, SelectFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from '../../../presentation/i18n/LanguageContext';
 
 type LocalProductFilter = {
   barcode: string;
@@ -62,6 +63,7 @@ const ButtonCell = styled.div`
 
 export default function ProductsPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -157,12 +159,12 @@ export default function ProductsPage() {
   };
 
   const columns = [
-    { header: 'Barcode', key: 'barcode', width: '150px' },
-    { header: 'Name', key: 'name' },
-    { header: 'Brand', key: 'brand' },
-    { header: 'Unit', key: 'unitName' },
-    { header: 'Merchant', key: 'merchant', render: (p: Product) => merchantMap[p.merchantId] || p.mid },
-    { header: 'Price', key: 'price', render: (p: Product) => `${formatAmount(p.basePrice)} ฿` },
+    { header: t.productList.barcode, key: 'barcode', width: '150px' },
+    { header: t.productList.columnName, key: 'name' },
+    { header: t.productList.brand, key: 'brand' },
+    { header: t.productList.unit, key: 'unitName' },
+    { header: t.productList.merchant, key: 'merchant', render: (p: Product) => merchantMap[p.merchantId] || p.mid },
+    { header: t.productList.columnPrice, key: 'price', render: (p: Product) => `${formatAmount(p.basePrice)} ฿` },
   ];
 
   const brandOptions = metadata.brands.map(b => ({ value: b, label: b }));
@@ -171,26 +173,26 @@ export default function ProductsPage() {
   return (
     <PageContainer>
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '-0.5rem' }}>
-        <Button style={{ width: 'auto' }} onClick={() => router.push('/products/new')}>+ Add Product</Button>
+        <Button style={{ width: 'auto' }} onClick={() => router.push('/products/new')}>{t.productList.addProduct}</Button>
       </div>
       <ProductFilterBar>
         <TextFilter
-          label="Barcode"
-          placeholder="Search barcode..."
+          label={t.productList.barcode}
+          placeholder={t.productList.barcodePlaceholder}
           value={filters.barcode}
           onChange={(value) => setFilters({ ...filters, barcode: value })}
         />
 
         <TextFilter
-          label="Product Name"
-          placeholder="Search name..."
+          label={t.productList.name}
+          placeholder={t.productList.namePlaceholder}
           value={filters.name}
           onChange={(value) => setFilters({ ...filters, name: value })}
         />
 
         <TextFilter
-          label="Max Price"
-          placeholder="Max price..."
+          label={t.productList.maxPrice}
+          placeholder={t.productList.maxPricePlaceholder}
           value={filters.price === undefined ? '' : String(filters.price)}
           onChange={(value) => {
             const price = Number(value);
@@ -199,46 +201,46 @@ export default function ProductsPage() {
         />
 
         <SelectFilter
-          label="Brand"
+          label={t.productList.brand}
           value={filters.brand}
           onChange={(value) => setFilters({ ...filters, brand: value })}
           options={brandOptions}
-          placeholder="All Brands"
+          placeholder={t.productList.brandAll}
         />
 
         <ButtonCell>
-          <Button onClick={handleSearch}>Search</Button>
+          <Button onClick={handleSearch}>{t.common.search}</Button>
         </ButtonCell>
 
         <SelectFilter
-          label="Unit"
+          label={t.productList.unit}
           value={filters.unit}
           onChange={(value) => setFilters({ ...filters, unit: value })}
           options={unitOptions}
-          placeholder="All Units"
+          placeholder={t.productList.unitAll}
         />
 
         <SelectFilter
-          label="Merchant"
+          label={t.productList.merchant}
           value={filters.merchantId ?? ''}
           onChange={(value) => handleMerchantChange(value ? { value } : null)}
           options={merchants}
-          placeholder="All Merchants"
+          placeholder={t.productList.merchantAll}
         />
 
         <SelectFilter
-          label="Store"
+          label={t.productList.store}
           value={filters.storeId ?? ''}
           onChange={(value) => setFilters({ ...filters, storeId: value || undefined })}
           options={stores}
-          placeholder="All Stores"
+          placeholder={t.productList.storeAll}
           disabled={!filters.merchantId && merchants.length > 0}
         />
 
         <div />
 
         <ButtonCell>
-          <ClearFilterButton onClick={handleClear}>Clear</ClearFilterButton>
+          <ClearFilterButton onClick={handleClear}>{t.common.clear}</ClearFilterButton>
         </ButtonCell>
       </ProductFilterBar>
 

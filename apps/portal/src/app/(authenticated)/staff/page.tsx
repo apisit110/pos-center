@@ -7,6 +7,7 @@ import { GetStaffUseCase } from '../../../domain/usecases/GetStaffUseCase';
 import { Staff } from '../../../domain/entities/Staff';
 import { StaffFilter } from '../../../domain/repositories/StaffRepository';
 import { DataTable, FilterBar, TextFilter, SelectFilter, DateRangeFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
+import { useTranslation } from '../../../presentation/i18n/LanguageContext';
 import { formatDateTime, getDefaultDateRange, clampToOneYear } from '../../../lib/dayjs';
 
 const PageContainer = styled.div`
@@ -68,18 +69,6 @@ const StatusBadge = styled.span<{ $status: string }>`
   }};
 `;
 
-const roleOptions = [
-  { value: 'manager', label: 'Manager' },
-  { value: 'cashier', label: 'Cashier' },
-];
-
-const statusOptions = [
-  { value: 'ACTIVE', label: 'Active' },
-  { value: 'PENDING', label: 'Pending' },
-  { value: 'INACTIVE', label: 'Inactive' },
-  { value: 'SUSPENDED', label: 'Suspended' },
-];
-
 const getEmptyFilters = (): StaffFilter => ({
   ...getDefaultDateRange(),
   merchantId: '',
@@ -89,6 +78,21 @@ const getEmptyFilters = (): StaffFilter => ({
 });
 
 export default function StaffPage() {
+  const { t } = useTranslation();
+  const roleLabel = (role: string) =>
+    t.staffRole[role.toLowerCase() as keyof typeof t.staffRole] ?? role.charAt(0).toUpperCase() + role.slice(1);
+  const statusLabel = (status: string) =>
+    t.staffStatus[status.toLowerCase() as keyof typeof t.staffStatus] ?? status.charAt(0) + status.slice(1).toLowerCase();
+  const roleOptions = [
+    { value: 'manager', label: t.staffRole.manager },
+    { value: 'cashier', label: t.staffRole.cashier },
+  ];
+  const statusOptions = [
+    { value: 'ACTIVE', label: t.staffStatus.active },
+    { value: 'PENDING', label: t.staffStatus.pending },
+    { value: 'INACTIVE', label: t.staffStatus.inactive },
+    { value: 'SUSPENDED', label: t.staffStatus.suspended },
+  ];
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -136,7 +140,7 @@ export default function StaffPage() {
 
   const columns = [
     {
-      header: 'Name',
+      header: t.staffList.columnName,
       key: 'staff_name',
       render: (s: Staff) => (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -145,19 +149,19 @@ export default function StaffPage() {
         </div>
       ),
     },
-    { header: 'Role', key: 'role', render: (s: Staff) => s.role.charAt(0).toUpperCase() + s.role.slice(1) },
+    { header: t.staffList.role, key: 'role', render: (s: Staff) => roleLabel(s.role) },
     {
-      header: 'Status',
+      header: t.staffList.status,
       key: 'status',
       render: (s: Staff) => (
         <StatusBadge $status={s.status}>
-          {s.status.charAt(0) + s.status.slice(1).toLowerCase()}
+          {statusLabel(s.status)}
         </StatusBadge>
       ),
     },
-    { header: 'Merchant', key: 'merchant', render: (s: Staff) => s.merchantName || s.merchantUid },
+    { header: t.staffList.columnMerchant, key: 'merchant', render: (s: Staff) => s.merchantName || s.merchantUid },
     {
-      header: 'Created At',
+      header: t.staffList.columnCreatedAt,
       key: 'createdAt',
       render: (s: Staff) => formatDateTime(s.createdAt),
     },
@@ -165,53 +169,53 @@ export default function StaffPage() {
 
   return (
     <PageContainer>
-      <Title>Staff Management</Title>
+      <Title>{t.staffList.title}</Title>
 
       <FilterBar style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}>
         <div style={{ gridColumn: 'span 2' }}>
           <DateRangeFilter
-            label="Date Range"
+            label={t.staffList.dateRange}
             value={{ start: pendingFilters.startDate ?? '', end: pendingFilters.endDate ?? '' }}
             onChange={({ start, end }) => setPendingFilters(f => ({ ...f, startDate: clampToOneYear(start), endDate: clampToOneYear(end) }))}
           />
         </div>
 
         <TextFilter
-          label="Merchant UID"
-          placeholder="Enter merchant UID..."
+          label={t.staffList.merchantUid}
+          placeholder={t.staffList.merchantUidPlaceholder}
           value={pendingFilters.merchantId ?? ''}
           onChange={value => setPendingFilters(f => ({ ...f, merchantId: value }))}
         />
 
         <TextFilter
-          label="Username"
-          placeholder="Search by username..."
+          label={t.staffList.username}
+          placeholder={t.staffList.usernamePlaceholder}
           value={pendingFilters.username ?? ''}
           onChange={value => setPendingFilters(f => ({ ...f, username: value }))}
         />
 
         <SelectFilter
-          label="Role"
+          label={t.staffList.role}
           value={pendingFilters.role ?? ''}
           onChange={value => setPendingFilters(f => ({ ...f, role: value }))}
           options={roleOptions}
-          placeholder="All roles"
+          placeholder={t.staffList.roleAll}
         />
 
         <SelectFilter
-          label="Status"
+          label={t.staffList.status}
           value={pendingFilters.status ?? ''}
           onChange={value => setPendingFilters(f => ({ ...f, status: value }))}
           options={statusOptions}
-          placeholder="All statuses"
+          placeholder={t.staffList.statusAll}
         />
 
         <SearchCell>
-          <Button onClick={handleSearch}>Search</Button>
+          <Button onClick={handleSearch}>{t.common.search}</Button>
         </SearchCell>
 
         <ButtonGroup>
-          <ClearFilterButton onClick={handleClear}>Clear</ClearFilterButton>
+          <ClearFilterButton onClick={handleClear}>{t.common.clear}</ClearFilterButton>
         </ButtonGroup>
       </FilterBar>
 
@@ -227,7 +231,7 @@ export default function StaffPage() {
       />
 
       {loading && (
-        <div style={{ textAlign: 'center', color: 'var(--text-sub)', padding: '1rem' }}>Loading...</div>
+        <div style={{ textAlign: 'center', color: 'var(--text-sub)', padding: '1rem' }}>{t.common.loading}</div>
       )}
     </PageContainer>
   );

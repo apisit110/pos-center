@@ -7,6 +7,7 @@ import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiM
 import { GetMerchantsUseCase } from '../../../domain/usecases/GetMerchantsUseCase';
 import { Merchant } from '../../../domain/entities/Merchant';
 import { DataTable, Button, FilterBar, TextFilter, ClearFilterButton } from '@apisit110/pos-ui';
+import { useTranslation } from '../../../presentation/i18n/LanguageContext';
 
 const PageContainer = styled.div`
   display: flex;
@@ -60,6 +61,7 @@ const EMPTY_FILTERS: MerchantFilter = { mid: '', name: '' };
 
 export default function MerchantsPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [merchants, setMerchants] = useState<Merchant[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -106,37 +108,37 @@ export default function MerchantsPage() {
   };
 
   const columns = [
-    { header: 'MID', key: 'mid', width: '200px' },
-    { header: 'Merchant Name', key: 'name' },
+    { header: t.merchantList.columnMid, key: 'mid', width: '200px' },
+    { header: t.merchantList.columnName, key: 'name' },
   ];
 
-  if (loading && merchants.length === 0) return <div>Loading...</div>;
+  if (loading && merchants.length === 0) return <div>{t.common.loading}</div>;
 
   return (
     <PageContainer>
       <Header>
-        <Title>Merchants</Title>
-        <Button style={{ width: 'auto' }} onClick={() => router.push('/merchants/new')}>Create Merchant</Button>
+        <Title>{t.merchantList.title}</Title>
+        <Button style={{ width: 'auto' }} onClick={() => router.push('/merchants/new')}>{t.merchantList.create}</Button>
       </Header>
 
       <FilterBar style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}>
         <TextFilter
-          label="MID"
-          placeholder="Search by MID..."
+          label={t.merchantList.mid}
+          placeholder={t.merchantList.midPlaceholder}
           value={filters.mid}
           onChange={(value) => setFilters({ ...filters, mid: value })}
         />
         <TextFilter
-          label="Merchant Name"
-          placeholder="Search by name..."
+          label={t.merchantList.name}
+          placeholder={t.merchantList.namePlaceholder}
           value={filters.name}
           onChange={(value) => setFilters({ ...filters, name: value })}
         />
         <SearchCell>
-          <Button onClick={handleSearch}>Search</Button>
+          <Button onClick={handleSearch}>{t.common.search}</Button>
         </SearchCell>
         <ButtonGroup>
-          <ClearFilterButton onClick={handleClear}>Clear</ClearFilterButton>
+          <ClearFilterButton onClick={handleClear}>{t.common.clear}</ClearFilterButton>
         </ButtonGroup>
       </FilterBar>
 
@@ -153,7 +155,7 @@ export default function MerchantsPage() {
       />
 
       {loading && (
-        <div style={{ textAlign: 'center', color: 'var(--text-sub)', padding: '1rem' }}>Loading...</div>
+        <div style={{ textAlign: 'center', color: 'var(--text-sub)', padding: '1rem' }}>{t.common.loading}</div>
       )}
     </PageContainer>
   );

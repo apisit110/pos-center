@@ -6,6 +6,7 @@ import { Sidebar } from '../../presentation/components/Sidebar';
 import { TopBar } from '../../presentation/components/TopBar';
 import { ApiAuthRepository } from '../../infrastructure/repositories/ApiAuthRepository';
 import { AuthenticatedStaff } from '../../domain/repositories/AuthRepository';
+import { useTranslation } from '../../presentation/i18n/LanguageContext';
 import styled from 'styled-components';
 
 const LayoutContainer = styled.div`
@@ -34,6 +35,7 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const { t } = useTranslation();
   const [staff, setStaff] = React.useState<AuthenticatedStaff | null>(null);
 
   React.useEffect(() => {
@@ -62,14 +64,14 @@ export default function DashboardLayout({
   if (!staff) return null;
 
   const menuItems = [
-    { name: 'Dashboard', path: '/dashboard' },
-    { name: 'Transactions', path: '/transactions' },
-    { name: 'Merchants', path: '/merchants' },
-    { name: 'Products', path: '/products' },
-    { name: 'Staff', path: '/staff' },
+    { name: t.mainLayout.dashboard, path: '/dashboard' },
+    { name: t.mainLayout.transactions, path: '/transactions' },
+    { name: t.mainLayout.merchants, path: '/merchants' },
+    { name: t.mainLayout.products, path: '/products' },
+    { name: t.mainLayout.staff, path: '/staff' },
   ];
 
-  const currentTitle = menuItems.find(i => pathname.startsWith(i.path) && (i.path !== '/dashboard' || pathname === '/dashboard'))?.name || 'Dashboard';
+  const currentTitle = menuItems.find(i => pathname.startsWith(i.path) && (i.path !== '/dashboard' || pathname === '/dashboard'))?.name || t.mainLayout.dashboard;
 
   return (
     <LayoutContainer>

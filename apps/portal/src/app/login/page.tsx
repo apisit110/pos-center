@@ -6,12 +6,14 @@ import { LoginUseCase } from '../../domain/usecases/LoginUseCase';
 import { ApiAuthRepository } from '../../infrastructure/repositories/ApiAuthRepository';
 import { getResDescMessage } from '../../infrastructure/api/ApiClient';
 import { InputField, PinInputField, Button } from '@apisit110/pos-ui';
+import { useTranslation } from '../../presentation/i18n/LanguageContext';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [pin, setPin] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
+  const { t } = useTranslation();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,9 +31,9 @@ export default function LoginPage() {
       if (message) {
         setError(message);
       } else if (status === 429) {
-        setError('พยายามเข้าสู่ระบบบ่อยเกินไป กรุณาลองใหม่ภายหลัง');
+        setError(t.login.errorTooManyAttempts);
       } else {
-        setError(err.message || 'เข้าสู่ระบบไม่สำเร็จ');
+        setError(err.message || t.login.errorFailed);
       }
     }
   };
@@ -48,27 +50,27 @@ export default function LoginPage() {
         padding: '2rem'
       }}>
         <div style={{ width: '100%', maxWidth: '400px' }}>
-          <h1 style={{ marginBottom: '0.5rem', fontSize: '2rem' }}>Welcome Back</h1>
-          <p style={{ color: 'var(--text-sub)', marginBottom: '2rem' }}>Please enter your details</p>
+          <h1 style={{ marginBottom: '0.5rem', fontSize: '2rem' }}>{t.login.welcome}</h1>
+          <p style={{ color: 'var(--text-sub)', marginBottom: '2rem' }}>{t.login.subtitle}</p>
           
           <form onSubmit={handleLogin}>
             <InputField
-              label="Username"
+              label={t.login.username}
               type="text"
-              placeholder="Enter your username"
+              placeholder={t.login.usernamePlaceholder}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
 
             <PinInputField
-              label="Pin"
+              label={t.login.pin}
               value={pin}
               onChange={setPin}
             />
 
             {error && <p style={{ color: '#f87171', fontSize: '0.8rem', marginBottom: '1rem' }}>{error}</p>}
 
-            <Button type="submit">Sign In</Button>
+            <Button type="submit">{t.login.signIn}</Button>
           </form>
         </div>
       </div>
@@ -93,9 +95,9 @@ export default function LoginPage() {
           backdropFilter: 'blur(10px)',
           marginBottom: '2rem'
         }}></div>
-        <h2 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '1rem' }}>Lightning POS</h2>
+        <h2 style={{ fontSize: '2.5rem', fontWeight: '800', marginBottom: '1rem' }}>{t.login.brandTitle}</h2>
         <p style={{ fontSize: '1.1rem', opacity: 0.9, maxWidth: '400px' }}>
-          Empower your business with the most advanced point-of-sale service center.
+          {t.login.brandText}
         </p>
       </div>
     </div>
