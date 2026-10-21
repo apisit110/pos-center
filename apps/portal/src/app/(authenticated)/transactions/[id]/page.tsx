@@ -2,14 +2,15 @@
 
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { Button, DataTable } from '@apisit110/pos-ui';
+import { Button, DataTable, StatusTimeline } from '@apisit110/pos-ui';
+import type { TimelineStep } from '@apisit110/pos-ui';
 import { useParams, useRouter } from 'next/navigation';
 import { GetTransactionDetailUseCase } from '../../../../domain/usecases/GetTransactionDetailUseCase';
 import { ApiTransactionRepository } from '../../../../infrastructure/repositories/ApiTransactionRepository';
 import { TransactionDetail, TransactionItem } from '../../../../domain/entities/Transaction';
 import { formatDateTime } from '../../../../lib/dayjs';
 import { formatAmount } from '../../../../lib/formatAmount';
-import { StatusTimeline, TimelineStep } from '../../../../presentation/components/StatusTimeline';
+import { TransactionStatusBadge } from '../../../../presentation/components/TransactionStatusBadge';
 import { FiArrowLeft } from 'react-icons/fi';
 
 const fadeIn = keyframes`
@@ -76,32 +77,6 @@ const Value = styled.div`
   font-size: 1.125rem;
   font-weight: 600;
   word-break: break-all;
-`;
-
-const StatusBadge = styled.span<{ $status: string }>`
-  display: inline-block;
-  padding: 0.2rem 0.65rem;
-  border-radius: 2rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-  background: ${props => {
-    switch (props.$status.toLowerCase()) {
-      case 'approved': return 'rgba(34, 197, 94, 0.15)';
-      case 'failed': return 'rgba(239, 68, 68, 0.15)';
-      case 'pending': return 'rgba(234, 179, 8, 0.15)';
-      case 'refunded': return 'rgba(99, 102, 241, 0.15)';
-      default: return 'rgba(148, 163, 184, 0.15)';
-    }
-  }};
-  color: ${props => {
-    switch (props.$status.toLowerCase()) {
-      case 'approved': return '#4ade80';
-      case 'failed': return '#f87171';
-      case 'pending': return '#fbbf24';
-      case 'refunded': return '#818cf8';
-      default: return '#94a3b8';
-    }
-  }};
 `;
 
 const TotalRow = styled.div`
@@ -226,7 +201,7 @@ export default function TransactionDetailPage() {
           <InfoGrid>
             <div>
               <Label>Status</Label>
-              <StatusBadge $status={tx.status}>{capitalize(tx.status)}</StatusBadge>
+              <TransactionStatusBadge status={tx.status} />
             </div>
             <div>
               <Label>Order Status</Label>

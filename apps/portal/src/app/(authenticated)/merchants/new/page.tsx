@@ -52,8 +52,8 @@ const TerminalInput = styled.input`
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
   border: 1px solid var(--border);
-  background: rgba(15, 23, 42, 0.5);
-  color: white;
+  background: var(--bg-card);
+  color: var(--text-main);
   font-size: 1rem;
   &:focus {
     outline: none;
@@ -68,6 +68,9 @@ const StoreCard = styled.div`
   border-radius: 1rem;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 `;
 
 const TerminalRow = styled.div`
@@ -221,14 +224,16 @@ export default function CreateMerchantPage() {
                 placeholder="Full name"
               />
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '1rem' }}>
                 <PinInputField
                   label="PIN"
+                  boxSize="2.5rem"
                   value={staff.pin}
                   onChange={(v) => updateStaff(sIdx, 'pin', v)}
                 />
                 <PinInputField
                   label="Confirm PIN"
+                  boxSize="2.5rem"
                   value={staff.confirmPin}
                   onChange={(v) => updateStaff(sIdx, 'confirmPin', v)}
                 />

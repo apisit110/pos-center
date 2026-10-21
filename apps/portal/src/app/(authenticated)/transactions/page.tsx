@@ -8,6 +8,7 @@ import { formatAmount } from '../../../lib/formatAmount';
 import { DataTable, FilterBar, TextFilter, SelectFilter, DateRangeFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
 import { GetTransactionsUseCase } from '../../../domain/usecases/GetTransactionsUseCase';
 import { ApiTransactionRepository } from '../../../infrastructure/repositories/ApiTransactionRepository';
+import { TransactionStatusBadge } from '../../../presentation/components/TransactionStatusBadge';
 import { Transaction } from '../../../domain/entities/Transaction';
 import { TransactionFilter } from '../../../domain/repositories/TransactionRepository';
 
@@ -48,31 +49,6 @@ const SearchCell = styled.div`
     height: 2.3rem;
     margin: 0;
   }
-`;
-
-const StatusBadge = styled.span<{ $status: string }>`
-  padding: 0.2rem 0.65rem;
-  border-radius: 2rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  background: ${props => {
-    switch (props.$status.toLowerCase()) {
-      case 'approved': return 'rgba(34, 197, 94, 0.15)';
-      case 'failed': return 'rgba(239, 68, 68, 0.15)';
-      case 'pending': return 'rgba(234, 179, 8, 0.15)';
-      case 'refunded': return 'rgba(99, 102, 241, 0.15)';
-      default: return 'rgba(148, 163, 184, 0.15)';
-    }
-  }};
-  color: ${props => {
-    switch (props.$status.toLowerCase()) {
-      case 'approved': return '#4ade80';
-      case 'failed': return '#f87171';
-      case 'pending': return '#fbbf24';
-      case 'refunded': return '#818cf8';
-      default: return '#94a3b8';
-    }
-  }};
 `;
 
 const getEmptyFilters = (): TransactionFilter => ({
@@ -137,9 +113,7 @@ const columns = [
     header: 'Status',
     key: 'status',
     render: (tx: Transaction) => (
-      <StatusBadge $status={tx.status}>
-        {tx.status.charAt(0).toUpperCase() + tx.status.slice(1).toLowerCase()}
-      </StatusBadge>
+      <TransactionStatusBadge status={tx.status} />
     ),
   },
 ];
