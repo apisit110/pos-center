@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { BatchCreateProductsUseCase } from '../../../../domain/usecases/BatchCreateProductsUseCase';
 import { GetMerchantsUseCase } from '../../../../domain/usecases/GetMerchantsUseCase';
@@ -16,7 +16,7 @@ import {
   MasterStoreProduct,
   parseMasterProductXlsx
 } from '../../../../infrastructure/parsers/MasterProductXlsxParser';
-import { SelectFilter, Button } from '@apisit110/pos-ui';
+import { SelectFilter, Button, FileDropZone } from '@apisit110/pos-ui';
 
 /* ─── Animations ───────────────────────────────────────────── */
 
@@ -46,6 +46,13 @@ const PageContainer = styled.div`
   animation: ${fadeIn} 0.4s ease;
 `;
 
+const SampleLinks = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+`;
+
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -71,50 +78,6 @@ const FormCard = styled.div`
     0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
   animation: ${fadeIn} 0.3s ease;
-`;
-
-/* ─── Import Upload Zone ─────────────────────────────────────── */
-
-const DropZone = styled.div<{ $dragActive?: boolean }>`
-  border: 2px dashed
-    ${(props) => (props.$dragActive ? 'var(--primary)' : 'var(--border)')};
-  border-radius: 1.25rem;
-  padding: 3rem 2rem;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  background: ${(props) =>
-    props.$dragActive
-      ? 'rgba(99, 102, 241, 0.08)'
-      : 'rgba(255, 255, 255, 0.015)'};
-
-  &:hover {
-    border-color: var(--primary);
-    background: rgba(99, 102, 241, 0.05);
-  }
-`;
-
-const DropIcon = styled.div`
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-`;
-
-const DropText = styled.p`
-  color: var(--text-sub);
-  margin: 0;
-  font-size: 0.95rem;
-
-  strong {
-    color: var(--primary);
-    cursor: pointer;
-  }
-`;
-
-const DropHint = styled.p`
-  color: var(--text-sub);
-  margin: 0.5rem 0 0 0;
-  font-size: 0.8rem;
-  opacity: 0.7;
 `;
 
 /* ─── Preview Table ────────────────────────────────────────── */
@@ -216,7 +179,6 @@ const ErrorList = styled.ul`
 /* ═══════════════════════════════════════════════════════════ */
 
 export default function AddProductPage() {
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [merchants, setMerchants] = useState<
     { value: string; label: string }[]
@@ -230,7 +192,6 @@ export default function AddProductPage() {
   >([]);
   const [stores, setStores] = useState<{ value: string; label: string }[]>([]);
   const [selectedStore, setSelectedStore] = useState('');
-  const [dragActive, setDragActive] = useState(false);
 
   // Shared
   const [loading, setLoading] = useState(false);
@@ -310,21 +271,6 @@ export default function AddProductPage() {
 
   const processFile = async (file: File) =>
     loadParsedFile(await file.arrayBuffer());
-
-  const handleFileDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragActive(false);
-    const file = e.dataTransfer.files[0];
-    if (file && file.name.endsWith('.xlsx')) {
-      processFile(file);
-    }
-  };
-
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) processFile(file);
-    e.target.value = '';
-  };
 
   const clearImport = () => {
     setImportProducts([]);
@@ -444,33 +390,32 @@ export default function AddProductPage() {
       <FormCard>
         {importProducts.length === 0 ? (
           <>
-            <DropZone
-              $dragActive={dragActive}
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDragActive(true);
-              }}
-              onDragLeave={() => setDragActive(false)}
-              onDrop={handleFileDrop}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <DropIcon>📄</DropIcon>
-              <DropText>
-                Drag & drop an Excel (.xlsx) file here, or{' '}
-                <strong>browse</strong>
-              </DropText>
-              <DropHint>
-                Sheet &quot;product&quot; (required) and sheet
-                &quot;store_product&quot; (optional: stock/price)
-              </DropHint>
-            </DropZone>
-            <input
-              ref={fileInputRef}
-              type="file"
+            <FileDropZone
               accept=".xlsx"
-              hidden
-              onChange={handleFileSelect}
-            />
+              icon="📄"
+              onFile={processFile}
+              hint={
+                <>
+                  Sheet &quot;product&quot; (required) and sheet
+                  &quot;store_product&quot; (optional: stock/price)
+                </>
+              }
+            >
+              Drag & drop an Excel (.xlsx) file here, or{' '}
+              <strong>browse</strong>
+            </FileDropZone>
+            <SampleLinks>
+              <a href="/constants/master_product_v2_prouct_with_store_product.xlsx" download>
+                <Button variant="secondary" style={{ width: 'auto' }}>
+                  ⬇ Download sample (with store product)
+                </Button>
+              </a>
+              <a href="/constants/master_product_v3_no_store_product.xlsx" download>
+                <Button variant="secondary" style={{ width: 'auto' }}>
+                  ⬇ Download sample (product only)
+                </Button>
+              </a>
+            </SampleLinks>
           </>
         ) : (
           <PreviewContainer>

@@ -18,8 +18,8 @@ importers:
   apps/portal:
     dependencies:
       '@apisit110/pos-ui':
-        specifier: ^0.6.5
-        version: 0.6.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(styled-components@6.4.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
+        specifier: ^0.6.6
+        version: 0.6.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(styled-components@6.4.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       axios:
         specifier: ^1.15.0
         version: 1.15.0
@@ -248,8 +248,8 @@ packages:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
 
-  '@apisit110/pos-ui@0.6.5':
-    resolution: {integrity: sha512-5PSRncqVcNvX56wnoLmrM3CbFA60b7aCzLjy3YDbH+Wdnziy+AMAefIHqFA/BmarccMMylSEZOv8iokqQh1BRg==, tarball: https://npm.pkg.github.com/download/@apisit110/pos-ui/0.6.5/e7509ed2bfc7ea171f7eae7c167b1ef5b6b1137b}
+  '@apisit110/pos-ui@0.6.6':
+    resolution: {integrity: sha512-aBYBYCS1BRqiOc8NjQRzKFYu764hXLV/fYXgsRFbpTMMd9yaTrlxV0vFjJe0mNF7WPTeFWFMJwhSUg8Pas7qUg==, tarball: https://npm.pkg.github.com/download/@apisit110/pos-ui/0.6.6/c33d028c65c447b05e973ab2ffba0343ced8736e}
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
@@ -3884,7 +3884,7 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@apisit110/pos-ui@0.6.5(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(styled-components@6.4.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
+  '@apisit110/pos-ui@0.6.6(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(styled-components@6.4.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4))':
     dependencies:
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
