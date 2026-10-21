@@ -31,9 +31,24 @@ const ButtonGroup = styled.div`
   display: flex;
   gap: 0.75rem;
   align-items: flex-end;
-  grid-column: 1 / -1;
+  grid-column: 5;
   justify-content: flex-end;
   margin-top: 0.5rem;
+`;
+
+const SearchCell = styled.div`
+  display: flex;
+  align-items: flex-start;
+  grid-column: 5;
+  grid-row: 1;
+  /* skip the filter label (line + gap) so the button lines up with the controls */
+  padding-top: calc(0.75rem * 1.2 + 0.5rem);
+
+  & > button {
+    width: 100%;
+    height: 2.3rem;
+    margin: 0;
+  }
 `;
 
 interface MerchantFilter {
@@ -104,7 +119,7 @@ export default function MerchantsPage() {
         <Button style={{ width: 'auto' }} onClick={() => router.push('/merchants/new')}>Create Merchant</Button>
       </Header>
 
-      <FilterBar>
+      <FilterBar style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}>
         <TextFilter
           label="MID"
           placeholder="Search by MID..."
@@ -117,9 +132,11 @@ export default function MerchantsPage() {
           value={filters.name}
           onChange={(value) => setFilters({ ...filters, name: value })}
         />
+        <SearchCell>
+          <Button onClick={handleSearch}>Search</Button>
+        </SearchCell>
         <ButtonGroup>
           <ClearFilterButton onClick={handleClear}>Clear</ClearFilterButton>
-          <Button style={{ width: 'auto' }} onClick={handleSearch}>Search</Button>
         </ButtonGroup>
       </FilterBar>
 

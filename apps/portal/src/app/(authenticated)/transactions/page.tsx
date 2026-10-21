@@ -1,9 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
-import { formatDateTime } from '../../../lib/dayjs';
-import { DataTable, FilterBar, TextFilter, SelectFilter, DateFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
+import { formatDateTime, getDefaultDateRange, clampToOneYear } from '../../../lib/dayjs';
+import { formatAmount } from '../../../lib/formatAmount';
+import { DataTable, FilterBar, TextFilter, SelectFilter, DateRangeFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
 import { GetTransactionsUseCase } from '../../../domain/usecases/GetTransactionsUseCase';
 import { ApiTransactionRepository } from '../../../infrastructure/repositories/ApiTransactionRepository';
 import { Transaction } from '../../../domain/entities/Transaction';
@@ -24,11 +26,28 @@ const Title = styled.h1`
 
 const ButtonGroup = styled.div`
   display: flex;
-  gap: 0.75rem;
-  align-items: flex-end;
-  grid-column: 1 / -1;
-  justify-content: flex-end;
-  margin-top: 0.5rem;
+  grid-column: 5;
+  /* skip the filter label (line + gap) so the button lines up with the controls */
+  padding-top: calc(0.75rem * 1.2 + 0.5rem);
+
+  & > button {
+    width: 100%;
+    height: 2.3rem;
+    margin: 0;
+  }
+`;
+
+const SearchCell = styled.div`
+  display: flex;
+  align-items: flex-start;
+  /* skip the filter label (line + gap) so the button lines up with the controls */
+  padding-top: calc(0.75rem * 1.2 + 0.5rem);
+
+  & > button {
+    width: 100%;
+    height: 2.3rem;
+    margin: 0;
+  }
 `;
 
 const StatusBadge = styled.span<{ $status: string }>`
@@ -56,14 +75,13 @@ const StatusBadge = styled.span<{ $status: string }>`
   }};
 `;
 
-const EMPTY_FILTERS: TransactionFilter = {
-  startDate: '',
-  endDate: '',
+const getEmptyFilters = (): TransactionFilter => ({
+  ...getDefaultDateRange(),
   transactionId: '',
   orderId: '',
   method: '',
   status: '',
-};
+});
 
 const methodOptions = [
   { value: 'cash', label: 'Cash' },
@@ -110,7 +128,7 @@ const columns = [
     key: 'amount',
     render: (tx: Transaction) => (
       <span style={{ fontWeight: 600 }}>
-        {tx.amount.toLocaleString('th-TH', { minimumFractionDigits: 2 })} {tx.currency}
+        {formatAmount(tx.amount)} {tx.currency}
       </span>
     ),
   },
@@ -127,13 +145,14 @@ const columns = [
 ];
 
 export default function TransactionsPage() {
+  const router = useRouter();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
-  const [pendingFilters, setPendingFilters] = useState<TransactionFilter>(EMPTY_FILTERS);
-  const [activeFilters, setActiveFilters] = useState<TransactionFilter>(EMPTY_FILTERS);
+  const [pendingFilters, setPendingFilters] = useState<TransactionFilter>(getEmptyFilters);
+  const [activeFilters, setActiveFilters] = useState<TransactionFilter>(getEmptyFilters);
 
   useEffect(() => {
     let cancelled = false;
@@ -167,8 +186,8 @@ export default function TransactionsPage() {
   };
 
   const handleClear = () => {
-    setPendingFilters(EMPTY_FILTERS);
-    setActiveFilters(EMPTY_FILTERS);
+    setPendingFilters(getEmptyFilters());
+    setActiveFilters(getEmptyFilters());
     setPage(1);
   };
 
@@ -176,18 +195,14 @@ export default function TransactionsPage() {
     <PageContainer>
       <Title>Transactions</Title>
 
-      <FilterBar>
-        <DateFilter
-          label="Start Date"
-          value={pendingFilters.startDate ?? ''}
-          onChange={value => setPendingFilters(f => ({ ...f, startDate: value }))}
-        />
-
-        <DateFilter
-          label="End Date"
-          value={pendingFilters.endDate ?? ''}
-          onChange={value => setPendingFilters(f => ({ ...f, endDate: value }))}
-        />
+      <FilterBar style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))', alignItems: 'start' }}>
+        <div style={{ gridColumn: 'span 2' }}>
+          <DateRangeFilter
+            label="Date Range"
+            value={{ start: pendingFilters.startDate ?? '', end: pendingFilters.endDate ?? '' }}
+            onChange={({ start, end }) => setPendingFilters(f => ({ ...f, startDate: clampToOneYear(start), endDate: clampToOneYear(end) }))}
+          />
+        </div>
 
         <TextFilter
           label="Transaction ID"
@@ -202,6 +217,10 @@ export default function TransactionsPage() {
           value={pendingFilters.orderId ?? ''}
           onChange={value => setPendingFilters(f => ({ ...f, orderId: value }))}
         />
+
+        <SearchCell>
+          <Button onClick={handleSearch}>Search</Button>
+        </SearchCell>
 
         <SelectFilter
           label="Method"
@@ -221,7 +240,6 @@ export default function TransactionsPage() {
 
         <ButtonGroup>
           <ClearFilterButton onClick={handleClear}>Clear</ClearFilterButton>
-          <Button style={{ width: 'auto' }} onClick={handleSearch}>Search</Button>
         </ButtonGroup>
       </FilterBar>
 
@@ -229,6 +247,7 @@ export default function TransactionsPage() {
         columns={columns}
         data={transactions}
         rowKey="id"
+        onRowClick={(tx) => router.push(`/transactions/${tx.id}`)}
         totalItems={total}
         currentPage={page}
         pageSize={limit}

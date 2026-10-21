@@ -121,4 +121,11 @@ export class ServiceError {
       th: 'บาร์โค้ดนี้มีอยู่แล้วในร้านค้า (merchant) นี้',
     });
   }
+
+  static ErrTransactionNotFound(): ServiceError {
+    return new ServiceError(ErrorKind.NOT_FOUND, '4015', {
+      en: 'The specified transaction could not be found.',
+      th: 'ไม่พบข้อมูลรายการธุรกรรมในระบบ',
+    });
+  }
 }

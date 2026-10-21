@@ -6,8 +6,8 @@ import { ApiStaffRepository } from '../../../infrastructure/repositories/ApiStaf
 import { GetStaffUseCase } from '../../../domain/usecases/GetStaffUseCase';
 import { Staff } from '../../../domain/entities/Staff';
 import { StaffFilter } from '../../../domain/repositories/StaffRepository';
-import { DataTable, FilterBar, TextFilter, SelectFilter, DateFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
-import { formatDateTime } from '../../../lib/dayjs';
+import { DataTable, FilterBar, TextFilter, SelectFilter, DateRangeFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
+import { formatDateTime, getDefaultDateRange, clampToOneYear } from '../../../lib/dayjs';
 
 const PageContainer = styled.div`
   display: flex;
@@ -26,9 +26,24 @@ const ButtonGroup = styled.div`
   display: flex;
   gap: 0.75rem;
   align-items: flex-end;
-  grid-column: 1 / -1;
+  grid-column: 5;
   justify-content: flex-end;
   margin-top: 0.5rem;
+`;
+
+const SearchCell = styled.div`
+  display: flex;
+  align-items: flex-start;
+  grid-column: 5;
+  grid-row: 1;
+  /* skip the filter label (line + gap) so the button lines up with the controls */
+  padding-top: calc(0.75rem * 1.2 + 0.5rem);
+
+  & > button {
+    width: 100%;
+    height: 2.3rem;
+    margin: 0;
+  }
 `;
 
 
@@ -65,14 +80,13 @@ const statusOptions = [
   { value: 'SUSPENDED', label: 'Suspended' },
 ];
 
-const EMPTY_FILTERS: StaffFilter = {
+const getEmptyFilters = (): StaffFilter => ({
+  ...getDefaultDateRange(),
   merchantId: '',
   role: '',
   username: '',
   status: '',
-  startDate: '',
-  endDate: '',
-};
+});
 
 export default function StaffPage() {
   const [staffList, setStaffList] = useState<Staff[]>([]);
@@ -80,8 +94,8 @@ export default function StaffPage() {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
-  const [pendingFilters, setPendingFilters] = useState<StaffFilter>(EMPTY_FILTERS);
-  const [activeFilters, setActiveFilters] = useState<StaffFilter>(EMPTY_FILTERS);
+  const [pendingFilters, setPendingFilters] = useState<StaffFilter>(getEmptyFilters);
+  const [activeFilters, setActiveFilters] = useState<StaffFilter>(getEmptyFilters);
 
   useEffect(() => {
     let cancelled = false;
@@ -115,8 +129,8 @@ export default function StaffPage() {
   };
 
   const handleClear = () => {
-    setPendingFilters(EMPTY_FILTERS);
-    setActiveFilters(EMPTY_FILTERS);
+    setPendingFilters(getEmptyFilters());
+    setActiveFilters(getEmptyFilters());
     setPage(1);
   };
 
@@ -153,18 +167,14 @@ export default function StaffPage() {
     <PageContainer>
       <Title>Staff Management</Title>
 
-      <FilterBar>
-        <DateFilter
-          label="Start Date"
-          value={pendingFilters.startDate ?? ''}
-          onChange={value => setPendingFilters(f => ({ ...f, startDate: value }))}
-        />
-
-        <DateFilter
-          label="End Date"
-          value={pendingFilters.endDate ?? ''}
-          onChange={value => setPendingFilters(f => ({ ...f, endDate: value }))}
-        />
+      <FilterBar style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}>
+        <div style={{ gridColumn: 'span 2' }}>
+          <DateRangeFilter
+            label="Date Range"
+            value={{ start: pendingFilters.startDate ?? '', end: pendingFilters.endDate ?? '' }}
+            onChange={({ start, end }) => setPendingFilters(f => ({ ...f, startDate: clampToOneYear(start), endDate: clampToOneYear(end) }))}
+          />
+        </div>
 
         <TextFilter
           label="Merchant UID"
@@ -196,9 +206,12 @@ export default function StaffPage() {
           placeholder="All statuses"
         />
 
+        <SearchCell>
+          <Button onClick={handleSearch}>Search</Button>
+        </SearchCell>
+
         <ButtonGroup>
           <ClearFilterButton onClick={handleClear}>Clear</ClearFilterButton>
-          <Button style={{ width: 'auto' }} onClick={handleSearch}>Search</Button>
         </ButtonGroup>
       </FilterBar>
 

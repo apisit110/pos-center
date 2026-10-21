@@ -11,9 +11,11 @@ const LogoIcon = () => (
 
 interface SidebarProps {
   menuItems: { name: string; path: string }[];
+  user?: { name: string; subtitle?: string };
+  onLogout?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ menuItems }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ menuItems, user, onLogout }) => {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -30,6 +32,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ menuItems }) => {
       logoTitle="POS Center"
       logoIcon={<LogoIcon />}
       navItems={navItems}
+      user={user}
+      onLogout={onLogout}
+      logoutLabel="ออกจากระบบ"
     />
   );
 };

@@ -1,6 +1,6 @@
-import { db, transactions, stores, orders } from '@pos-center/database';
+import { db, transactions, stores, orders, orderItems, products } from '@pos-center/database';
 import { eq, and, like, gte, lte, count, desc, SQL } from 'drizzle-orm';
-import { Transaction } from '../../domain/entities/Transaction';
+import { Transaction, TransactionDetail, TransactionItem } from '../../domain/entities/Transaction';
 import { ITransactionRepository, TransactionFilter } from '../../domain/repositories/ITransactionRepository';
 
 export class DrizzleTransactionRepository implements ITransactionRepository {
@@ -78,5 +78,73 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
       )),
       total: Number(totalCount[0].value),
     };
+  }
+
+  async getByUid(uid: string): Promise<TransactionDetail | null> {
+    const [row] = await db
+      .select({
+        id: transactions.id,
+        uid: transactions.uid,
+        orderPk: orders.id,
+        orderId: orders.orderId,
+        orderStatus: orders.status,
+        orderTotalAmount: orders.totalAmount,
+        merchantMid: transactions.merchantId,
+        terminalId: transactions.terminalId,
+        staffName: transactions.staffName,
+        paymentMethod: transactions.paymentMethod,
+        status: transactions.status,
+        amount: transactions.amount,
+        storeName: stores.name,
+        createdAt: transactions.createdAt,
+      })
+      .from(transactions)
+      .leftJoin(orders, eq(transactions.orderId, orders.id))
+      .leftJoin(stores, eq(transactions.storeId, stores.id))
+      .where(eq(transactions.uid, uid))
+      .limit(1);
+
+    if (!row) return null;
+
+    const items = row.orderPk === null ? [] : await db
+      .select({
+        productUid: products.uid,
+        name: products.name,
+        sku: products.sku,
+        barcode: products.barcode,
+        quantity: orderItems.quantity,
+        price: orderItems.price,
+      })
+      .from(orderItems)
+      .leftJoin(products, eq(orderItems.productId, products.id))
+      .where(eq(orderItems.orderId, row.orderPk))
+      .orderBy(orderItems.id);
+
+    return new TransactionDetail(
+      new Transaction(
+        row.id.toString(),
+        row.uid,
+        row.paymentMethod,
+        row.status,
+        Number(row.amount),
+        'THB',
+        row.storeName ?? '',
+        row.createdAt ?? new Date(),
+        row.orderId ?? '',
+      ),
+      row.merchantMid,
+      row.terminalId ?? '',
+      row.staffName,
+      row.orderStatus ?? '',
+      Number(row.orderTotalAmount ?? 0),
+      items.map(i => new TransactionItem(
+        i.productUid ?? '',
+        i.name ?? '',
+        i.sku ?? '',
+        i.barcode ?? '',
+        i.quantity,
+        Number(i.price),
+      )),
+    );
   }
 }

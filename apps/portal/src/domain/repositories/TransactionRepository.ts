@@ -1,4 +1,4 @@
-import { Transaction } from '../../domain/entities/Transaction';
+import { Transaction, TransactionDetail } from '../../domain/entities/Transaction';
 
 export interface TransactionFilter {
   startDate?: string;
@@ -11,4 +11,5 @@ export interface TransactionFilter {
 
 export interface TransactionRepository {
   getTransactions(page: number, limit: number, filters?: TransactionFilter): Promise<{ transactions: Transaction[]; total: number }>;
+  getTransactionById(id: string): Promise<TransactionDetail>;
 }

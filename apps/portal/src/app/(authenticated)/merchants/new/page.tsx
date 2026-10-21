@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { RegisterMerchantUseCase } from '../../../../domain/usecases/RegisterMerchantUseCase';
 import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
-import { InputField, SelectFilter, Button } from '@apisit110/pos-ui';
+import { InputField, PinInputField, SelectFilter, Button } from '@apisit110/pos-ui';
 
 const PageContainer = styled.div`
   display: flex;
@@ -222,21 +222,15 @@ export default function CreateMerchantPage() {
               />
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <InputField
+                <PinInputField
                   label="PIN"
-                  required
-                  type="password"
                   value={staff.pin}
-                  onChange={(e) => updateStaff(sIdx, 'pin', e.target.value)}
-                  placeholder="Enter PIN"
+                  onChange={(v) => updateStaff(sIdx, 'pin', v)}
                 />
-                <InputField
+                <PinInputField
                   label="Confirm PIN"
-                  required
-                  type="password"
                   value={staff.confirmPin}
-                  onChange={(e) => updateStaff(sIdx, 'confirmPin', e.target.value)}
-                  placeholder="Confirm PIN"
+                  onChange={(v) => updateStaff(sIdx, 'confirmPin', v)}
                 />
               </div>
             </StoreCard>

@@ -72,6 +72,7 @@ export class DrizzleProductRepository implements IProductRepository {
             productId,
             price: String(p.basePrice),
             stock: 0,
+            rowVersion: 1,
           });
           results.push({ id: p.id, status: 'synced' });
         }

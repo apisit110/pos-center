@@ -36,7 +36,6 @@ input {
   border: 1px solid var(--border);
   background: var(--bg-card);
   color: var(--text-main);
-  margin-bottom: 1rem;
 }
 
 button {

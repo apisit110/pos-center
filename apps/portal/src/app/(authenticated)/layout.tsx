@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Sidebar } from '../../presentation/components/Sidebar';
 import { TopBar } from '../../presentation/components/TopBar';
 import { ApiAuthRepository } from '../../infrastructure/repositories/ApiAuthRepository';
+import { AuthenticatedStaff } from '../../domain/repositories/AuthRepository';
 import styled from 'styled-components';
 
 const LayoutContainer = styled.div`
@@ -33,7 +34,7 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [authorized, setAuthorized] = React.useState(false);
+  const [staff, setStaff] = React.useState<AuthenticatedStaff | null>(null);
 
   React.useEffect(() => {
     let active = true;
@@ -42,7 +43,7 @@ export default function DashboardLayout({
       if (!session) {
         router.replace('/login');
       } else {
-        setAuthorized(true);
+        setStaff(session);
       }
     });
     return () => {
@@ -50,21 +51,29 @@ export default function DashboardLayout({
     };
   }, [router]);
 
-  if (!authorized) return null;
+  const handleLogout = async () => {
+    try {
+      await new ApiAuthRepository().logout();
+    } finally {
+      router.replace('/login');
+    }
+  };
+
+  if (!staff) return null;
 
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard' },
+    { name: 'Transactions', path: '/transactions' },
     { name: 'Merchants', path: '/merchants' },
     { name: 'Products', path: '/products' },
     { name: 'Staff', path: '/staff' },
-    { name: 'Transactions', path: '/transactions' },
   ];
 
   const currentTitle = menuItems.find(i => pathname.startsWith(i.path) && (i.path !== '/dashboard' || pathname === '/dashboard'))?.name || 'Dashboard';
 
   return (
     <LayoutContainer>
-      <Sidebar menuItems={menuItems} />
+      <Sidebar menuItems={menuItems} user={{ name: staff.name }} onLogout={handleLogout} />
       <MainArea>
         <TopBar title={currentTitle} />
         <ContentBody>

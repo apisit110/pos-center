@@ -11,3 +11,27 @@ export class Transaction {
     public readonly orderId: string = '',
   ) {}
 }
+
+export class TransactionItem {
+  constructor(
+    public readonly productUid: string,
+    public readonly name: string,
+    public readonly sku: string,
+    public readonly barcode: string,
+    public readonly quantity: number,
+    public readonly price: number,
+  ) {}
+}
+
+export class TransactionDetail {
+  constructor(
+    public readonly transaction: Transaction,
+    /** merchant id (mid) the transaction belongs to */
+    public readonly merchantMid: string,
+    public readonly terminalId: string,
+    public readonly staffName: string,
+    public readonly orderStatus: string,
+    public readonly orderTotalAmount: number,
+    public readonly items: TransactionItem[],
+  ) {}
+}

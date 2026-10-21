@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { useRouter } from 'next/navigation';
 import { BatchCreateProductsUseCase } from '../../../../domain/usecases/BatchCreateProductsUseCase';
 import { GetMerchantsUseCase } from '../../../../domain/usecases/GetMerchantsUseCase';
 import { GetStoresUseCase } from '../../../../domain/usecases/GetStoresUseCase';
@@ -11,6 +10,7 @@ import { ApiProductRepository } from '../../../../infrastructure/repositories/Ap
 import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
 import { ApiStoreRepository } from '../../../../infrastructure/repositories/ApiStoreRepository';
 import { ApiStoreProductRepository } from '../../../../infrastructure/repositories/ApiStoreProductRepository';
+import { formatAmount } from '../../../../lib/formatAmount';
 import {
   MasterProduct,
   MasterStoreProduct,
@@ -216,7 +216,6 @@ const ErrorList = styled.ul`
 /* ═══════════════════════════════════════════════════════════ */
 
 export default function AddProductPage() {
-  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [merchants, setMerchants] = useState<
@@ -429,13 +428,6 @@ export default function AddProductPage() {
       {/* Header */}
       <Header>
         <Title>Add Product</Title>
-        <Button
-          variant="secondary"
-          style={{ width: 'auto' }}
-          onClick={() => router.push('/products')}
-        >
-          ← Back to Products
-        </Button>
       </Header>
 
       {/* Merchant Selector (shared) */}
@@ -528,7 +520,7 @@ export default function AddProductPage() {
                       <td style={{ fontFamily: 'monospace' }}>
                         {p.barcode || '—'}
                       </td>
-                      <td>{p.base_price?.toLocaleString()} ฿</td>
+                      <td>{formatAmount(p.base_price ?? 0)} ฿</td>
                       <td>{p.unit_name || '—'}</td>
                     </tr>
                   ))}

@@ -121,6 +121,7 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
         stock: input.stock,
         price: input.price.toString(),
         unit: product.unitName || null,
+        rowVersion: 1,
       });
       return 'created';
     });
@@ -220,6 +221,7 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
             stock: item.input.stock,
             price: item.input.price.toString(),
             unit: item.unitName,
+            rowVersion: 1,
           });
           created++;
         }

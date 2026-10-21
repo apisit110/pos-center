@@ -7,6 +7,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { GetProductUseCase } from '../../../../domain/usecases/GetProductUseCase';
 import { ApiProductRepository } from '../../../../infrastructure/repositories/ApiProductRepository';
 import { Product } from '../../../../domain/entities/Product';
+import { formatAmount } from '../../../../lib/formatAmount';
 import { FiArrowLeft, FiPackage, FiTag, FiDollarSign, FiBox, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
 const fadeIn = keyframes`
@@ -358,7 +359,7 @@ export default function ProductDetailPage() {
               <IconWrapper><FiDollarSign /></IconWrapper>
               <div>
                 <Label>Base Price</Label>
-                <PriceValue>{product.basePrice.toLocaleString()} ฿</PriceValue>
+                <PriceValue>{formatAmount(product.basePrice)} ฿</PriceValue>
               </div>
             </InfoRow>
           </Card>

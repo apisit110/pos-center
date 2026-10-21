@@ -34,6 +34,7 @@ import { GetStaffByMerchantUseCase } from './application/usecases/GetStaffByMerc
 import { CreateMerchantUseCase } from './application/usecases/CreateMerchantUseCase';
 import { GetTerminalsByStoreUseCase } from './application/usecases/GetTerminalsByStoreUseCase';
 import { BatchUpsertStoreProductsUseCase } from './application/usecases/BatchUpsertStoreProductsUseCase';
+import { GetTransactionDetailUseCase } from './application/usecases/GetTransactionDetailUseCase';
 import { GetTransactionsUseCase } from './application/usecases/GetTransactionsUseCase';
 import { LoginUseCase } from './application/usecases/LoginUseCase';
 import { GetProfileUseCase } from './application/usecases/GetProfileUseCase';
@@ -100,6 +101,7 @@ const createMerchantUseCase = new CreateMerchantUseCase(merchantRepository, runn
 const getTerminalsByStoreUseCase = new GetTerminalsByStoreUseCase(terminalRepository, storeRepository, staffRepository);
 const batchUpsertStoreProductsUseCase = new BatchUpsertStoreProductsUseCase(storeProductRepository, staffRepository);
 const getTransactionsUseCase = new GetTransactionsUseCase(transactionRepository, staffRepository, merchantRepository);
+const getTransactionDetailUseCase = new GetTransactionDetailUseCase(transactionRepository, staffRepository, merchantRepository);
 const loginUseCase = new LoginUseCase(staffRepository, pinRepository, permissionRepository, tokenService, PORTAL_APP_ID);
 const getProfileUseCase = new GetProfileUseCase(staffRepository);
 
@@ -110,7 +112,7 @@ const productController = new ProductController(getProductsUseCase, getProductDe
 const storeController = new StoreController(getStoresUseCase, getStoreDetailUseCase, getTerminalsByStoreUseCase);
 const staffController = new StaffController(getStaffUseCase, getStaffDetailUseCase);
 const storeProductController = new StoreProductController(batchUpsertStoreProductsUseCase);
-const transactionController = new TransactionController(getTransactionsUseCase);
+const transactionController = new TransactionController(getTransactionsUseCase, getTransactionDetailUseCase);
 
 app.use(cors({ origin: process.env.PORTAL_ORIGIN || 'http://localhost:3000', credentials: true }));
 app.use(express.json({ limit: '10mb' }));

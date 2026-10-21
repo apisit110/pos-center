@@ -1,4 +1,4 @@
-import { Transaction } from '../../domain/entities/Transaction';
+import { Transaction, TransactionDetail } from '../../domain/entities/Transaction';
 
 export interface TransactionFilter {
   /** only transactions of this merchant (`transactions.merchant_id` holds the merchant id / mid) */
@@ -16,4 +16,6 @@ export interface TransactionFilter {
 export interface ITransactionRepository {
   /** Ordered by created_at descending, then id descending (newest first). */
   getTransactions(page: number, limit: number, filters?: TransactionFilter): Promise<{ transactions: Transaction[]; total: number }>;
+
+  getByUid(uid: string): Promise<TransactionDetail | null>;
 }

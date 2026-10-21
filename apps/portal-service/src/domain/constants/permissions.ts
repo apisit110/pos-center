@@ -11,3 +11,4 @@ export const PERMISSION_STORE_PRODUCTS_CREATE = 'store_products:create';
 export const PERMISSION_STAFFS_VIEW = 'staffs:view';
 export const PERMISSION_STAFF_DETAIL_VIEW = 'staff_detail:view';
 export const PERMISSION_TRANSACTIONS_VIEW = 'transactions:view';
+export const PERMISSION_TRANSACTION_DETAIL_VIEW = 'transaction_detail:view';

@@ -11,7 +11,8 @@ import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiM
 import { ApiStoreRepository } from '../../../infrastructure/repositories/ApiStoreRepository';
 import { Product } from '../../../domain/entities/Product';
 import { ProductFilter } from '../../../domain/repositories/ProductRepository';
-import { DataTable, FilterBar, TextFilter, SelectFilter, ClearFilterButton, InputField, Button } from '@apisit110/pos-ui';
+import { formatAmount } from '../../../lib/formatAmount';
+import { DataTable, FilterBar, TextFilter, SelectFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
 import { useRouter } from 'next/navigation';
 
 type LocalProductFilter = {
@@ -40,13 +41,22 @@ const PageContainer = styled.div`
   gap: 1.5rem;
 `;
 
-const ButtonGroup = styled.div`
+const ProductFilterBar = styled(FilterBar)`
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: start;
+`;
+
+const ButtonCell = styled.div`
   display: flex;
-  gap: 0.75rem;
-  align-items: flex-end;
-  grid-column: 1 / -1;
-  justify-content: flex-end;
-  margin-top: 0.5rem;
+  align-items: flex-start;
+  /* skip the filter label (line + gap) so buttons line up with the controls */
+  padding-top: calc(0.75rem * 1.2 + 0.5rem);
+
+  & > button {
+    width: 100%;
+    height: 38px;
+    margin: 0;
+  }
 `;
 
 
@@ -152,7 +162,7 @@ export default function ProductsPage() {
     { header: 'Brand', key: 'brand' },
     { header: 'Unit', key: 'unitName' },
     { header: 'Merchant', key: 'merchant', render: (p: Product) => merchantMap[p.merchantId] || p.mid },
-    { header: 'Price', key: 'price', render: (p: Product) => `${p.basePrice.toLocaleString()} ฿` },
+    { header: 'Price', key: 'price', render: (p: Product) => `${formatAmount(p.basePrice)} ฿` },
   ];
 
   const brandOptions = metadata.brands.map(b => ({ value: b, label: b }));
@@ -163,7 +173,7 @@ export default function ProductsPage() {
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '-0.5rem' }}>
         <Button style={{ width: 'auto' }} onClick={() => router.push('/products/new')}>+ Add Product</Button>
       </div>
-      <FilterBar>
+      <ProductFilterBar>
         <TextFilter
           label="Barcode"
           placeholder="Search barcode..."
@@ -178,13 +188,14 @@ export default function ProductsPage() {
           onChange={(value) => setFilters({ ...filters, name: value })}
         />
 
-        <InputField
+        <TextFilter
           label="Max Price"
-          type="number"
           placeholder="Max price..."
-          value={filters.price === undefined ? '' : filters.price}
-          onChange={(e) => setFilters({ ...filters, price: e.target.value ? Number(e.target.value) : undefined })}
-          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+          value={filters.price === undefined ? '' : String(filters.price)}
+          onChange={(value) => {
+            const price = Number(value);
+            setFilters({ ...filters, price: value && !Number.isNaN(price) ? price : undefined });
+          }}
         />
 
         <SelectFilter
@@ -194,6 +205,10 @@ export default function ProductsPage() {
           options={brandOptions}
           placeholder="All Brands"
         />
+
+        <ButtonCell>
+          <Button onClick={handleSearch}>Search</Button>
+        </ButtonCell>
 
         <SelectFilter
           label="Unit"
@@ -220,11 +235,12 @@ export default function ProductsPage() {
           disabled={!filters.merchantId && merchants.length > 0}
         />
 
-        <ButtonGroup>
+        <div />
+
+        <ButtonCell>
           <ClearFilterButton onClick={handleClear}>Clear</ClearFilterButton>
-          <Button style={{ width: 'auto' }} onClick={handleSearch}>Search</Button>
-        </ButtonGroup>
-      </FilterBar>
+        </ButtonCell>
+      </ProductFilterBar>
 
       <DataTable
         columns={columns}

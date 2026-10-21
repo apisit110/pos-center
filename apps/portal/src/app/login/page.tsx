@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { LoginUseCase } from '../../domain/usecases/LoginUseCase';
 import { ApiAuthRepository } from '../../infrastructure/repositories/ApiAuthRepository';
 import { getResDescMessage } from '../../infrastructure/api/ApiClient';
-import { InputField, Button } from '@apisit110/pos-ui';
+import { InputField, PinInputField, Button } from '@apisit110/pos-ui';
 
 export default function LoginPage() {
   const [username, setUsername] = useState('');
@@ -60,12 +60,10 @@ export default function LoginPage() {
               onChange={(e) => setUsername(e.target.value)}
             />
 
-            <InputField
+            <PinInputField
               label="Pin"
-              type="password"
-              placeholder="••••••••"
               value={pin}
-              onChange={(e) => setPin(e.target.value)}
+              onChange={setPin}
             />
 
             {error && <p style={{ color: '#f87171', fontSize: '0.8rem', marginBottom: '1rem' }}>{error}</p>}
