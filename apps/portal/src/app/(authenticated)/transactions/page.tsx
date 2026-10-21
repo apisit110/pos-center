@@ -10,6 +10,10 @@ import { GetTransactionsUseCase } from '../../../domain/usecases/GetTransactions
 import { ApiTransactionRepository } from '../../../infrastructure/repositories/ApiTransactionRepository';
 import { TransactionStatusBadge } from '../../../presentation/components/TransactionStatusBadge';
 import { Transaction } from '../../../domain/entities/Transaction';
+import { GetMerchantsUseCase } from '../../../domain/usecases/GetMerchantsUseCase';
+import { GetStoresUseCase } from '../../../domain/usecases/GetStoresUseCase';
+import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiMerchantRepository';
+import { ApiStoreRepository } from '../../../infrastructure/repositories/ApiStoreRepository';
 import { TransactionFilter } from '../../../domain/repositories/TransactionRepository';
 
 const PageContainer = styled.div`
@@ -57,6 +61,8 @@ const getEmptyFilters = (): TransactionFilter => ({
   orderId: '',
   method: '',
   status: '',
+  merchantId: '',
+  storeId: '',
 });
 
 const methodOptions = [
@@ -128,6 +134,25 @@ export default function TransactionsPage() {
   const [pendingFilters, setPendingFilters] = useState<TransactionFilter>(getEmptyFilters);
   const [activeFilters, setActiveFilters] = useState<TransactionFilter>(getEmptyFilters);
 
+  const [merchants, setMerchants] = useState<{ value: string; label: string }[]>([]);
+  const [stores, setStores] = useState<{ value: string; label: string }[]>([]);
+
+  useEffect(() => {
+    const loadOptions = async () => {
+      const merchantData = await new GetMerchantsUseCase(new ApiMerchantRepository()).execute(1, 100);
+      setMerchants(merchantData.merchants.map(m => ({ value: m.uid, label: m.name })));
+      const storeData = await new GetStoresUseCase(new ApiStoreRepository()).execute();
+      setStores(storeData.map(s => ({ value: s.uid, label: s.name })));
+    };
+    loadOptions();
+  }, []);
+
+  const handleMerchantChange = async (merchantId: string) => {
+    setPendingFilters(f => ({ ...f, merchantId, storeId: '' }));
+    const storeData = await new GetStoresUseCase(new ApiStoreRepository()).execute(merchantId || undefined);
+    setStores(storeData.map(s => ({ value: s.uid, label: s.name })));
+  };
+
   useEffect(() => {
     let cancelled = false;
 
@@ -163,6 +188,9 @@ export default function TransactionsPage() {
     setPendingFilters(getEmptyFilters());
     setActiveFilters(getEmptyFilters());
     setPage(1);
+    new GetStoresUseCase(new ApiStoreRepository()).execute().then(data =>
+      setStores(data.map(s => ({ value: s.uid, label: s.name })))
+    );
   };
 
   return (
@@ -210,6 +238,22 @@ export default function TransactionsPage() {
           onChange={value => setPendingFilters(f => ({ ...f, status: value }))}
           options={statusOptions}
           placeholder="All statuses"
+        />
+
+        <SelectFilter
+          label="Merchant"
+          value={pendingFilters.merchantId ?? ''}
+          onChange={handleMerchantChange}
+          options={merchants}
+          placeholder="All Merchants"
+        />
+
+        <SelectFilter
+          label="Store"
+          value={pendingFilters.storeId ?? ''}
+          onChange={value => setPendingFilters(f => ({ ...f, storeId: value }))}
+          options={stores}
+          placeholder="All Stores"
         />
 
         <ButtonGroup>

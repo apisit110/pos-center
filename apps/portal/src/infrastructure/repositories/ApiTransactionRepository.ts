@@ -46,6 +46,8 @@ export class ApiTransactionRepository implements TransactionRepository {
       order_id: filters?.orderId,
       method: toApiEnum(filters?.method),
       status: toApiEnum(filters?.status),
+      merchant_uid: filters?.merchantId,
+      store_uid: filters?.storeId,
       start_date: filters?.startDate,
       end_date: filters?.endDate,
     });

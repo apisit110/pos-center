@@ -7,6 +7,8 @@ export interface TransactionFilter {
   orderId?: string;
   method?: string;
   status?: string;
+  merchantId?: string;
+  storeId?: string;
 }
 
 export interface TransactionRepository {
