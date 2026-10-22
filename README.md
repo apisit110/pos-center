@@ -44,22 +44,17 @@ pnpm --filter @pos-center/database db:migrate
 todos
 
 [ ] - upupdate product price of store
- 
 
-
-----
+---
 
 todos
 
-[ ] - add product detail to master_product_2.json
-    - use unused_product_images.json for more information to checking
+[ ] - add product detail to master_product_2.json - use unused_product_images.json for more information to checking
 [ ] - create master_store_product_2.json
-
-
 
 center
 admin
-123456 admin
+123456
 
 cashier
 00010001
@@ -68,6 +63,41 @@ cashier
 MERCHANT_ID=0001
 STORE_ID=00010001
 TERMINAL_ID=0001000101
+
+---
+
+# กรณี mode = offline
+
+อยากให้สร้าง user 2 คนสำหรับ manager และ cashier
+
+Config
+
+| xxx           | xxxx                                 |
+| ------------- | ------------------------------------ |
+| merchant      | 0001                                 |
+| store         | 00010001                             |
+| terminal      | 0001000101                           |
+| staff         |                                      |
+| staff.manager | username: 00010001, password: 123456 |
+| staff.cashier | username: 00010002, password: 123456 |
+
+Migrate & Seed
+
+| xxx     | xxxx            |
+| ------- | --------------- |
+| manager | ไปสร้าง product |
+| cashier | เริ่มขาย        |
+
+# กรณี mode = online
+
+- สร้าง merchant ที่ center
+- สร้าง store ที่ center
+- สร้าง staff สำหรับเข้าใช้งานในระบบ cashier ที่ center
+- [optional] - สร้าง product ที่ center
+- [optional] - map product เข้า store
+- สร้าง user
+- สร้าง credential?
+- ส่ง config ให้ cashier
 
 ---
 
