@@ -1,12 +1,11 @@
-import { pgTable, varchar, timestamp, serial, integer } from 'drizzle-orm/pg-core';
-import { stores } from './stores';
+import { pgTable, varchar, timestamp, serial } from 'drizzle-orm/pg-core';
 
-export const terminals = pgTable('terminals', {
+export const terminals = pgTable('terminal', {
   id: serial('id').primaryKey(),
-  uid: varchar('uid', { length: 255 }).unique().notNull(),
-  storeId: integer('store_id').references(() => stores.id).notNull(),
+  uid: varchar('uid', { length: 100 }).unique().notNull(),
   tid: varchar('tid', { length: 50 }).unique().notNull(),
-  name: varchar('name', { length: 255 }).notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  nameEn: varchar('name_en', { length: 255 }).notNull(),
+  nameTh: varchar('name_th', { length: 255 }).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
 });

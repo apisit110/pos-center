@@ -1,17 +1,19 @@
-import { pgTable, text, varchar, decimal, timestamp, serial, integer, jsonb } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, decimal, timestamp, serial, integer } from 'drizzle-orm/pg-core';
 import { merchants } from './merchants';
+import { brands } from './brands';
 
-export const products = pgTable('products', {
+export const products = pgTable('product', {
   id: serial('id').primaryKey(),
-  uid: varchar('uid', { length: 255 }).unique().notNull(),
   merchantId: integer('merchant_id').references(() => merchants.id).notNull(),
-  name: varchar('name', { length: 255 }).notNull(),
-  sku: varchar('sku', { length: 100 }),
+  brandId: integer('brand_id').references(() => brands.id),
+  uid: varchar('uid', { length: 100 }).unique().notNull(),
+  nameEn: varchar('name_en', { length: 255 }).notNull(),
+  nameTh: varchar('name_th', { length: 255 }).notNull(),
+  sku: varchar('sku', { length: 100 }).notNull(),
   barcode: varchar('barcode', { length: 100 }),
-  basePrice: decimal('base_price', { precision: 10, scale: 2 }).notNull(),
-  imageUrl: jsonb('image_url'),
-  brand: varchar('brand', { length: 100 }),
-  unitName: varchar('unit_name', { length: 100 }),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
+  basePrice: decimal('base_price', { precision: 10, scale: 4 }).notNull(),
+  imageUrl: varchar('image_url', { length: 500 }),
+  unitName: varchar('unit_name', { length: 50 }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
 });

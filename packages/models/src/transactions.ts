@@ -1,25 +1,19 @@
-import { pgTable, varchar, decimal, timestamp, serial, integer } from 'drizzle-orm/pg-core';
-import { orders } from './orders';
-import { stores } from './stores';
+import { pgTable, varchar, decimal, timestamp, serial, integer, index } from 'drizzle-orm/pg-core';
 
+// Standalone: merchantId / storeId / terminalId are logical references (no FK)
 export const transactions = pgTable('transactions', {
-  id: varchar('id', { length: 255 }).primaryKey(),
-  uid: varchar('uid', { length: 255 }).unique().notNull(),
-  orderId: integer('order_id').references(() => orders.id).notNull(),
-  merchantId: varchar('merchant_id', { length: 255 }).notNull(),
-  storeId: integer('store_id').references(() => stores.id).notNull(),
-  terminalId: varchar('terminal_id', { length: 255 }),
-  amount: decimal('amount', { precision: 12, scale: 2 }).notNull(),
-  paymentMethod: varchar('payment_method', { length: 50 }).notNull(),
-  status: varchar('status', { length: 50 }).notNull(),
-  staffName: varchar('staff_name', { length: 255 }).notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
-});
-
-export const transactionSyncLogs = pgTable('transaction_sync_logs', {
   id: serial('id').primaryKey(),
-  posTempId: varchar('pos_temp_id', { length: 255 }).notNull(),
-  storeId: integer('store_id').references(() => stores.id).notNull(),
-  globalTransactionId: varchar('global_transaction_id', { length: 255 }).references(() => transactions.id).notNull(),
-  syncedAt: timestamp('synced_at').defaultNow(),
-});
+  uid: varchar('uid', { length: 100 }).unique().notNull(),
+  orderId: varchar('order_id', { length: 100 }),
+  merchantId: integer('merchant_id'),
+  storeId: integer('store_id'),
+  terminalId: integer('terminal_id'),
+  amount: decimal('amount', { precision: 10, scale: 4 }),
+  paymentMethod: varchar('payment_method', { length: 20, enum: ['CASH', 'QR'] }),
+  status: varchar('status', { length: 20, enum: ['PENDING', 'APPROVED', 'FAILED', 'VOIDED', 'REFUNDED'] }),
+  staffName: varchar('staff_name', { length: 255 }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
+}, (table) => ({
+  orderIdIdx: index('transactions_order_id_idx').on(table.orderId),
+}));

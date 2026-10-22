@@ -1,15 +1,15 @@
-import { pgTable, varchar, timestamp, serial, integer, uuid, uniqueIndex } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, timestamp, serial, integer, index } from 'drizzle-orm/pg-core';
 
-export const pins = pgTable('center_pin', {
+export const pins = pgTable('pin', {
   id: serial('id').primaryKey(),
-  uuid: uuid('uuid').defaultRandom().unique().notNull(),
-  appId: varchar('app_id', { length: 50 }).notNull(),
+  uuid: varchar('uuid', { length: 100 }).unique().notNull(),
+  appId: integer('app_id').notNull(),
   username: varchar('username', { length: 100 }).notNull(),
   pinHash: varchar('pin_hash', { length: 255 }).notNull(),
-  pinFailedAttempts: integer('pin_failed_attempts').default(0).notNull(),
+  pinFailedAttempts: integer('pin_failed_attempts'),
   pinLockedUntil: timestamp('pin_locked_until'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
 }, (table) => ({
-  appIdUsernameUq: uniqueIndex('center_pin_app_id_username_uq').on(table.appId, table.username),
+  usernameIdx: index('pin_username_idx').on(table.username),
 }));
