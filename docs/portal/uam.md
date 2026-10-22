@@ -9,6 +9,8 @@ User Access Matrix หรือ ตารางกำหนดสิทธิ์
 | merchants:view          | x             |
 | merchants:create        | x             |
 | merchant_detail:view    | x             |
+| merchant_credentials:create | x         |
+| merchant_credentials:rotate | x         |
 | stores:view             | x             |
 | stores:create           | x             |
 | store_detail:view       | x             |

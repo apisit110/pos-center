@@ -1,10 +1,12 @@
-import { pgTable, varchar, timestamp, serial, index, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, timestamp, serial, index, pgEnum, integer } from 'drizzle-orm/pg-core';
+import { merchants } from './merchants';
 
 export const cashierStaffStatusEnum = pgEnum('cashier_staff_status', ['PENDING', 'ACTIVE', 'SUSPENDED', 'INACTIVE']);
 export const cashierStaffSyncStatusEnum = pgEnum('cashier_staff_sync_status', ['PENDING', 'SYNCED', 'ERROR']);
 
 export const cashierStaff = pgTable('cashier_staff', {
   id: serial('id').primaryKey(),
+  merchantId: integer('merchant_id').references(() => merchants.id).notNull(),
   uid: varchar('uid', { length: 100 }).unique(),
   username: varchar('username', { length: 100 }),
   fullName: varchar('full_name', { length: 255 }),

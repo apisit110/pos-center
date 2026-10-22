@@ -26,8 +26,8 @@ erDiagram
     int id PK "AUTO INCREMENT, NOT NULL"
     int merchant_id FK "NOT NULL"
     enum provider "POS_CASHIER, NOT NULL"
-    varchar client_id "NOT NULL"
-    varchar client_secret "NOT NULL"
+    varchar client_id UK "NOT NULL"
+    varchar client_secret "SHA-256 hash, NOT NULL"
     datetime created_at "NOT NULL"
     datetime updated_at "NOT NULL"
   }
@@ -245,6 +245,7 @@ erDiagram
 erDiagram
   cashier_staff {
     int id PK "AUTO INCREMENT, NOT NULL"
+    int merchant_id FK "NOT NULL"
     varchar uid UK
     varchar username "INDEX"
     varchar full_name
@@ -283,6 +284,7 @@ erDiagram
     boolean is_granted
   }
 
+  merchant ||--o{ cashier_staff : "employs"
   cashier_staff ||--o{ cashier_staff_role : "has"
   cashier_role ||--o{ cashier_staff_role : "assigned to"
   cashier_role ||--o{ cashier_role_permissions : "grants"
@@ -319,15 +321,15 @@ erDiagram
 
 ## table: merchant_credential
 
-ข้อมูล credential สำหรับเชื่อมต่อระบบภายนอกของ merchant
+ข้อมูล credential สำหรับเชื่อมต่อระบบภายนอกของ merchant (1 merchant มี 1 credential ต่อ provider: unique `(merchant_id, provider)`)
 
 | Field Name    | Data Type | Length | Key | Nullable | Description                                  |
 | ------------- | --------- | ------ | --- | -------- | -------------------------------------------- |
 | id            | int       | -      | PK  | No       | รหัสอ้างอิงภายใน (auto increment)            |
 | merchant_id   | int       | -      | FK  | No       | อ้างอิง merchant.id                          |
 | provider      | enum      | -      |     | No       | ผู้ให้บริการ: `POS_CASHIER`                  |
-| client_id     | varchar   | 255    |     | No       | Client ID                                    |
-| client_secret | varchar   | 255    |     | No       | Client Secret (ควรเก็บแบบเข้ารหัส)           |
+| client_id     | varchar   | 255    | UK  | No       | Client ID (สร้างโดยระบบ ไม่ซ้ำ)              |
+| client_secret | varchar   | 255    |     | No       | SHA-256 hash (hex) ของ Client Secret ห้ามเก็บค่าจริง แสดงค่าจริงครั้งเดียวตอนสร้าง/rotate |
 | created_at    | datetime  | -      |     | No       | วันที่สร้าง                                  |
 | updated_at    | datetime  | -      |     | No       | วันที่แก้ไขล่าสุด                            |
 
@@ -584,6 +586,7 @@ erDiagram
 | Field Name  | Data Type | Length | Key | Nullable | Description                                       |
 | ----------- | --------- | ------ | --- | -------- | ------------------------------------------------- |
 | id          | int       | -      | PK  | No       | รหัสอ้างอิงภายใน (auto increment)                 |
+| merchant_id | int       | -      | FK  | No       | อ้างอิง merchant.id (merchant ที่พนักงานสังกัด)   |
 | uid         | varchar   | 100    | UK  | Yes      | รหัสอ้างอิงสากลของพนักงาน                         |
 | username    | varchar   | 100    | IDX | Yes      | ชื่อผู้ใช้                                        |
 | full_name   | varchar   | 255    |     | Yes      | ชื่อ-นามสกุล                                      |

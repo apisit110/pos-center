@@ -74,6 +74,14 @@ documentation: docs/portal/flow/merchant/get-merchant-detail.md
 
 documentation: docs/portal/flow/merchant/post-merchant.md
 
+## Merchant - Create Merchant Credential
+
+documentation: docs/portal/flow/merchant/post-merchant-credential.md
+
+## Merchant - Rotate Merchant Credential
+
+documentation: docs/portal/flow/merchant/post-merchant-credential-rotate.md
+
 ## Product - List Product
 
 documentation: docs/portal/flow/product/get-products.md
