@@ -3,7 +3,7 @@ import { pgTable, varchar, timestamp, serial, integer, index } from 'drizzle-orm
 export const pins = pgTable('pin', {
   id: serial('id').primaryKey(),
   uuid: varchar('uuid', { length: 100 }).unique().notNull(),
-  appId: integer('app_id').notNull(),
+  appId: varchar('app_id', { length: 20 }).notNull(),
   username: varchar('username', { length: 100 }).notNull(),
   pinHash: varchar('pin_hash', { length: 255 }).notNull(),
   pinFailedAttempts: integer('pin_failed_attempts'),

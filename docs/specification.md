@@ -23,7 +23,10 @@ documentation: docs/project-structure/project-structure.md
 
 # Variables
 
-app_id: APP0001
+app_id:
+
+- `APP0001` = cashier, username คือ `cashier_staff.username`
+- `APP0002` = center, username คือ `center_staff.username`
 
 
 # Code style
