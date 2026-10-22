@@ -90,14 +90,32 @@ Migrate & Seed
 
 # กรณี mode = online
 
-- สร้าง merchant ที่ center
-- สร้าง store ที่ center
-- สร้าง staff สำหรับเข้าใช้งานในระบบ cashier ที่ center
-- [optional] - สร้าง product ที่ center
-- [optional] - map product เข้า store
-- สร้าง user
+center
+
+- สร้าง merchant
+- สร้าง store
+- สร้าง terminal
+- สร้าง staff ของระบบ cashier
+- [optional] - สร้าง product เข้า store และ กำหนดราคาใน xlsx
 - สร้าง credential?
 - ส่ง config ให้ cashier
+  - mid
+  - sid
+  - tid
+  - credential
+
+cashier
+
+- config ให้ใช้ online mode
+- เข้าเว็บจะแสดงให้กรอก terminal id ตอนกรอก terminal id จะ sync ข้อมูล
+  - merchant
+  - store
+  - staff
+  - sync product
+
+
+> เปลี่ยน mid เป็น partner id
+> เพราะ 1 ร้านมีได้หลาน mid
 
 ---
 

@@ -1,6 +1,7 @@
 export * from './merchants';
 export * from './products';
 export * from './stores';
+export * from './terminals';
 export * from './storeProducts';
 export * from './centerStaff';
 export * from './centerPin';
@@ -10,6 +11,5 @@ export * from './centerStaffRole';
 export * from './centerRolePermission';
 export * from './runningNumbers';
 export * from './syncMetadata';
-export * from './terminals';
 export * from './orders';
 export * from './transactions';
