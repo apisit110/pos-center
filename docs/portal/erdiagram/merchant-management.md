@@ -5,7 +5,7 @@
 ```mermaid
 erDiagram
   merchant {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     varchar uid UK "NOT NULL"
     varchar partner_id UK "NOT NULL"
     varchar name_en "NOT NULL"
@@ -15,7 +15,7 @@ erDiagram
   }
 
   merchant_profile {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     int merchant_id FK "NOT NULL"
     varchar mid UK
     datetime created_at "NOT NULL"
@@ -23,9 +23,9 @@ erDiagram
   }
 
   merchant_credential {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     int merchant_id FK "NOT NULL"
-    enum provider "POS_CASHIER" "NOT NULL"
+    enum provider "POS_CASHIER, NOT NULL"
     varchar client_id "NOT NULL"
     varchar client_secret "NOT NULL"
     datetime created_at "NOT NULL"
@@ -33,7 +33,7 @@ erDiagram
   }
 
   store {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     int merchant_id FK "NOT NULL"
     varchar uid UK "NOT NULL"
     varchar sid UK "NOT NULL"
@@ -44,7 +44,7 @@ erDiagram
   }
 
   address {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     int province_id FK "NOT NULL"
     int district_id FK "NOT NULL"
     int sub_district_id FK "NOT NULL"
@@ -59,13 +59,13 @@ erDiagram
   map_store_address {
     int store_id PK "NOT NULL"
     int address_id PK "NOT NULL"
-    enum type "REGISTERED, CONTRACT" "NOT NULL"
+    enum type "REGISTERED, CONTRACT, NOT NULL"
     datetime created_at "NOT NULL"
     datetime updated_at "NOT NULL"
   }
 
   terminal {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     varchar uid UK "NOT NULL"
     varchar tid UK "NOT NULL"
     varchar name_en "NOT NULL"
@@ -82,7 +82,7 @@ erDiagram
   }
 
   product {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     int merchant_id FK "NOT NULL"
     int brand_id FK
     varchar uid UK "NOT NULL"
@@ -90,7 +90,7 @@ erDiagram
     varchar name_th "NOT NULL"
     varchar sku "NOT NULL"
     varchar barcode
-    decimal base_price "10,4" "NOT NULL"
+    decimal base_price "10,4, NOT NULL"
     varchar image_url
     varchar unit_name
     datetime created_at "NOT NULL"
@@ -98,7 +98,7 @@ erDiagram
   }
 
   brand {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     varchar uid UK "NOT NULL"
     varchar name_en "NOT NULL"
     varchar name_th "NOT NULL"
@@ -110,22 +110,22 @@ erDiagram
     int store_id PK "NOT NULL"
     int product_id PK "NOT NULL"
     int stock "NOT NULL"
-    decimal price "10,4" "NOT NULL"
-    int sync_version "DEFAULT 0" "NOT NULL"
+    decimal price "10,4, NOT NULL"
+    int sync_version "DEFAULT 0, NOT NULL"
     datetime created_at "NOT NULL"
     datetime updated_at "NOT NULL"
   }
 
   member {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     varchar phone_no UK "NOT NULL"
     datetime created_at "NOT NULL"
     datetime updated_at "NOT NULL"
   }
 
   wallet {
-    int id PK "AUTO INCREMENT" "NOT NULL"
-    decimal balance "10,4" "DEFAULT 0" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
+    decimal balance "10,4, DEFAULT 0, NOT NULL"
     datetime created_at "NOT NULL"
     datetime updated_at "NOT NULL"
   }
@@ -133,36 +133,36 @@ erDiagram
   map_member_wallet {
     int member_id PK "NOT NULL"
     int wallet_id PK "NOT NULL"
-    enum type "POINT, CASH" "NOT NULL"
+    enum type "POINT, CASH, NOT NULL"
   }
 
   order {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     int merchant_id FK "NOT NULL"
     int store_id FK "NOT NULL"
     int terminal_id FK "NOT NULL"
     int cashier_staff_id FK "NOT NULL"
     int member_id FK
     varchar order_id UK "NOT NULL"
-    decimal total_amount "10,4" "NOT NULL"
-    varchar status "PENDING, PAID, VOID, REFUNDED" "NOT NULL"
-    boolean is_synced "DEFAULT FALSE" "NOT NULL"
+    decimal total_amount "10,4, NOT NULL"
+    varchar status "PENDING, PAID, VOID, REFUNDED, NOT NULL"
+    boolean is_synced "DEFAULT FALSE, NOT NULL"
     datetime created_at "NOT NULL"
     datetime updated_at "NOT NULL"
   }
 
   order_items {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     int order_id FK "NOT NULL"
     int product_id FK "NOT NULL"
-    decimal price "10,4" "NOT NULL"
+    decimal price "10,4, NOT NULL"
     int quantity "NOT NULL"
     datetime created_at "NOT NULL"
     datetime updated_at "NOT NULL"
   }
 
   order_sync_logs {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     int store_id FK "NOT NULL"
     varchar pos_temp_id "INDEX"
     varchar global_order_id "INDEX"
@@ -197,7 +197,7 @@ erDiagram
 ```mermaid
 erDiagram
   provinces {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     varchar code UK
     varchar name_en
     varchar name_th
@@ -205,7 +205,7 @@ erDiagram
     datetime updated_at "NOT NULL"
   }
   districts {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     int province_id FK
     varchar code UK
     varchar name_en
@@ -214,7 +214,7 @@ erDiagram
     datetime updated_at "NOT NULL"
   }
   sub_districts {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     int district_id FK
     varchar code UK
     varchar name_en
@@ -225,7 +225,7 @@ erDiagram
     datetime updated_at "NOT NULL"
   }
   postal_code {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     int sub_district_id FK
     varchar code UK
   }
@@ -244,7 +244,7 @@ erDiagram
 ```mermaid
 erDiagram
   cashier_staff {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     varchar uid UK
     varchar username "INDEX"
     varchar full_name
@@ -256,7 +256,7 @@ erDiagram
   }
 
   cashier_role {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     varchar name
     datetime created_at "NOT NULL"
     datetime updated_at "NOT NULL"
@@ -277,7 +277,7 @@ erDiagram
   }
 
   cashier_role_permissions {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     int role_id FK
     varchar permission_key
     boolean is_granted

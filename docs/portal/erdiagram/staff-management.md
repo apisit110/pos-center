@@ -6,17 +6,17 @@ erDiagram
   center_permission ||--o{ center_role_permission : "granted to"
 
   center_staff {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     varchar uid UK "NOT NULL"
-    varchar username "INDEX" "NOT NULL"
+    varchar username "INDEX, NOT NULL"
     varchar full_name
-    varchar status "PENDING, ACTIVE, SUSPENDED, INACTIVE" "NOT NULL"
+    varchar status "PENDING, ACTIVE, SUSPENDED, INACTIVE, NOT NULL"
     datetime created_at "NOT NULL"
     datetime updated_at "NOT NULL"
   }
 
   center_role {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     varchar name "NOT NULL"
     datetime created_at "NOT NULL"
     datetime updated_at "NOT NULL"
@@ -30,7 +30,7 @@ erDiagram
   }
 
   center_permission {
-    int id PK "AUTO INCREMENT" "NOT NULL"
+    int id PK "AUTO INCREMENT, NOT NULL"
     varchar name "NOT NULL"
     datetime created_at "NOT NULL"
     datetime updated_at "NOT NULL"

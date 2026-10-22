@@ -4,7 +4,7 @@ erDiagram
     int id PK "AUTO INCREMENT"
     varchar uuid UK "NOT NULL"
     int app_id "NOT NULL"
-    varchar username "INDEX" "NOT NULL"
+    varchar username "INDEX, NOT NULL"
     varchar pin_hash "NOT NULL"
     int pin_failed_attempts
     datetime pin_locked_until
