@@ -6,7 +6,7 @@ export const getTransactionsQuerySchema = z.object({
   limit: limitSchema,
   transaction_id: z.string().optional(),
   order_id: z.string().optional(),
-  method: z.enum(['CASH', 'QR']).optional(),
+  method: z.enum(['CASH', 'QR_PROMPTPAY']).optional(),
   status: z.enum(['PENDING', 'APPROVED', 'FAILED', 'VOIDED', 'REFUNDED']).optional(),
   start_date: dateStringSchema.optional(),
   end_date: dateStringSchema.optional(),

@@ -33,8 +33,10 @@ request body:
 | transactions[].store_id       | string | true     | store `sid`, min length 1                           |
 | transactions[].terminal_id    | string | false    | terminal `tid`, nullable                            |
 | transactions[].amount         | number | true     | transaction amount                                  |
-| transactions[].payment_method | string | true     | `CASH`, `CREDIT_CARD` (not supported yet, result `error`), `QR_PROMPTPAY` (stored as `QR`) |
-| transactions[].status         | string | true     | `SUCCESS` (stored as `APPROVED`), `FAILED`, `REFUNDED` |
+| transactions[].received_amount | number | false   | cash received from customer, min 0, nullable (e.g. null for `QR_PROMPTPAY`) |
+| transactions[].change_amount  | number | false    | change given back to customer, min 0, nullable      |
+| transactions[].payment_method | string | true     | `CASH`, `QR_PROMPTPAY`                              |
+| transactions[].status         | string | true     | `PENDING`, `APPROVED`, `FAILED`, `VOIDED`, `REFUNDED` |
 | transactions[].staff_name     | string | true     | cashier staff name, min length 1                    |
 | transactions[].created_at     | string | true     | transaction created date time, ISO 8601             |
 
@@ -50,8 +52,10 @@ example request body:
       "store_id": "string",
       "terminal_id": "string",
       "amount": 125.5,
+      "received_amount": 200,
+      "change_amount": 74.5,
       "payment_method": "CASH",
-      "status": "SUCCESS",
+      "status": "APPROVED",
       "staff_name": "string",
       "created_at": "2026-01-01T00:00:00.000Z"
     }
@@ -120,11 +124,17 @@ Logic:
   - amount
     - type: number
     - required: true
+  - received_amount, change_amount
+    - type: number
+    - min: 0
+    - nullable: true
+    - required: false
+    - default: null
   - payment_method
-    - type: enum (`CASH`, `CREDIT_CARD`, `QR_PROMPTPAY`)
+    - type: enum (`CASH`, `QR_PROMPTPAY`)
     - required: true
   - status
-    - type: enum (`SUCCESS`, `FAILED`, `REFUNDED`)
+    - type: enum (`PENDING`, `APPROVED`, `FAILED`, `VOIDED`, `REFUNDED`)
     - required: true
   - created_at
     - type: string
@@ -137,8 +147,6 @@ Logic:
   - Check idempotency
     - Find `transactions` by `uid` = transaction uid
     - if found, push result `already_synced` with `globalTransactionId` = `transactions.id` and skip to next transaction
-  - Map `payment_method` (`CASH` -> `CASH`, `QR_PROMPTPAY` -> `QR`) and `status` (`SUCCESS` -> `APPROVED`, `FAILED` -> `FAILED`, `REFUNDED` -> `REFUNDED`)
-    - if `payment_method` is `CREDIT_CARD`, push result `error` (`transactions.payment_method` supports only `CASH`, `QR`)
   - Find merchant by `partner_id` = `merchant_id`
     - if not found, push result `error`
   - Find store by `sid` = `store_id` AND `merchant_id` = merchant id
@@ -147,7 +155,7 @@ Logic:
     - if not found, push result `error` (order must be pushed first)
   - if `terminal_id` is provided, find terminal by `tid` = `terminal_id`
     - if not found, save `terminal_id` as null
-  - Insert `transactions` (uid, order_id = `order_id` (client order id), merchant_id = merchant id, store_id = store id, terminal_id = terminal id, amount, payment_method, status, staff_name, created_at), `id` is auto increment
+  - Insert `transactions` (uid, order_id = `order_id` (client order id), merchant_id = merchant id, store_id = store id, terminal_id = terminal id, amount, received_amount, change_amount, payment_method, status, staff_name, created_at), `id` is auto increment
   - push result `synced` with `globalTransactionId` = saved transaction id
   - if any error, log error and push result `error` with `globalTransactionId` = empty string
 - Find sync state, see [pull state](./pull-state.md), of `req.syncAuth`

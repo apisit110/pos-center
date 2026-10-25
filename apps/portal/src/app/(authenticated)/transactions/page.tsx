@@ -73,7 +73,7 @@ export default function TransactionsPage() {
   const { t, language } = useTranslation();
   const methodOptions = [
     { value: 'cash', label: t.transactionList.methodCash },
-    { value: 'qr', label: t.transactionList.methodQr },
+    { value: 'qr_promptpay', label: t.transactionList.methodQr },
   ];
   const statusOptions = statusValues.map(value => ({
     value,

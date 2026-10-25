@@ -1,8 +1,8 @@
 import { NameLanguage, pickName } from './LocalizedName';
 
-// lower-case form of the API enums (`PENDING|APPROVED|FAILED|VOIDED|REFUNDED`, `CASH|QR`)
+// lower-case form of the API enums (`PENDING|APPROVED|FAILED|VOIDED|REFUNDED`, `CASH|QR_PROMPTPAY`)
 export type TransactionStatus = 'pending' | 'approved' | 'failed' | 'voided' | 'refunded';
-export type TransactionMethod = 'cash' | 'qr';
+export type TransactionMethod = 'cash' | 'qr_promptpay';
 
 export class Transaction {
   constructor(

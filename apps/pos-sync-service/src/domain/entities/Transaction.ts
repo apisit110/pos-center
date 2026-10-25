@@ -6,6 +6,8 @@ export class Transaction {
     public readonly merchantId: string,
     public readonly terminalId: string | null,
     public readonly amount: number,
+    public readonly receivedAmount: number | null,
+    public readonly changeAmount: number | null,
     public readonly paymentMethod: string,
     public readonly status: string,
     public readonly staffName: string,

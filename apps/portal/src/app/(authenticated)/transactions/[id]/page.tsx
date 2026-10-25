@@ -112,7 +112,7 @@ export default function TransactionDetailPage() {
   const td = t.transactionDetail;
   const methodLabels: Record<string, string> = {
     cash: t.transactionList.methodCash,
-    qr: t.transactionList.methodQr,
+    qr_promptpay: t.transactionList.methodQr,
   };
   const statusLabel = (status: string) =>
     t.transactionStatus[status?.toLowerCase() as keyof typeof t.transactionStatus] ?? capitalize(status);

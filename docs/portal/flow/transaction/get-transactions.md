@@ -24,7 +24,7 @@ request query:
 | limit          | number | false    | 10      | items per page, integer, min 1, max 100                                                           |
 | transaction_id | string | false    |         | filter by transaction uid, partial match                                                          |
 | order_id       | string | false    |         | filter by order id, partial match                                                                 |
-| method         | string | false    |         | filter by payment method (exact match): `CASH`, `QR`                                      |
+| method         | string | false    |         | filter by payment method (exact match): `CASH`, `QR_PROMPTPAY`                                      |
 | status         | string | false    |         | filter by status (exact match): `PENDING`, `APPROVED`, `FAILED`, `VOIDED`, `REFUNDED`                             |
 | start_date     | string | false    |         | filter transactions created on or after this date. `YYYY-MM-DD` = start of that day in `Asia/Bangkok` (00:00:00.000+07:00), or ISO 8601 date time with timezone = that exact instant |
 | end_date       | string | false    |         | filter transactions created on or before this date. `YYYY-MM-DD` = end of that day in `Asia/Bangkok` (23:59:59.999+07:00), or ISO 8601 date time with timezone = that exact instant |
@@ -40,7 +40,7 @@ response body (fields below are the value of `data`, wrapped in [Ok](../../../ap
 | items                  | array  | list of transaction                                            |
 | items[].uid            | string | transaction uid                                                |
 | items[].order_id       | string | order id of the transaction, empty string if not linked        |
-| items[].payment_method | string | `CASH`, `QR`                                           |
+| items[].payment_method | string | `CASH`, `QR_PROMPTPAY`                                           |
 | items[].status         | string | `PENDING`, `APPROVED`, `FAILED`, `VOIDED`, `REFUNDED`                          |
 | items[].amount         | number | transaction amount (4 decimal places max), 0 if not set        |
 | items[].store_name_en  | string | store name (English), empty string if not found                |
@@ -62,7 +62,7 @@ example response body:
       {
         "uid": "string",
         "order_id": "string",
-        "payment_method": "QR",
+        "payment_method": "QR_PROMPTPAY",
         "status": "APPROVED",
         "amount": 125.5,
         "store_name_en": "string",
@@ -105,7 +105,7 @@ Logic:
     - type: string
     - required: false
   - method
-    - type: enum (`CASH`, `QR`)
+    - type: enum (`CASH`, `QR_PROMPTPAY`)
     - required: false
   - status
     - type: enum (`PENDING`, `APPROVED`, `FAILED`, `VOIDED`, `REFUNDED`)

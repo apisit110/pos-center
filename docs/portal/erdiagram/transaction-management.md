@@ -8,7 +8,9 @@ erDiagram
     int store_id "no FK, external reference"
     int terminal_id "no FK, external reference"
     decimal amount "10,4"
-    varchar payment_method "CASH, QR"
+    decimal received_amount "10,4"
+    decimal change_amount "10,4"
+    varchar payment_method "CASH, QR_PROMPTPAY"
     varchar status "PENDING, APPROVED, FAILED, VOIDED, REFUNDED"
     varchar staff_name
     datetime created_at "NOT NULL"
@@ -43,7 +45,9 @@ erDiagram
 | store_id       | int       | -      |     | Yes      | รหัสร้านค้าที่เกิดธุรกรรม (ไม่มี FK, อ้างอิงภายนอก)               |
 | terminal_id    | int       | -      |     | Yes      | รหัสเครื่อง terminal ที่ทำรายการ (ไม่มี FK, อ้างอิงภายนอก)        |
 | amount         | decimal   | 10,4   |     | Yes      | จำนวนเงินของธุรกรรม (precision 10, scale 4)                       |
-| payment_method | varchar   | 20     |     | Yes      | วิธีชำระเงิน: `CASH`, `QR`                                        |
+| received_amount | decimal  | 10,4   |     | Yes      | เงินที่รับจากลูกค้า (ว่างได้ เช่น ชำระด้วย QR)                    |
+| change_amount  | decimal   | 10,4   |     | Yes      | เงินทอน (ว่างได้)                                                 |
+| payment_method | varchar   | 20     |     | Yes      | วิธีชำระเงิน: `CASH`, `QR_PROMPTPAY`                              |
 | status         | varchar   | 20     |     | Yes      | สถานะ: `PENDING`, `APPROVED`, `FAILED`, `VOIDED`, `REFUNDED`     |
 | staff_name     | varchar   | 255    |     | Yes      | ชื่อพนักงานที่ทำรายการ                                            |
 | created_at     | datetime  | -      |     | No       | วันที่สร้าง                                                       |

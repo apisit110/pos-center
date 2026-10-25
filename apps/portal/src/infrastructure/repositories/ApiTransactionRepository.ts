@@ -34,7 +34,7 @@ interface TransactionDetailResponse extends TransactionResponse {
   items: TransactionItemResponse[];
 }
 
-// API enums (`CASH|QR`, `PENDING|APPROVED|FAILED|VOIDED|REFUNDED`) <-> domain values (same words, lower case)
+// API enums (`CASH|QR_PROMPTPAY`, `PENDING|APPROVED|FAILED|VOIDED|REFUNDED`) <-> domain values (same words, lower case)
 const toApiEnum = (value?: string) => (value ? value.toUpperCase() : undefined);
 
 const fromApiEnum = (value?: string) => (value ? value.toLowerCase() : '');

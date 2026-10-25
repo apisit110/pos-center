@@ -29,6 +29,8 @@ export class SyncTransactionsFromClientUseCase {
           txData.merchantId,
           txData.terminalId ?? null,
           txData.amount,
+          txData.receivedAmount,
+          txData.changeAmount,
           txData.paymentMethod,
           txData.status,
           txData.staffName,

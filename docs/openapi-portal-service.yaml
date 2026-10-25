@@ -1836,7 +1836,7 @@ components:
 
     PaymentMethod:
       type: string
-      enum: [CASH, QR]
+      enum: [CASH, QR_PROMPTPAY]
 
     TransactionStatus:
       type: string

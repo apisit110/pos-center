@@ -6,8 +6,10 @@ export interface SyncTransactionRequest {
   storeId: string;
   terminalId: string | null;
   amount: number;
-  paymentMethod: 'CASH' | 'CREDIT_CARD' | 'QR_PROMPTPAY';
-  status: 'SUCCESS' | 'FAILED' | 'REFUNDED';
+  receivedAmount: number | null;
+  changeAmount: number | null;
+  paymentMethod: 'CASH' | 'QR_PROMPTPAY';
+  status: 'PENDING' | 'APPROVED' | 'FAILED' | 'VOIDED' | 'REFUNDED';
   staffName: string;
   createdAt: string;
 }

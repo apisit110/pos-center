@@ -5,27 +5,8 @@ import { ITransactionRepository } from '../../domain/repositories/ITransactionRe
 type DbPaymentMethod = NonNullable<typeof dbTransactions.$inferInsert['paymentMethod']>;
 type DbTransactionStatus = NonNullable<typeof dbTransactions.$inferInsert['status']>;
 
-// client payment method -> center payment method, CREDIT_CARD is not supported by the center yet
-const PAYMENT_METHOD_MAP: Record<string, DbPaymentMethod> = {
-  CASH: 'CASH',
-  QR_PROMPTPAY: 'QR',
-};
-
-// client status -> center status
-const STATUS_MAP: Record<string, DbTransactionStatus> = {
-  SUCCESS: 'APPROVED',
-  FAILED: 'FAILED',
-  REFUNDED: 'REFUNDED',
-};
-
 export class DrizzleTransactionRepository implements ITransactionRepository {
   async save(transaction: Transaction, storeSid: string): Promise<Transaction> {
-    const paymentMethod = PAYMENT_METHOD_MAP[transaction.paymentMethod];
-    if (!paymentMethod) throw new Error(`Payment method not supported: ${transaction.paymentMethod}`);
-
-    const status = STATUS_MAP[transaction.status];
-    if (!status) throw new Error(`Transaction status not supported: ${transaction.status}`);
-
     const [merchant] = await db.select({ id: merchants.id }).from(merchants).where(eq(merchants.partnerId, transaction.merchantId));
     if (!merchant) throw new Error(`Merchant not found: ${transaction.merchantId}`);
 
@@ -59,8 +40,10 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
       storeId: store.id,
       terminalId,
       amount: transaction.amount.toString(),
-      paymentMethod,
-      status,
+      receivedAmount: transaction.receivedAmount?.toString() ?? null,
+      changeAmount: transaction.changeAmount?.toString() ?? null,
+      paymentMethod: transaction.paymentMethod as DbPaymentMethod,
+      status: transaction.status as DbTransactionStatus,
       staffName: transaction.staffName,
       createdAt: transaction.createdAt,
     }).returning();
@@ -72,6 +55,8 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
       transaction.merchantId,
       transaction.terminalId,
       Number(newTx.amount),
+      newTx.receivedAmount === null ? null : Number(newTx.receivedAmount),
+      newTx.changeAmount === null ? null : Number(newTx.changeAmount),
       transaction.paymentMethod,
       transaction.status,
       transaction.staffName,

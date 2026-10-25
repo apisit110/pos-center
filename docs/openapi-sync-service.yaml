@@ -574,7 +574,6 @@ paths:
         Idempotent by transaction uid (currently = `order_id`): already synced transactions return `already_synced`.
         The referenced order must be pushed first.
 
-        Mapping: `QR_PROMPTPAY` -> `QR`, `SUCCESS` -> `APPROVED`. `CREDIT_CARD` is not supported yet (result `error`).
         A transaction gets `error` when the merchant, store or order is not found. A `terminal_id` that is not found is saved as null.
       parameters:
         - $ref: '#/components/parameters/CorrelationId'
@@ -617,12 +616,26 @@ paths:
                       amount:
                         type: number
                         example: 125.5
+                      received_amount:
+                        type: number
+                        minimum: 0
+                        nullable: true
+                        default: null
+                        description: Cash received from customer (e.g. null for `QR_PROMPTPAY`)
+                        example: 200
+                      change_amount:
+                        type: number
+                        minimum: 0
+                        nullable: true
+                        default: null
+                        description: Change given back to customer
+                        example: 74.5
                       payment_method:
                         type: string
-                        enum: [CASH, CREDIT_CARD, QR_PROMPTPAY]
+                        enum: [CASH, QR_PROMPTPAY]
                       status:
                         type: string
-                        enum: [SUCCESS, FAILED, REFUNDED]
+                        enum: [PENDING, APPROVED, FAILED, VOIDED, REFUNDED]
                       staff_name:
                         type: string
                         minLength: 1
