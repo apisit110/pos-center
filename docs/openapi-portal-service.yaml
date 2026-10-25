@@ -1,0 +1,1868 @@
+openapi: 3.0.3
+info:
+  title: Lightning POS - Portal Service API
+  version: 1.0.0
+  description: |
+    API of `portal-service` used by the merchant portal (Next.js).
+
+    Source of truth: flow docs in `docs/portal/flow/*` and the response envelope in `docs/apiresponse/middleware.md`.
+
+    **Response envelope**
+
+    - success: `{ "res_code": "0000", "res_desc": "", "data": ... }` (each api below describes only `data`)
+    - error: `{ "res_code", "res_desc", "details"?, "additional"?, "request_id" }`
+    - `res_desc` of an error follows the `Accept-Language` header (`th*` -> Thai, otherwise English)
+    - external bodies are `snake_case`
+
+    **Authentication**
+
+    Every api except `POST /api/v1/auth/login`, `POST /api/v1/auth/logout` and `GET /health` needs an access token from login,
+    sent as `Authorization: Bearer <token>` or cookie `token`. Permissions follow `docs/portal/uam.md`.
+
+    **Error codes**
+
+    | res_code | http | error |
+    | -------- | ---- | ----- |
+    | 4000 | 400 | ValidationError.ErrInvalidRequest (any zod failure of path / query / body) |
+    | 4001 | 400 | ErrIncorrectUsernameOrPin |
+    | 4002 | 400 | ErrPinLocked |
+    | 4003 | 400 | ErrUserPending |
+    | 4004 | 400 | ErrUserInactive |
+    | 4005 | 400 | ErrUserSuspended |
+    | 4006 | 400 | ErrTokenInvalide |
+    | 4007 | 400 | ErrTokenExpire |
+    | 4008 | 400 | ErrPermissionDenied |
+    | 4009 | 404 | ErrStaffNotFound |
+    | 4010 | 403 | ErrForbidden (resource of another merchant) |
+    | 4011 | 404 | ErrMerchantNotFound |
+    | 4012 | 404 | ErrStoreNotFound |
+    | 4013 | 404 | ErrProductNotFound |
+    | 4014 | 400 | ErrProductBarcodeDuplicate |
+    | 4016 | 400 | ErrMerchantCredentialExists |
+    | 4017 | 404 | ErrMerchantCredentialNotFound |
+    | 4130 | 413 | ErrPayloadTooLarge (body > 10 MB) |
+    | 4290 | 429 | ErrTooManyRequests (login > 20 requests / 15 min per client) |
+    | 5000 | 500 | InternalServiceError.ErrInternalServerError |
+
+servers:
+  - url: http://localhost:4001
+    description: Local
+
+security:
+  - bearerAuth: []
+  - cookieAuth: []
+
+tags:
+  - name: Health
+  - name: Auth
+  - name: Master Data
+  - name: Merchant
+  - name: Product
+  - name: Brand
+  - name: Store
+  - name: Store Product
+  - name: Staff
+  - name: Transaction
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Health check
+      security: []
+      responses:
+        '200':
+          description: Service is up
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  # ---------------------------------------------------------------- Auth
+  /api/v1/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login with username + PIN
+      description: |
+        Returns the staff detail and an access token (JWT, expires in 30 minutes, contains uid, role and scope).
+        The token is also set in cookie `token` (`secure` when `NODE_ENV=production`).
+
+        Errors: `4000`, `4001` (user not found / pin not found / wrong pin), `4002`, `4003`, `4004`, `4005`, `4290`.
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, pin]
+              properties:
+                username:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                pin:
+                  type: string
+                  minLength: 6
+                  maxLength: 6
+                  example: '123456'
+      responses:
+        '200':
+          description: Login success
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: token=eyJhbGciOi...; HttpOnly; Path=/
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          token:
+                            type: string
+                          user:
+                            $ref: '#/components/schemas/AuthUser'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout
+      description: Clears cookie `token`. Responds without `data`.
+      security: []
+      responses:
+        '200':
+          description: Logout success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OkEnvelope'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/auth/me:
+    get:
+      tags: [Auth]
+      summary: Get profile of the token owner
+      description: |
+        **Permission**: `me:get_profile`
+
+        Errors: `4006`, `4007`, `4008`, `4009`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      responses:
+        '200':
+          description: Profile
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          user:
+                            $ref: '#/components/schemas/AuthUser'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ---------------------------------------------------------------- Master Data
+  /api/v1/master-data/provinces:
+    get:
+      tags: [Master Data]
+      summary: Get provinces
+      description: |
+        **Permission**: `merchants:create`
+
+        No pagination, sorted by `name_th` ascending.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      responses:
+        '200':
+          $ref: '#/components/responses/MasterDataList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/master-data/districts:
+    get:
+      tags: [Master Data]
+      summary: Get districts of a province
+      description: |
+        **Permission**: `merchants:create`
+
+        Empty array if `province_code` is not found. Sorted by `name_th` ascending.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - name: province_code
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          example: '10'
+      responses:
+        '200':
+          $ref: '#/components/responses/MasterDataList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/master-data/sub-districts:
+    get:
+      tags: [Master Data]
+      summary: Get sub districts of a district
+      description: |
+        **Permission**: `merchants:create`
+
+        Empty array if `district_code` is not found. Sorted by `name_th` ascending.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - name: district_code
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          example: '1001'
+      responses:
+        '200':
+          $ref: '#/components/responses/MasterDataList'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/master-data/postal-codes:
+    get:
+      tags: [Master Data]
+      summary: Get postal codes of a sub district
+      description: |
+        **Permission**: `merchants:create`
+
+        Empty array if `sub_district_code` is not found. Sorted by `code` ascending.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - name: sub_district_code
+          in: query
+          required: true
+          schema:
+            type: string
+            minLength: 1
+          example: '100101'
+      responses:
+        '200':
+          description: Postal codes
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            code:
+                              type: string
+                              example: '10200'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ---------------------------------------------------------------- Merchant
+  /api/v1/merchants:
+    get:
+      tags: [Merchant]
+      summary: List merchants
+      description: |
+        **Permission**: `merchants:view`
+
+        `PRODUCT_OWNER` sees all merchants (ordered by id). Other roles get only their own merchant,
+        `page` / `limit` / `partner_id` / `name` are ignored and `total` = `limit` = number of items, `page` = 1.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: partner_id
+          in: query
+          description: Partial match, case-insensitive
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: Partial match on `name_en` or `name_th`, case-insensitive
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated merchants
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: '#/components/schemas/Pagination'
+                          - type: object
+                            properties:
+                              items:
+                                type: array
+                                items:
+                                  $ref: '#/components/schemas/MerchantSummary'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags: [Merchant]
+      summary: Create merchant with cashier staff, stores and terminals
+      description: |
+        **Permission**: `merchants:create` (Product Owner only)
+
+        Generates merchant `uid`, `partner_id`, staff `username`, store `sid` and terminal `tid`.
+        Everything is saved in one transaction.
+
+        `4000` is also returned (with `details`) when:
+        - a staff `pin` fails the PIN policy -> `cashier_staff.<index>.pin: <message>`
+        - a staff `role` is not a `cashier_role` -> `cashier_staff.<index>.role: not found`
+        - an address code is not found or the chain does not match -> `stores.<index>.<registered_address|contract_address>.<field>: <message>`
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name_en, name_th, cashier_staff]
+              properties:
+                name_en:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                  description: Trimmed
+                name_th:
+                  type: string
+                  minLength: 1
+                  maxLength: 255
+                  description: Trimmed
+                cashier_staff:
+                  type: array
+                  description: Can be empty
+                  items:
+                    type: object
+                    required: [full_name, pin, role]
+                    properties:
+                      full_name:
+                        type: string
+                        minLength: 1
+                        maxLength: 255
+                      pin:
+                        type: string
+                        description: 6 digits, must pass the PIN policy (not weak). Stored as bcrypt hash.
+                        example: '582914'
+                      role:
+                        type: string
+                        minLength: 1
+                        description: Name of a `cashier_role`
+                        example: manager
+                stores:
+                  type: array
+                  default: []
+                  items:
+                    type: object
+                    required: [name_en, name_th, registered_address, contract_address]
+                    properties:
+                      name_en:
+                        type: string
+                        minLength: 1
+                        maxLength: 255
+                      name_th:
+                        type: string
+                        minLength: 1
+                        maxLength: 255
+                      registered_address:
+                        $ref: '#/components/schemas/AddressInput'
+                      contract_address:
+                        $ref: '#/components/schemas/AddressInput'
+                      terminals:
+                        type: array
+                        default: []
+                        items:
+                          type: object
+                          required: [name_en, name_th]
+                          properties:
+                            name_en:
+                              type: string
+                              minLength: 1
+                              maxLength: 255
+                            name_th:
+                              type: string
+                              minLength: 1
+                              maxLength: 255
+      responses:
+        '201':
+          description: Merchant created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          uid:
+                            type: string
+                          partner_id:
+                            type: string
+                          name_en:
+                            type: string
+                          name_th:
+                            type: string
+                          cashier_staff:
+                            type: array
+                            description: PIN is never returned
+                            items:
+                              type: object
+                              properties:
+                                uid:
+                                  type: string
+                                username:
+                                  type: string
+                                full_name:
+                                  type: string
+                                role:
+                                  type: string
+                          stores:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                uid:
+                                  type: string
+                                sid:
+                                  type: string
+                                name_en:
+                                  type: string
+                                name_th:
+                                  type: string
+                                terminals:
+                                  type: array
+                                  items:
+                                    $ref: '#/components/schemas/TerminalSummary'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/merchants/{id}:
+    get:
+      tags: [Merchant]
+      summary: Get merchant detail
+      description: |
+        **Permission**: `merchant_detail:view`
+
+        Non `PRODUCT_OWNER` can see only their own merchant (`4010`).
+        `client_secret` of credentials is never returned.
+
+        Errors: `4000`, `4006`-`4008`, `4010`, `4011`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/MerchantId'
+      responses:
+        '200':
+          description: Merchant detail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/MerchantDetail'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/merchants/{id}/staff:
+    get:
+      tags: [Merchant]
+      summary: List staff of a merchant
+      description: |
+        **Permission**: `merchant_detail:view`
+
+        No pagination, max 500 items, no guaranteed order.
+        Non `PRODUCT_OWNER` can see only their own merchant (`4010`).
+
+        Errors: `4000`, `4006`-`4008`, `4010`, `4011`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/MerchantId'
+      responses:
+        '200':
+          description: Staff of the merchant
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        maxItems: 500
+                        items:
+                          type: object
+                          properties:
+                            uid:
+                              type: string
+                            full_name:
+                              type: string
+                              description: Empty string if not set
+                            role:
+                              type: string
+                              description: '`cashier` if staff has no role'
+                              example: manager
+                            username:
+                              type: string
+                              description: Empty string if not set
+                            status:
+                              $ref: '#/components/schemas/StaffStatus'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/merchants/{id}/credentials:
+    post:
+      tags: [Merchant]
+      summary: Create merchant credential
+      description: |
+        **Permission**: `merchant_credentials:create` (Product Owner only)
+
+        Generates `client_id` (`cid_` + 16 random bytes hex) and `client_secret` (`cs_` + 32 random bytes base64url).
+        Only the SHA-256 hash of the secret is stored. **`client_secret` is returned only in this response.**
+
+        Errors: `4000`, `4006`-`4008`, `4011`, `4016` (already has a credential of this provider).
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/MerchantId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialRequest'
+      responses:
+        '201':
+          description: Credential created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: '#/components/schemas/CredentialSecret'
+                          - type: object
+                            properties:
+                              created_at:
+                                type: string
+                                format: date-time
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/merchants/{id}/credentials/rotate:
+    post:
+      tags: [Merchant]
+      summary: Rotate merchant credential secret
+      description: |
+        **Permission**: `merchant_credentials:rotate` (Product Owner only)
+
+        `client_id` stays the same, a new `client_secret` is generated and the old one stops working immediately.
+        Sync tokens already issued keep working until they expire.
+        **`client_secret` is returned only in this response.**
+
+        Errors: `4000`, `4006`-`4008`, `4011`, `4017`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/MerchantId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CredentialRequest'
+      responses:
+        '200':
+          description: Credential rotated
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: '#/components/schemas/CredentialSecret'
+                          - type: object
+                            properties:
+                              updated_at:
+                                type: string
+                                format: date-time
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ---------------------------------------------------------------- Product
+  /api/v1/products:
+    get:
+      tags: [Product]
+      summary: List products
+      description: |
+        **Permission**: `products:view`
+
+        `PRODUCT_OWNER` sees products of all merchants, other roles only their own merchant.
+
+        Errors: `4000`, `4006`-`4008`, `4010`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: barcode
+          in: query
+          description: Partial match, case-insensitive
+          schema:
+            type: string
+        - name: name
+          in: query
+          description: Partial match on `name_en` or `name_th`, case-insensitive
+          schema:
+            type: string
+        - name: merchant_uid
+          in: query
+          description: Exact match
+          schema:
+            type: string
+        - name: brands
+          in: query
+          description: Brand uids, match any. Repeat the param (`brands=a&brands=b`)
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: units
+          in: query
+          description: Unit names, match any. Repeat the param (`units=pcs&units=box`)
+          style: form
+          explode: true
+          schema:
+            type: array
+            items:
+              type: string
+        - name: price
+          in: query
+          description: Products with `base_price` <= this value
+          schema:
+            type: number
+            minimum: 0
+        - name: store_uid
+          in: query
+          description: Only products listed in this store
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Paginated products
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: '#/components/schemas/Pagination'
+                          - type: object
+                            properties:
+                              items:
+                                type: array
+                                items:
+                                  $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags: [Product]
+      summary: Create product (key-in)
+      description: |
+        **Permission**: `products:create`
+
+        Non `PRODUCT_OWNER` can create only for their own merchant (`4010`). `barcode` is also saved as `sku`.
+
+        Errors: `4000`, `4006`-`4008`, `4010`, `4011`, `4014`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Product created
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/products/metadata:
+    get:
+      tags: [Product]
+      summary: Get product filter options (brands, units)
+      description: |
+        **Permission**: `products:view`
+
+        `PRODUCT_OWNER` gets values from all products, other roles only from their own merchant.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      responses:
+        '200':
+          description: Filter options
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          brands:
+                            type: array
+                            description: Distinct, sorted by `name_en` ascending
+                            items:
+                              $ref: '#/components/schemas/Brand'
+                          units:
+                            type: array
+                            description: Distinct, sorted ascending, empty values excluded
+                            items:
+                              type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/products/batch:
+    post:
+      tags: [Product]
+      summary: Create / update many products (import)
+      description: |
+        **Permission**: `products:create`
+
+        Partial success: a product that cannot be saved is reported in `errors` and does not stop the others.
+        If `uid` already exists the product is updated. Max body size 10 MB.
+
+        Errors: `4000`, `4006`-`4008`, `4010`, `4130`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [products]
+              properties:
+                products:
+                  type: array
+                  maxItems: 1000
+                  description: Can be empty (`created` = 0)
+                  items:
+                    allOf:
+                      - type: object
+                        properties:
+                          uid:
+                            type: string
+                            description: Generated if not provided. Existing uid -> update
+                      - $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Batch processed
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          created:
+                            type: integer
+                            description: Number of products saved (inserted or updated)
+                          errors:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                index:
+                                  type: integer
+                                  description: Index in request `products` (starts at 0)
+                                name_en:
+                                  type: string
+                                message:
+                                  type: string
+                                  example: 'Merchant not found: string'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/products/{id}:
+    get:
+      tags: [Product]
+      summary: Get product detail
+      description: |
+        **Permission**: `product_detail:view`
+
+        Non `PRODUCT_OWNER` can see only products of their own merchant (`4010`).
+
+        Errors: `4000`, `4006`-`4008`, `4010`, `4013`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - name: id
+          in: path
+          required: true
+          description: Product uid
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '200':
+          description: Product detail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Product'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ---------------------------------------------------------------- Brand
+  /api/v1/brands/batch:
+    post:
+      tags: [Brand]
+      summary: Create / update many brands (import)
+      description: |
+        **Permission**: `products:create`
+
+        Brands are shared by all merchants. Upsert by `uid` in one transaction.
+        Duplicate `uid` in the request -> `4000` with `details` = `brands.<index>.uid: duplicate uid <uid>`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [brands]
+              properties:
+                brands:
+                  type: array
+                  maxItems: 1000
+                  description: Can be empty
+                  items:
+                    type: object
+                    required: [uid, name_en, name_th]
+                    properties:
+                      uid:
+                        type: string
+                        minLength: 1
+                        maxLength: 100
+                      name_en:
+                        type: string
+                        minLength: 1
+                        maxLength: 255
+                        example: Coke
+                      name_th:
+                        type: string
+                        minLength: 1
+                        maxLength: 255
+                        example: โค้ก
+      responses:
+        '201':
+          description: Brands saved
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          created:
+                            type: integer
+                          updated:
+                            type: integer
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ---------------------------------------------------------------- Store
+  /api/v1/stores:
+    get:
+      tags: [Store]
+      summary: List stores
+      description: |
+        **Permission**: `stores:view`
+
+        No pagination (max 500 items when filtered by merchant), no guaranteed order.
+        `merchant_uid` is used only by `PRODUCT_OWNER`; other roles always get their own merchant.
+
+        Errors: `4000`, `4006`-`4008`, `4010`, `4011`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - name: merchant_uid
+          in: query
+          description: Exact match (Product Owner only)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Stores
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Store'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/stores/{id}:
+    get:
+      tags: [Store]
+      summary: Get store detail
+      description: |
+        **Permission**: `store_detail:view`
+
+        Errors: `4000`, `4006`-`4008`, `4010`, `4012`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/StoreId'
+      responses:
+        '200':
+          description: Store detail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Store'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/stores/{id}/terminals:
+    get:
+      tags: [Store]
+      summary: List terminals of a store
+      description: |
+        **Permission**: `terminals:view`
+
+        No pagination, no guaranteed order.
+
+        Errors: `4000`, `4006`-`4008`, `4010`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/StoreId'
+      responses:
+        '200':
+          description: Terminals
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          allOf:
+                            - $ref: '#/components/schemas/TerminalSummary'
+                            - type: object
+                              properties:
+                                store_uid:
+                                  type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ---------------------------------------------------------------- Store Product
+  /api/v1/store-products/batch:
+    post:
+      tags: [Store Product]
+      summary: Add products to stores with stock and price (import)
+      description: |
+        **Permission**: `store_products:create`
+
+        Partial success: an invalid row is reported in `errors` as `Row <n>: <reason>` (n starts at 1) and does not stop the others.
+        If the product is already in the store its stock and price are updated. Max body size 10 MB.
+
+        | reason | when |
+        | ------ | ---- |
+        | `store_uid and product_uid are required` | missing or empty |
+        | `stock must be a non-negative number` | not a number or < 0 |
+        | `price must be a non-negative number` | not a number or < 0 |
+        | `store_uid "<store_uid>" not found` | store does not exist |
+        | `product_uid "<product_uid>" not found` | product does not exist |
+        | `forbidden` | store or product of another merchant |
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [mappings]
+              properties:
+                mappings:
+                  type: array
+                  maxItems: 1000
+                  items:
+                    type: object
+                    description: Fields are required, but an invalid row is reported in `errors` instead of failing the request
+                    properties:
+                      store_uid:
+                        type: string
+                      product_uid:
+                        type: string
+                      stock:
+                        type: number
+                        minimum: 0
+                      price:
+                        type: number
+                        minimum: 0
+      responses:
+        '201':
+          description: Batch processed
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          created:
+                            type: integer
+                          updated:
+                            type: integer
+                          errors:
+                            type: array
+                            items:
+                              type: string
+                              example: 'Row 3: product_uid "string" not found'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ---------------------------------------------------------------- Staff
+  /api/v1/staff:
+    get:
+      tags: [Staff]
+      summary: List staff
+      description: |
+        **Permission**: `staffs:view`
+
+        `PRODUCT_OWNER` sees staff of all merchants, other roles only their own merchant.
+
+        Errors: `4000`, `4006`-`4008`, `4010`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: merchant_uid
+          in: query
+          description: Exact match
+          schema:
+            type: string
+        - name: role
+          in: query
+          description: Exact match (e.g. `manager`, `cashier`)
+          schema:
+            type: string
+        - name: username
+          in: query
+          description: Partial match
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/StaffStatus'
+        - name: query
+          in: query
+          description: Search `full_name`, partial match
+          schema:
+            type: string
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+      responses:
+        '200':
+          description: Paginated staff
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: '#/components/schemas/Pagination'
+                          - type: object
+                            properties:
+                              items:
+                                type: array
+                                items:
+                                  $ref: '#/components/schemas/Staff'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/v1/staff/{id}:
+    get:
+      tags: [Staff]
+      summary: Get staff detail
+      description: |
+        **Permission**: `staff_detail:view`
+
+        Errors: `4000`, `4006`-`4008`, `4009`, `4010`.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - name: id
+          in: path
+          required: true
+          description: Staff uid
+          schema:
+            type: string
+            minLength: 1
+      responses:
+        '200':
+          description: Staff detail
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/Staff'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # ---------------------------------------------------------------- Transaction
+  /api/v1/transactions:
+    get:
+      tags: [Transaction]
+      summary: List transactions
+      description: |
+        **Permission**: `transactions:view`
+
+        Transactions are synced from POS. `PRODUCT_OWNER` sees all merchants, other roles only their own merchant.
+      parameters:
+        - $ref: '#/components/parameters/AcceptLanguage'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+        - name: transaction_id
+          in: query
+          description: Transaction uid, partial match
+          schema:
+            type: string
+        - name: order_id
+          in: query
+          description: Partial match
+          schema:
+            type: string
+        - name: method
+          in: query
+          schema:
+            $ref: '#/components/schemas/PaymentMethod'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/TransactionStatus'
+        - $ref: '#/components/parameters/StartDate'
+        - $ref: '#/components/parameters/EndDate'
+      responses:
+        '200':
+          description: Paginated transactions
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/OkEnvelope'
+                  - type: object
+                    properties:
+                      data:
+                        allOf:
+                          - $ref: '#/components/schemas/Pagination'
+                          - type: object
+                            properties:
+                              items:
+                                type: array
+                                items:
+                                  $ref: '#/components/schemas/Transaction'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+
+  parameters:
+    AcceptLanguage:
+      name: Accept-Language
+      in: header
+      required: false
+      description: Language of error `res_desc`. Starts with `th` -> Thai, otherwise English
+      schema:
+        type: string
+        default: en
+        example: th
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 10
+    MerchantId:
+      name: id
+      in: path
+      required: true
+      description: Merchant uid
+      schema:
+        type: string
+        minLength: 1
+    StoreId:
+      name: id
+      in: path
+      required: true
+      description: Store uid
+      schema:
+        type: string
+        minLength: 1
+    StartDate:
+      name: start_date
+      in: query
+      description: |
+        Created on or after. `YYYY-MM-DD` = start of that day in `Asia/Bangkok` (00:00:00.000+07:00),
+        or ISO 8601 date time with timezone = that exact instant
+      schema:
+        type: string
+        example: '2026-01-01'
+    EndDate:
+      name: end_date
+      in: query
+      description: |
+        Created on or before. `YYYY-MM-DD` = end of that day in `Asia/Bangkok` (23:59:59.999+07:00),
+        or ISO 8601 date time with timezone = that exact instant
+      schema:
+        type: string
+        example: '2026-01-31'
+
+  responses:
+    MasterDataList:
+      description: Master data options
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/OkEnvelope'
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MasterData'
+    BadRequest:
+      description: Validation error (`4000`) or a 400 service error (see error codes)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            invalidRequest:
+              value:
+                res_code: '4000'
+                res_desc: Invalid request
+                details: 'page: Number must be greater than or equal to 1'
+                request_id: da8e72fa-34c7-419e-932a-c3436fdad704
+            permissionDenied:
+              value:
+                res_code: '4008'
+                res_desc: You do not have permission to perform this action.
+                request_id: da8e72fa-34c7-419e-932a-c3436fdad704
+    Forbidden:
+      description: Resource of another merchant (`4010`)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            res_code: '4010'
+            res_desc: You are not allowed to access this resource.
+            request_id: da8e72fa-34c7-419e-932a-c3436fdad704
+    NotFound:
+      description: Resource not found (`4009`, `4011`, `4012`, `4013`, `4017`)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            res_code: '4011'
+            res_desc: The specified merchant could not be found.
+            request_id: da8e72fa-34c7-419e-932a-c3436fdad704
+    PayloadTooLarge:
+      description: Body larger than 10 MB (`4130`)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    TooManyRequests:
+      description: Rate limit exceeded (`4290`)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: Unexpected error (`5000`)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            res_code: '5000'
+            res_desc: Internal server error
+            request_id: da8e72fa-34c7-419e-932a-c3436fdad704
+
+  schemas:
+    OkEnvelope:
+      type: object
+      required: [res_code, res_desc]
+      properties:
+        res_code:
+          type: string
+          example: '0000'
+        res_desc:
+          type: string
+          example: ''
+
+    ErrorResponse:
+      type: object
+      required: [res_code, res_desc, request_id]
+      properties:
+        res_code:
+          type: string
+          example: '4000'
+        res_desc:
+          type: string
+          description: In the language of `Accept-Language`
+          example: Invalid request
+        details:
+          type: string
+          description: Validation detail (ValidationError only)
+        additional:
+          type: string
+          description: Extra info (ServiceError only)
+        request_id:
+          type: string
+
+    Pagination:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+
+    AuthUser:
+      type: object
+      properties:
+        uid:
+          type: string
+        full_name:
+          type: string
+        merchant_id:
+          type: string
+
+    MasterData:
+      type: object
+      properties:
+        code:
+          type: string
+          example: '10'
+        name_th:
+          type: string
+          example: กรุงเทพมหานคร
+        name_en:
+          type: string
+          example: Bangkok
+
+    AddressInput:
+      type: object
+      description: '`latitude` and `longitude` must be sent together'
+      required: [province_code, district_code, sub_district_code, postal_code]
+      properties:
+        address_1:
+          type: string
+          maxLength: 255
+        province_code:
+          type: string
+          minLength: 1
+          example: '10'
+        district_code:
+          type: string
+          minLength: 1
+          description: Must belong to `province_code`
+          example: '1001'
+        sub_district_code:
+          type: string
+          minLength: 1
+          description: Must belong to `district_code`
+          example: '100101'
+        postal_code:
+          type: string
+          minLength: 1
+          description: Must belong to `sub_district_code`
+          example: '10200'
+        latitude:
+          type: number
+          minimum: -90
+          maximum: 90
+          example: 13.7563
+        longitude:
+          type: number
+          minimum: -180
+          maximum: 180
+          example: 100.5018
+
+    Address:
+      type: object
+      nullable: true
+      properties:
+        address_1:
+          type: string
+          description: Empty string if not set
+        province:
+          $ref: '#/components/schemas/MasterData'
+        district:
+          $ref: '#/components/schemas/MasterData'
+        sub_district:
+          $ref: '#/components/schemas/MasterData'
+        postal_code:
+          type: string
+          example: '10200'
+        latitude:
+          type: number
+          nullable: true
+        longitude:
+          type: number
+          nullable: true
+
+    MerchantSummary:
+      type: object
+      properties:
+        uid:
+          type: string
+        partner_id:
+          type: string
+        name_en:
+          type: string
+        name_th:
+          type: string
+
+    MerchantDetail:
+      allOf:
+        - $ref: '#/components/schemas/MerchantSummary'
+        - type: object
+          properties:
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+            credentials:
+              type: array
+              description: Empty if none. `client_secret` is never returned
+              items:
+                type: object
+                properties:
+                  provider:
+                    $ref: '#/components/schemas/CredentialProvider'
+                  client_id:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+                  updated_at:
+                    type: string
+                    format: date-time
+                    description: Last rotate
+
+    CredentialProvider:
+      type: string
+      enum: [POS_CASHIER]
+
+    CredentialRequest:
+      type: object
+      properties:
+        provider:
+          allOf:
+            - $ref: '#/components/schemas/CredentialProvider'
+          default: POS_CASHIER
+
+    CredentialSecret:
+      type: object
+      properties:
+        merchant_uid:
+          type: string
+        provider:
+          $ref: '#/components/schemas/CredentialProvider'
+        client_id:
+          type: string
+          example: cid_0123456789abcdef0123456789abcdef
+        client_secret:
+          type: string
+          description: Plain secret, shown only in this response
+          example: cs_...
+
+    Brand:
+      type: object
+      properties:
+        uid:
+          type: string
+        name_en:
+          type: string
+        name_th:
+          type: string
+
+    ProductInput:
+      type: object
+      required: [merchant_uid, name_en, name_th, base_price]
+      properties:
+        merchant_uid:
+          type: string
+          minLength: 1
+        name_en:
+          type: string
+          minLength: 1
+          maxLength: 255
+        name_th:
+          type: string
+          minLength: 1
+          maxLength: 255
+        barcode:
+          type: string
+          description: Also saved as `sku` (empty string if not provided)
+        base_price:
+          type: number
+          minimum: 0
+        image_url:
+          type: string
+          maxLength: 500
+          nullable: true
+        brand_uid:
+          type: string
+          nullable: true
+          description: Uid of an existing brand
+        unit_name:
+          type: string
+          maxLength: 50
+          nullable: true
+
+    Product:
+      type: object
+      properties:
+        uid:
+          type: string
+        merchant_uid:
+          type: string
+        partner_id:
+          type: string
+        name_en:
+          type: string
+        name_th:
+          type: string
+        sku:
+          type: string
+        barcode:
+          type: string
+          description: Empty string if not set
+        base_price:
+          type: number
+          description: Max 4 decimal places
+          example: 25.5
+        image_url:
+          type: string
+          description: Empty string if not set
+        brand:
+          type: object
+          allOf:
+            - $ref: '#/components/schemas/Brand'
+          nullable: true
+          description: Null if not set
+        unit_name:
+          type: string
+          description: Empty string if not set
+
+    Store:
+      type: object
+      properties:
+        uid:
+          type: string
+        sid:
+          type: string
+        merchant_uid:
+          type: string
+        partner_id:
+          type: string
+        name_en:
+          type: string
+        name_th:
+          type: string
+        registered_address:
+          $ref: '#/components/schemas/Address'
+        contract_address:
+          $ref: '#/components/schemas/Address'
+
+    TerminalSummary:
+      type: object
+      properties:
+        uid:
+          type: string
+        tid:
+          type: string
+        name_en:
+          type: string
+        name_th:
+          type: string
+
+    StaffStatus:
+      type: string
+      enum: [ACTIVE, PENDING, INACTIVE, SUSPENDED]
+
+    Staff:
+      type: object
+      properties:
+        uid:
+          type: string
+        merchant_uid:
+          type: string
+        merchant_name_en:
+          type: string
+        merchant_name_th:
+          type: string
+        full_name:
+          type: string
+          description: Empty string if not set
+        role:
+          type: string
+          description: '`cashier` if staff has no role'
+        username:
+          type: string
+          description: Empty string if not set
+        status:
+          $ref: '#/components/schemas/StaffStatus'
+        created_at:
+          type: string
+          format: date-time
+
+    PaymentMethod:
+      type: string
+      enum: [CASH, QR]
+
+    TransactionStatus:
+      type: string
+      enum: [PENDING, APPROVED, FAILED, VOIDED, REFUNDED]
+
+    Transaction:
+      type: object
+      properties:
+        uid:
+          type: string
+        order_id:
+          type: string
+          description: Empty string if not linked
+        payment_method:
+          $ref: '#/components/schemas/PaymentMethod'
+        status:
+          $ref: '#/components/schemas/TransactionStatus'
+        amount:
+          type: number
+          description: Max 4 decimal places, 0 if not set
+        store_name_en:
+          type: string
+        store_name_th:
+          type: string
+        staff_name:
+          type: string
+        created_at:
+          type: string
+          format: date-time

@@ -1,6 +1,6 @@
 import { db, transactions as dbTransactions, orders as dbOrders, merchants, stores, terminals, eq, and } from '@pos-center/database';
 import { Transaction } from '../../domain/entities/Transaction';
-import { TransactionRepository } from '../../domain/repositories/TransactionRepository';
+import { ITransactionRepository } from '../../domain/repositories/ITransactionRepository';
 
 type DbPaymentMethod = NonNullable<typeof dbTransactions.$inferInsert['paymentMethod']>;
 type DbTransactionStatus = NonNullable<typeof dbTransactions.$inferInsert['status']>;
@@ -18,7 +18,7 @@ const STATUS_MAP: Record<string, DbTransactionStatus> = {
   REFUNDED: 'REFUNDED',
 };
 
-export class DrizzleTransactionRepository implements TransactionRepository {
+export class DrizzleTransactionRepository implements ITransactionRepository {
   async save(transaction: Transaction, storeSid: string): Promise<Transaction> {
     const paymentMethod = PAYMENT_METHOD_MAP[transaction.paymentMethod];
     if (!paymentMethod) throw new Error(`Payment method not supported: ${transaction.paymentMethod}`);

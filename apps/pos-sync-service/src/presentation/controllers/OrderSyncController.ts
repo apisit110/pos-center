@@ -16,11 +16,11 @@ export class OrderSyncController {
         sids: orders.map(order => order.storeId),
         tids: orders.map(order => order.terminalId),
       });
-      console.log(`[pos-sync-service] Receiving ${validatedData.orders.length} orders from client`);
+      console.log(`[pos-sync-service] Receiving ${orders.length} orders from client`);
 
-      const results = await this.syncOrdersFromClientUseCase.execute(validatedData.orders as any);
+      const result = await this.syncOrdersFromClientUseCase.execute({ orders });
 
-      return res.status(200).json(buildSyncOrdersResponse(results));
+      return res.status(200).json(buildSyncOrdersResponse(result));
     } catch (error) {
       next(error);
     }

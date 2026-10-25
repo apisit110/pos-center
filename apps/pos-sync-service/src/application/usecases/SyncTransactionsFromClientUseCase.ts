@@ -1,33 +1,14 @@
-import { TransactionRepository } from '../../domain/repositories/TransactionRepository';
+import { ITransactionRepository } from '../../domain/repositories/ITransactionRepository';
 import { Transaction } from '../../domain/entities/Transaction';
-
-export interface SyncTransactionDTO {
-  id: string;
-  transactionId: string; // order_id used as idempotency key
-  orderId: string;
-  merchantId: string;
-  storeId: string;
-  terminalId: string | null;
-  amount: number;
-  paymentMethod: 'CASH' | 'CREDIT_CARD' | 'QR_PROMPTPAY';
-  status: 'SUCCESS' | 'FAILED' | 'REFUNDED';
-  staffName: string;
-  createdAt: string;
-}
-
-export interface SyncTransactionResponseDTO {
-  transactionId: string;
-  globalTransactionId: string;
-  status: 'synced' | 'already_synced' | 'error';
-}
+import { SyncTransactionResult, SyncTransactionsFromClientRequest, SyncTransactionsFromClientResponse } from '../dtos/SyncTransactionsFromClientDto';
 
 export class SyncTransactionsFromClientUseCase {
-  constructor(private transactionRepository: TransactionRepository) {}
+  constructor(private readonly transactionRepository: ITransactionRepository) {}
 
-  async execute(transactionsToSync: SyncTransactionDTO[]): Promise<SyncTransactionResponseDTO[]> {
-    const results: SyncTransactionResponseDTO[] = [];
+  async execute({ transactions }: SyncTransactionsFromClientRequest): Promise<SyncTransactionsFromClientResponse> {
+    const results: SyncTransactionResult[] = [];
 
-    for (const txData of transactionsToSync) {
+    for (const txData of transactions) {
       try {
         // 1. Check idempotency
         const existing = await this.transactionRepository.findByUid(txData.transactionId);
@@ -72,6 +53,6 @@ export class SyncTransactionsFromClientUseCase {
       }
     }
 
-    return results;
+    return { results };
   }
 }

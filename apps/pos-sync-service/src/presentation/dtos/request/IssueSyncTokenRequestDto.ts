@@ -10,5 +10,5 @@ export const issueSyncTokenRequestSchema = z.object({
   tid: z.string().min(1, 'tid is required'),
 });
 
-export type IssueSyncTokenHeaders = z.infer<typeof issueSyncTokenHeadersSchema>;
-export type IssueSyncTokenRequest = z.infer<typeof issueSyncTokenRequestSchema>;
+export type IssueSyncTokenHeadersDto = z.infer<typeof issueSyncTokenHeadersSchema>;
+export type IssueSyncTokenRequestDto = z.infer<typeof issueSyncTokenRequestSchema>;

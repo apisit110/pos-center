@@ -1,10 +1,10 @@
 import { Merchant } from '../entities/Merchant';
 
-export interface MerchantCredentialDTO {
+export interface MerchantCredential {
   merchant: Merchant;
   clientSecretHash: string;
 }
 
 export interface IMerchantCredentialRepository {
-  findByClientId(clientId: string): Promise<MerchantCredentialDTO | null>;
+  findByClientId(clientId: string): Promise<MerchantCredential | null>;
 }

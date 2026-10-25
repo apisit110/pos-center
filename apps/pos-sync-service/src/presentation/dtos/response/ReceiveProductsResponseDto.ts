@@ -1,11 +1,19 @@
-import { ProductFromClientResultDTO } from '../../../domain/repositories/IProductRepository';
+import { ReceiveProductsFromClientResponse } from '../../../application/dtos/ReceiveProductsFromClientDto';
 
 export interface ReceiveProductsResponseDto {
   message: string;
-  results: ProductFromClientResultDTO[];
+  results: {
+    id: string;
+    status: 'synced' | 'already_synced' | 'error';
+    error?: string;
+  }[];
 }
 
-export const buildReceiveProductsResponse = (results: ProductFromClientResultDTO[]): ReceiveProductsResponseDto => ({
+export const buildReceiveProductsResponse = ({ results }: ReceiveProductsFromClientResponse): ReceiveProductsResponseDto => ({
   message: 'Products received successfully',
-  results,
+  results: results.map(result => ({
+    id: result.id,
+    status: result.status,
+    error: result.error,
+  })),
 });

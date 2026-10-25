@@ -16,4 +16,4 @@ export const receiveProductsRequestSchema = z.object({
   ).min(1, 'products must not be empty'),
 });
 
-export type ReceiveProductsRequest = z.infer<typeof receiveProductsRequestSchema>;
+export type ReceiveProductsRequestDto = z.infer<typeof receiveProductsRequestSchema>;

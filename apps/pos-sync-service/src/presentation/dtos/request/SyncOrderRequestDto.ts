@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { OrderStatus } from '../../../domain/entities/Order';
 
 export const syncOrderRequestSchema = z.object({
   orders: z.array(z.object({
@@ -9,7 +10,7 @@ export const syncOrderRequestSchema = z.object({
     staff_id: z.string().min(1),
     member_id: z.string().nullable().optional(),
     total_amount: z.number(),
-    status: z.enum(['PENDING', 'PAID', 'CANCELLED', 'VOID', 'REFUNDED']),
+    status: z.enum(OrderStatus),
     items: z.array(z.object({
       product_id: z.string().min(1),
       quantity: z.number().int(),
@@ -33,3 +34,5 @@ export const syncOrderRequestSchema = z.object({
     createdAt: order.created_at,
   }))),
 });
+
+export type SyncOrderRequestDto = z.infer<typeof syncOrderRequestSchema>;

@@ -21,7 +21,7 @@ export class ProductSyncController {
 
       console.log(`[pos-sync-service] Triggering sync for merchant: ${mid}, store: ${sid}, version: ${syncVersion}`);
 
-      const result = await this.syncPOSProductsUseCase.execute(mid, sid, syncVersion);
+      const result = await this.syncPOSProductsUseCase.execute({ mid, sid, syncVersion });
 
       if (result.success) {
         return res.status(200).json(buildSyncProductsSuccessResponse(result.products));
@@ -41,9 +41,9 @@ export class ProductSyncController {
 
       console.log(`[pos-sync-service] Receiving ${products.length} product(s) from merchant: ${mid}, store: ${sid}`);
 
-      const results = await this.receiveProductsFromClientUseCase.execute(mid, sid, products);
+      const result = await this.receiveProductsFromClientUseCase.execute({ mid, sid, products });
 
-      return res.status(200).json(buildReceiveProductsResponse(results));
+      return res.status(200).json(buildReceiveProductsResponse(result));
     } catch (error) {
       next(error);
     }

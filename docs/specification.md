@@ -129,3 +129,37 @@ documentation: docs/portal/flow/staff/get-staff-detail.md
 ## Transaction - List Transaction
 
 documentation: docs/portal/flow/transaction/get-transactions.md
+
+# API Specification Sync Service
+
+## Auth - Issue Sync Token
+
+documentation: docs/sync/flow/authentication.md
+
+## Pull - Cashier Profile (merchant, store, terminal, staff)
+
+documentation: docs/sync/flow/pull-cashier-profile.md
+
+## Pull - Products
+
+documentation: docs/sync/flow/pull-products.md
+
+## Pull - Orders
+
+documentation: (not yet implemented)
+
+## Pull - Transactions
+
+documentation: (not yet implemented)
+
+## Push - Orders
+
+documentation: docs/sync/flow/push-order.md
+
+## Push - Transactions
+
+documentation: docs/sync/flow/push-transaction.md
+
+## Push - Products (create / edit)
+
+documentation: docs/sync/flow/push-products.md

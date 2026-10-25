@@ -1,11 +1,19 @@
-import { SyncTransactionResponseDTO } from '../../../application/usecases/SyncTransactionsFromClientUseCase';
+import { SyncTransactionsFromClientResponse } from '../../../application/dtos/SyncTransactionsFromClientDto';
 
 export interface SyncTransactionsResponseDto {
   message: string;
-  results: SyncTransactionResponseDTO[];
+  results: {
+    transactionId: string;
+    globalTransactionId: string;
+    status: 'synced' | 'already_synced' | 'error';
+  }[];
 }
 
-export const buildSyncTransactionsResponse = (results: SyncTransactionResponseDTO[]): SyncTransactionsResponseDto => ({
+export const buildSyncTransactionsResponse = ({ results }: SyncTransactionsFromClientResponse): SyncTransactionsResponseDto => ({
   message: 'Transaction sync process completed',
-  results,
+  results: results.map(result => ({
+    transactionId: result.transactionId,
+    globalTransactionId: result.globalTransactionId,
+    status: result.status,
+  })),
 });

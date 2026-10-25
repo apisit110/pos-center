@@ -1,6 +1,6 @@
 import { Product } from '../../domain/entities/Product';
 
-export interface ProductFromClientDTO {
+export interface ProductFromClient {
   id: string;
   barcode: string;
   name: string;
@@ -10,7 +10,7 @@ export interface ProductFromClientDTO {
   brand?: string | null;
 }
 
-export interface ProductFromClientResultDTO {
+export interface ProductFromClientResult {
   id: string;
   status: 'synced' | 'already_synced' | 'error';
   error?: string;
@@ -19,5 +19,5 @@ export interface ProductFromClientResultDTO {
 export interface IProductRepository {
   saveMany(products: Product[]): Promise<void>;
   findByVersion(mid: string, sid: string, version: number): Promise<Product[]>;
-  receiveProductsFromClient(mid: string, sid: string, products: ProductFromClientDTO[]): Promise<ProductFromClientResultDTO[]>;
+  receiveProductsFromClient(mid: string, sid: string, products: ProductFromClient[]): Promise<ProductFromClientResult[]>;
 }

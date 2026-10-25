@@ -20,7 +20,7 @@ import {
 import { Merchant } from '../../domain/entities/Merchant';
 import {
   ICashierProfileRepository,
-  TerminalWithStoreDTO,
+  TerminalWithStore,
 } from '../../domain/repositories/ICashierProfileRepository';
 
 // docs/portal/erdiagram/pin.md: APP0001 = cashier
@@ -33,7 +33,7 @@ export class DrizzleCashierProfileRepository implements ICashierProfileRepositor
     return new Merchant(merchant.id, merchant.uid, merchant.partnerId, merchant.nameEn, merchant.nameTh);
   }
 
-  async findTerminalWithStore(tid: string): Promise<TerminalWithStoreDTO | null> {
+  async findTerminalWithStore(tid: string): Promise<TerminalWithStore | null> {
     const result = await db.select({
       terminal: terminals,
       store: stores,

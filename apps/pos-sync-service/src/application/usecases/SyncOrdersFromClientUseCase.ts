@@ -1,36 +1,14 @@
-import { OrderRepository } from '../../domain/repositories/OrderRepository';
-import { Order, OrderItem, OrderStatus } from '../../domain/entities/Order';
-
-export interface SyncOrderDTO {
-  orderId: string;
-  merchantId: string;
-  storeId: string;
-  terminalId: string | null;
-  staffId: string;
-  memberId: string | null;
-  totalAmount: number;
-  status: OrderStatus;
-  items: {
-    productId: string;
-    quantity: number;
-    price: number;
-  }[];
-  createdAt: string;
-}
-
-export interface SyncOrderResponseDTO {
-  orderId: string;
-  globalOrderId: string;
-  status: 'synced' | 'already_synced' | 'error';
-}
+import { IOrderRepository } from '../../domain/repositories/IOrderRepository';
+import { Order, OrderItem } from '../../domain/entities/Order';
+import { SyncOrderResult, SyncOrdersFromClientRequest, SyncOrdersFromClientResponse } from '../dtos/SyncOrdersFromClientDto';
 
 export class SyncOrdersFromClientUseCase {
-  constructor(private orderRepository: OrderRepository) {}
+  constructor(private readonly orderRepository: IOrderRepository) {}
 
-  async execute(ordersToSync: SyncOrderDTO[]): Promise<SyncOrderResponseDTO[]> {
-    const results: SyncOrderResponseDTO[] = [];
+  async execute({ orders }: SyncOrdersFromClientRequest): Promise<SyncOrdersFromClientResponse> {
+    const results: SyncOrderResult[] = [];
 
-    for (const orderData of ordersToSync) {
+    for (const orderData of orders) {
       try {
         // 1. Check idempotency
         const existingLog = await this.orderRepository.findSyncLogByOrderId(orderData.orderId, orderData.storeId);
@@ -91,6 +69,6 @@ export class SyncOrdersFromClientUseCase {
       }
     }
 
-    return results;
+    return { results };
   }
 }

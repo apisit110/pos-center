@@ -105,22 +105,6 @@ Migrate & Seed
   - tid
   - credential
 
-สร้าง api สำหระบบ sync
-- [ ][api] sync pull merchant store terminal staff
-- [x][api] sync pull product
-- [ ][api] sync pull order
-- [ ][api] sync pull transaction
-
-- [x][api] sync push order
-- [x][api] sync push transaction
-- [ ][api] sync push product create
-
-/api/v1/sync/products/receive
-
-- [ ][api] sync push product edit
-
-/api/v1/sync/products/receive
-
 
 ## Cashier
 

@@ -2,18 +2,13 @@ import { createHash, timingSafeEqual } from 'crypto';
 import { IMerchantCredentialRepository } from '../../domain/repositories/IMerchantCredentialRepository';
 import { Merchant } from '../../domain/entities/Merchant';
 import { SyncError } from '../errors/SyncError';
-
-export interface MerchantCredentialInput {
-  partnerId: string;
-  clientId: string;
-  clientSecret: string;
-}
+import { AuthenticateMerchantCredentialRequest } from '../dtos/AuthenticateMerchantCredentialDto';
 
 /** Authenticates the pos client by `partner_id` + merchant credential (`POS_CASHIER`) and returns its merchant. */
 export class AuthenticateMerchantCredentialUseCase {
   constructor(private readonly merchantCredentialRepository: IMerchantCredentialRepository) {}
 
-  async execute({ partnerId, clientId, clientSecret }: MerchantCredentialInput): Promise<Merchant> {
+  async execute({ partnerId, clientId, clientSecret }: AuthenticateMerchantCredentialRequest): Promise<Merchant> {
     const credential = await this.merchantCredentialRepository.findByClientId(clientId);
     // same error for every case, do not tell which one is wrong
     if (

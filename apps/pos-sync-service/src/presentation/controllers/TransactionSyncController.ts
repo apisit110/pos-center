@@ -16,11 +16,11 @@ export class TransactionSyncController {
         sids: transactions.map(tx => tx.storeId),
         tids: transactions.map(tx => tx.terminalId),
       });
-      console.log(`[pos-sync-service] Receiving ${validatedData.transactions.length} transactions from client`);
+      console.log(`[pos-sync-service] Receiving ${transactions.length} transactions from client`);
 
-      const results = await this.syncTransactionsFromClientUseCase.execute(validatedData.transactions as any);
+      const result = await this.syncTransactionsFromClientUseCase.execute({ transactions });
 
-      return res.status(200).json(buildSyncTransactionsResponse(results));
+      return res.status(200).json(buildSyncTransactionsResponse(result));
     } catch (error) {
       next(error);
     }

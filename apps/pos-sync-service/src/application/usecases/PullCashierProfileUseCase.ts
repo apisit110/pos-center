@@ -1,15 +1,14 @@
 import { ICashierProfileRepository } from '../../domain/repositories/ICashierProfileRepository';
 import { CashierProfile } from '../../domain/entities/CashierProfile';
-import { SyncTokenClaims } from '../../domain/services/ISyncTokenService';
 import { SyncError } from '../errors/SyncError';
+import { PullCashierProfileRequest } from '../dtos/PullCashierProfileDto';
 
 export class PullCashierProfileUseCase {
   constructor(
     private readonly cashierProfileRepository: ICashierProfileRepository
   ) {}
 
-  /** `claims` is the terminal of the sync token */
-  async execute({ partnerId, tid }: SyncTokenClaims): Promise<CashierProfile> {
+  async execute({ partnerId, tid }: PullCashierProfileRequest): Promise<CashierProfile> {
     const merchant = await this.cashierProfileRepository.findMerchantByPartnerId(partnerId);
     const terminalWithStore = await this.cashierProfileRepository.findTerminalWithStore(tid);
     // the terminal can be removed or moved to another merchant after the token is issued

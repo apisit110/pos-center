@@ -24,7 +24,7 @@ export const createSyncRouter = (
   router.post('/api/v1/sync/pull/cashier-profile', auth, (req, res, next) => cashierProfileSyncController.pull(req, res, next));
 
   router.post('/api/v1/sync/pull/products', auth, (req, res, next) => productSyncController.sync(req, res, next));
-  router.post('/api/v1/sync/products/receive', auth, (req, res, next) => productSyncController.receive(req, res, next));
+  router.post('/api/v1/sync/push/products', auth, (req, res, next) => productSyncController.receive(req, res, next));
   router.post('/api/v1/sync/push/orders', auth, (req, res, next) => orderSyncController.sync(req, res, next));
   router.post('/api/v1/sync/push/transactions', auth, (req, res, next) => transactionSyncController.sync(req, res, next));
 

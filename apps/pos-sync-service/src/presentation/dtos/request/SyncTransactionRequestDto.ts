@@ -26,3 +26,5 @@ export const syncTransactionRequestSchema = z.object({
     createdAt: tx.created_at,
   }))),
 });
+
+export type SyncTransactionRequestDto = z.infer<typeof syncTransactionRequestSchema>;

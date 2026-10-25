@@ -1,9 +1,9 @@
 import { db, merchants, merchantCredentials, eq, and } from '@pos-center/database';
 import { Merchant } from '../../domain/entities/Merchant';
-import { IMerchantCredentialRepository, MerchantCredentialDTO } from '../../domain/repositories/IMerchantCredentialRepository';
+import { IMerchantCredentialRepository, MerchantCredential } from '../../domain/repositories/IMerchantCredentialRepository';
 
 export class DrizzleMerchantCredentialRepository implements IMerchantCredentialRepository {
-  async findByClientId(clientId: string): Promise<MerchantCredentialDTO | null> {
+  async findByClientId(clientId: string): Promise<MerchantCredential | null> {
     const result = await db.select({
       merchant: merchants,
       clientSecretHash: merchantCredentials.clientSecret,

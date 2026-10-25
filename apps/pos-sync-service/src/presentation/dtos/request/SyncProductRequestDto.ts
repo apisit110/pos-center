@@ -6,4 +6,4 @@ export const syncProductRequestSchema = z.object({
   syncVersion: z.number().int().min(0, 'syncVersion must be a non-negative integer'),
 });
 
-export type SyncProductRequest = z.infer<typeof syncProductRequestSchema>;
+export type SyncProductRequestDto = z.infer<typeof syncProductRequestSchema>;

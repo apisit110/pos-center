@@ -1,6 +1,6 @@
 import { db, products, storeProducts, merchants, stores, brands, runningNumbers, eq, and, or, gt, sql } from '@pos-center/database';
 import { Product } from '../../domain/entities/Product';
-import { IProductRepository, ProductFromClientDTO, ProductFromClientResultDTO } from '../../domain/repositories/IProductRepository';
+import { IProductRepository, ProductFromClient, ProductFromClientResult } from '../../domain/repositories/IProductRepository';
 
 /** Increases running number `product_version` by 1; creates the row with 1 when it does not exist. */
 async function nextProductVersion(): Promise<number> {
@@ -19,8 +19,8 @@ export class DrizzleProductRepository implements IProductRepository {
     console.log('[DrizzleProductRepository] saveMany not implemented - service acts as distributor');
   }
 
-  async receiveProductsFromClient(mid: string, sid: string, productsList: ProductFromClientDTO[]): Promise<ProductFromClientResultDTO[]> {
-    const results: ProductFromClientResultDTO[] = [];
+  async receiveProductsFromClient(mid: string, sid: string, productsList: ProductFromClient[]): Promise<ProductFromClientResult[]> {
+    const results: ProductFromClientResult[] = [];
 
     const merchant = await db.select().from(merchants).where(eq(merchants.partnerId, mid)).limit(1);
     if (!merchant.length) {

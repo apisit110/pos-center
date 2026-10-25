@@ -17,7 +17,8 @@ export class SyncAuthController {
         partnerId: headers['x-partner-id'],
         clientId: headers['x-client-id'],
         clientSecret: headers['x-client-secret'],
-      }, tid);
+        tid,
+      });
 
       // tokens must not be cached by proxies
       res.set('Cache-Control', 'no-store');

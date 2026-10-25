@@ -6,7 +6,7 @@ export interface OrderSyncLog {
   globalOrderId: string;
 }
 
-export interface OrderRepository {
+export interface IOrderRepository {
   save(order: Order): Promise<Order>;
   findSyncLogByOrderId(orderId: string, storeId: string): Promise<OrderSyncLog | null>;
   createSyncLog(log: OrderSyncLog): Promise<void>;

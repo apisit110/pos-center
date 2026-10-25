@@ -1,6 +1,6 @@
 import { db, orders as dbOrders, orderItems as dbOrderItems, orderSyncLogs as dbOrderSyncLogs, merchants, stores, terminals, cashierStaff, members, products, eq, and } from '@pos-center/database';
 import { Order, OrderStatus } from '../../domain/entities/Order';
-import { OrderRepository, OrderSyncLog } from '../../domain/repositories/OrderRepository';
+import { IOrderRepository, OrderSyncLog } from '../../domain/repositories/IOrderRepository';
 
 type DbOrderStatus = typeof dbOrders.$inferInsert['status'];
 
@@ -8,7 +8,7 @@ type DbOrderStatus = typeof dbOrders.$inferInsert['status'];
 const toDbOrderStatus = (status: OrderStatus): DbOrderStatus =>
   status === OrderStatus.CANCELLED ? 'VOID' : status;
 
-export class DrizzleOrderRepository implements OrderRepository {
+export class DrizzleOrderRepository implements IOrderRepository {
   async save(order: Order): Promise<Order> {
     const [merchant] = await db.select({ id: merchants.id }).from(merchants).where(eq(merchants.partnerId, order.merchantId));
     if (!merchant) throw new Error(`Merchant not found: ${order.merchantId}`);
