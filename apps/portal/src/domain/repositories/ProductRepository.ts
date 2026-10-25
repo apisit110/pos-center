@@ -1,8 +1,9 @@
-import { Product } from '../../domain/entities/Product';
+import { Brand, Product } from '../../domain/entities/Product';
 
 export interface ProductFilter {
   barcode?: string;
   name?: string;
+  /** brand uids */
   brands?: string[];
   price?: number;
   units?: string[];
@@ -13,18 +14,19 @@ export interface ProductFilter {
 export interface CreateProductRequest {
   uid?: string;
   merchantId: string;
-  name: string;
+  nameEn: string;
+  nameTh: string;
   barcode: string;
   basePrice: number;
-  imageUrl: string[];
-  brand: string;
+  imageUrl: string;
+  brandUid: string;
   unitName: string;
 }
 
 export interface ProductRepository {
   getProducts(page: number, limit: number, filters?: ProductFilter): Promise<{ products: Product[], total: number }>;
   getProductById(id: string): Promise<Product | null>;
-  getFilterMetadata(): Promise<{ brands: string[], units: string[] }>;
+  getFilterMetadata(): Promise<{ brands: Brand[], units: string[] }>;
   createProduct(request: CreateProductRequest): Promise<Product>;
   createProducts(requests: CreateProductRequest[], onProgress?: (done: number, total: number) => void): Promise<{ created: number; errors: string[] }>;
 }

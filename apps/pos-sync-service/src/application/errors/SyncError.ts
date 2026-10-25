@@ -1,0 +1,28 @@
+// errorMiddleware responds with `status` and `message` of the error
+export class SyncError extends Error {
+  constructor(public readonly status: number, message: string) {
+    super(message);
+    this.name = 'SyncError';
+  }
+
+  static invalidCredential() {
+    return new SyncError(401, 'Invalid credential');
+  }
+
+  static invalidToken() {
+    return new SyncError(401, 'Invalid token');
+  }
+
+  /** the client requests a new token and retries */
+  static tokenExpired() {
+    return new SyncError(401, 'Token expired');
+  }
+
+  static tokenScopeMismatch() {
+    return new SyncError(403, 'Request does not match the token');
+  }
+
+  static terminalNotFound() {
+    return new SyncError(404, 'Terminal not found');
+  }
+}

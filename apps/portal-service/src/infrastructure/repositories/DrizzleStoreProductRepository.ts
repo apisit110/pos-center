@@ -1,132 +1,11 @@
-import { randomUUID } from 'crypto';
-import { and, db, eq, inArray, merchants, products, sql, storeProducts, stores } from '@pos-center/database';
+import { and, db, eq, inArray, merchants, products, runningNumbers, sql, storeProducts, stores } from '@pos-center/database';
 import {
   BatchUpsertResult,
   IStoreProductRepository,
   UpsertStoreProductByUidInput
 } from '../../domain/repositories/IStoreProductRepository';
-import { StoreProduct } from '../../domain/entities/StoreProduct';
 
 export class DrizzleStoreProductRepository implements IStoreProductRepository {
-  async save(storeProduct: StoreProduct): Promise<void> {
-    await this.upsertByUids({
-      storeUid: storeProduct.storeId,
-      productUid: storeProduct.productId,
-      stock: storeProduct.stock,
-      price: storeProduct.price,
-    });
-  }
-
-  async findByStoreId(storeId: string): Promise<StoreProduct[]> {
-    const rows = await db
-      .select({
-        uid: storeProducts.uid,
-        storeUid: stores.uid,
-        productUid: products.uid,
-        stock: storeProducts.stock,
-        price: storeProducts.price,
-        unit: storeProducts.unit,
-      })
-      .from(storeProducts)
-      .innerJoin(stores, eq(storeProducts.storeId, stores.id))
-      .innerJoin(products, eq(storeProducts.productId, products.id))
-      .where(eq(stores.uid, storeId));
-
-    return rows.map(
-      (row) =>
-        new StoreProduct(
-          row.uid,
-          row.storeUid,
-          row.productUid,
-          row.stock,
-          Number(row.price),
-          row.unit || ''
-        )
-    );
-  }
-
-  async findByProductId(productId: string): Promise<StoreProduct[]> {
-    const rows = await db
-      .select({
-        uid: storeProducts.uid,
-        storeUid: stores.uid,
-        productUid: products.uid,
-        stock: storeProducts.stock,
-        price: storeProducts.price,
-        unit: storeProducts.unit,
-      })
-      .from(storeProducts)
-      .innerJoin(stores, eq(storeProducts.storeId, stores.id))
-      .innerJoin(products, eq(storeProducts.productId, products.id))
-      .where(eq(products.uid, productId));
-
-    return rows.map(
-      (row) =>
-        new StoreProduct(
-          row.uid,
-          row.storeUid,
-          row.productUid,
-          row.stock,
-          Number(row.price),
-          row.unit || ''
-        )
-    );
-  }
-
-  async delete(id: string): Promise<void> {
-    await db.delete(storeProducts).where(eq(storeProducts.uid, id));
-  }
-
-  async upsertByUids(input: UpsertStoreProductByUidInput): Promise<'created' | 'updated'> {
-    return db.transaction(async (tx) => {
-      const store = await tx.query.stores.findFirst({
-        where: eq(stores.uid, input.storeUid),
-      });
-      if (!store) {
-        throw new Error(`store_uid "${input.storeUid}" not found`);
-      }
-
-      const product = await tx.query.products.findFirst({
-        where: eq(products.uid, input.productUid),
-      });
-      if (!product) {
-        throw new Error(`product_uid "${input.productUid}" not found`);
-      }
-
-      const existing = await tx.query.storeProducts.findFirst({
-        where: and(
-          eq(storeProducts.storeId, store.id),
-          eq(storeProducts.productId, product.id)
-        ),
-      });
-
-      if (existing) {
-        await tx
-          .update(storeProducts)
-          .set({
-            stock: input.stock,
-            price: input.price.toString(),
-            unit: product.unitName || existing.unit,
-            rowVersion: sql`${storeProducts.rowVersion} + 1`,
-            updatedAt: new Date(),
-          })
-          .where(eq(storeProducts.id, existing.id));
-        return 'updated';
-      }
-
-      await tx.insert(storeProducts).values({
-        uid: randomUUID(),
-        storeId: store.id,
-        productId: product.id,
-        stock: input.stock,
-        price: input.price.toString(),
-        unit: product.unitName || null,
-        rowVersion: 1,
-      });
-      return 'created';
-    });
-  }
-
   async batchUpsertByUids(inputs: UpsertStoreProductByUidInput[], onlyMerchantUid?: string): Promise<BatchUpsertResult> {
     if (inputs.length === 0) return { created: 0, updated: 0, errors: [] };
 
@@ -138,7 +17,7 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
         .from(stores)
         .innerJoin(merchants, eq(stores.merchantId, merchants.id))
         .where(inArray(stores.uid, storeUids)),
-      db.select({ id: products.id, uid: products.uid, unitName: products.unitName, merchantUid: merchants.uid })
+      db.select({ id: products.id, uid: products.uid, merchantUid: merchants.uid })
         .from(products)
         .innerJoin(merchants, eq(products.merchantId, merchants.id))
         .where(inArray(products.uid, productUids)),
@@ -147,7 +26,7 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
     const storeMap = new Map(storeRows.map((s) => [s.uid, s]));
     const productMap = new Map(productRows.map((p) => [p.uid, p]));
 
-    type ValidItem = { input: UpsertStoreProductByUidInput; storeId: number; productId: number; unitName: string | null };
+    type ValidItem = { input: UpsertStoreProductByUidInput; storeId: number; productId: number };
     const valid: ValidItem[] = [];
     const errors: BatchUpsertResult['errors'] = [];
 
@@ -166,7 +45,7 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
         errors.push({ index, code: 'FORBIDDEN' });
         continue;
       }
-      valid.push({ input, storeId: store.id, productId: product.id, unitName: product.unitName || null });
+      valid.push({ input, storeId: store.id, productId: product.id });
     }
 
     if (valid.length === 0) return { created: 0, updated: 0, errors };
@@ -178,8 +57,18 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
     let updated = 0;
 
     await db.transaction(async (tx) => {
+      // one new product_version for the whole chunk, so pos can sync the changed store products
+      const [version] = await tx.insert(runningNumbers)
+        .values({ type: 'product_version', number: 1 })
+        .onConflictDoUpdate({
+          target: runningNumbers.type,
+          set: { number: sql`${runningNumbers.number} + 1`, updatedAt: new Date() },
+        })
+        .returning({ newVersion: runningNumbers.number });
+      const syncVersion = version.newVersion;
+
       const existingRows = await tx
-        .select()
+        .select({ storeId: storeProducts.storeId, productId: storeProducts.productId })
         .from(storeProducts)
         .where(
           and(
@@ -188,25 +77,23 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
           )
         );
 
-      const existingMap = new Map(existingRows.map((r) => [`${r.storeId}:${r.productId}`, r]));
+      const existingKeys = new Set(existingRows.map((r) => `${r.storeId}:${r.productId}`));
       const pendingInserts = new Map<string, typeof storeProducts.$inferInsert>();
 
       for (const item of valid) {
         const key = `${item.storeId}:${item.productId}`;
-        const existing = existingMap.get(key);
         const pending = pendingInserts.get(key);
 
-        if (existing) {
+        if (existingKeys.has(key)) {
           await tx
             .update(storeProducts)
             .set({
               stock: item.input.stock,
               price: item.input.price.toString(),
-              unit: item.unitName ?? existing.unit,
-              rowVersion: sql`${storeProducts.rowVersion} + 1`,
+              syncVersion,
               updatedAt: new Date(),
             })
-            .where(eq(storeProducts.id, existing.id));
+            .where(and(eq(storeProducts.storeId, item.storeId), eq(storeProducts.productId, item.productId)));
           updated++;
         } else if (pending) {
           // same (store, product) twice in one chunk: the later row wins, like a row of the next chunk would
@@ -215,13 +102,11 @@ export class DrizzleStoreProductRepository implements IStoreProductRepository {
           updated++;
         } else {
           pendingInserts.set(key, {
-            uid: randomUUID(),
             storeId: item.storeId,
             productId: item.productId,
             stock: item.input.stock,
             price: item.input.price.toString(),
-            unit: item.unitName,
-            rowVersion: 1,
+            syncVersion,
           });
           created++;
         }

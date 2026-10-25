@@ -1,7 +1,9 @@
 export enum OrderStatus {
   PENDING = 'PENDING',
   PAID = 'PAID',
-  CANCELLED = 'CANCELLED'
+  CANCELLED = 'CANCELLED', // stored as VOID
+  VOID = 'VOID',
+  REFUNDED = 'REFUNDED'
 }
 
 export class OrderItem {

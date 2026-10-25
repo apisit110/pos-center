@@ -9,7 +9,8 @@ import { GetStoresUseCase } from '../../../domain/usecases/GetStoresUseCase';
 import { ApiProductRepository } from '../../../infrastructure/repositories/ApiProductRepository';
 import { ApiMerchantRepository } from '../../../infrastructure/repositories/ApiMerchantRepository';
 import { ApiStoreRepository } from '../../../infrastructure/repositories/ApiStoreRepository';
-import { Product } from '../../../domain/entities/Product';
+import { Brand, Product } from '../../../domain/entities/Product';
+import { pickName } from '../../../domain/entities/LocalizedName';
 import { ProductFilter } from '../../../domain/repositories/ProductRepository';
 import { formatAmount } from '../../../lib/formatAmount';
 import { DataTable, FilterBar, TextFilter, SelectFilter, ClearFilterButton, Button } from '@apisit110/pos-ui';
@@ -63,7 +64,7 @@ const ButtonCell = styled.div`
 
 export default function ProductsPage() {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -80,7 +81,7 @@ export default function ProductsPage() {
   });
   
   // Metadata for filters
-  const [metadata, setMetadata] = useState<{ brands: string[], units: string[] }>({
+  const [metadata, setMetadata] = useState<{ brands: Brand[], units: string[] }>({
     brands: [],
     units: []
   });
@@ -114,15 +115,15 @@ export default function ProductsPage() {
       const merchantRepo = new ApiMerchantRepository();
       const merchantUC = new GetMerchantsUseCase(merchantRepo);
       const merchantData = await merchantUC.execute(1, 100);
-      setMerchants(merchantData.merchants.map(m => ({ value: m.uid, label: m.name })));
+      setMerchants(merchantData.merchants.map(m => ({ value: m.uid, label: m.displayName(language) })));
 
       const storeRepo = new ApiStoreRepository();
       const storeUC = new GetStoresUseCase(storeRepo);
       const storeData = await storeUC.execute();
-      setStores(storeData.map(s => ({ value: s.uid, label: s.name })));
+      setStores(storeData.map(s => ({ value: s.uid, label: s.displayName(language) })));
     };
     fetchMetadata();
-  }, []);
+  }, [language]);
 
   const handleMerchantChange = async (selected: { value: string } | null) => {
     const merchantId = selected?.value || undefined;
@@ -131,7 +132,7 @@ export default function ProductsPage() {
     const storeRepo = new ApiStoreRepository();
     const storeUC = new GetStoresUseCase(storeRepo);
     const storeData = await storeUC.execute(merchantId);
-    setStores(storeData.map(s => ({ value: s.uid, label: s.name })));
+    setStores(storeData.map(s => ({ value: s.uid, label: s.displayName(language) })));
   };
 
   useEffect(() => {
@@ -160,14 +161,15 @@ export default function ProductsPage() {
 
   const columns = [
     { header: t.productList.barcode, key: 'barcode', width: '150px' },
-    { header: t.productList.columnName, key: 'name' },
-    { header: t.productList.brand, key: 'brand' },
+    { header: t.productList.columnName, key: 'name', render: (p: Product) => p.displayName(language) },
+    { header: t.productList.brand, key: 'brand', render: (p: Product) => p.brandName(language) || '-' },
     { header: t.productList.unit, key: 'unitName' },
-    { header: t.productList.merchant, key: 'merchant', render: (p: Product) => merchantMap[p.merchantId] || p.mid },
+    { header: t.productList.merchant, key: 'merchant', render: (p: Product) => merchantMap[p.merchantId] || p.partnerId },
     { header: t.productList.columnPrice, key: 'price', render: (p: Product) => `${formatAmount(p.basePrice)} ฿` },
   ];
 
-  const brandOptions = metadata.brands.map(b => ({ value: b, label: b }));
+  // the brand filter sends brand uids (see docs/portal/flow/product/get-products.md)
+  const brandOptions = metadata.brands.map(b => ({ value: b.uid, label: pickName(language, b.nameEn, b.nameTh) }));
   const unitOptions = metadata.units.map(u => ({ value: u, label: u }));
 
   return (

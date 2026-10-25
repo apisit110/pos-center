@@ -8,8 +8,9 @@ const MERCHANTS_PATH = `${API_V1}/merchants`;
 interface StaffResponse {
   uid: string;
   merchant_uid: string;
-  merchant_name: string;
-  name: string;
+  merchant_name_en: string;
+  merchant_name_th: string;
+  full_name: string;
   role: string;
   username: string;
   status: StaffStatus;
@@ -18,7 +19,7 @@ interface StaffResponse {
 
 interface MerchantStaffResponse {
   uid: string;
-  name: string;
+  full_name: string;
   role: string;
   username: string;
   status: StaffStatus;
@@ -29,16 +30,17 @@ const toStaff = (s: StaffResponse): Staff => {
   return new Staff(
     s.uid,
     s.merchant_uid ?? '',
-    s.name,
+    s.full_name,
     s.role,
     s.username ?? '',
-    '',
+    s.full_name,
     0,
     s.status ?? 'ACTIVE',
     null,
     createdAt,
     createdAt,
-    s.merchant_name ?? '',
+    s.merchant_name_en ?? '',
+    s.merchant_name_th ?? '',
   );
 };
 
@@ -69,10 +71,10 @@ export class ApiStaffRepository implements StaffRepository {
     return data.map((s) => new Staff(
       s.uid,
       '',
-      s.name,
+      s.full_name,
       s.role,
       s.username ?? '',
-      '',
+      s.full_name,
       0,
       s.status ?? 'ACTIVE',
     ));

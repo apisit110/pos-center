@@ -4,7 +4,8 @@ export interface TerminalResponseDto {
   uid: string;
   store_uid: string;
   tid: string;
-  name: string;
+  name_en: string;
+  name_th: string;
 }
 
 export function toTerminalResponseDto(terminal: Terminal): TerminalResponseDto {
@@ -12,6 +13,7 @@ export function toTerminalResponseDto(terminal: Terminal): TerminalResponseDto {
     uid: terminal.id,
     store_uid: terminal.storeId,
     tid: terminal.tid,
-    name: terminal.name,
+    name_en: terminal.nameEn,
+    name_th: terminal.nameTh,
   };
 }

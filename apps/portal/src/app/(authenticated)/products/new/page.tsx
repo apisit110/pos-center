@@ -10,8 +10,12 @@ import { ApiProductRepository } from '../../../../infrastructure/repositories/Ap
 import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
 import { ApiStoreRepository } from '../../../../infrastructure/repositories/ApiStoreRepository';
 import { ApiStoreProductRepository } from '../../../../infrastructure/repositories/ApiStoreProductRepository';
+import { ApiBrandRepository } from '../../../../infrastructure/repositories/ApiBrandRepository';
+import { BatchUpsertBrandsUseCase } from '../../../../domain/usecases/BatchUpsertBrandsUseCase';
 import { formatAmount } from '../../../../lib/formatAmount';
+import { useTranslation } from '../../../../presentation/i18n/LanguageContext';
 import {
+  MasterBrand,
   MasterProduct,
   MasterStoreProduct,
   parseMasterProductXlsx
@@ -179,6 +183,7 @@ const ErrorList = styled.ul`
 /* ═══════════════════════════════════════════════════════════ */
 
 export default function AddProductPage() {
+  const { language } = useTranslation();
 
   const [merchants, setMerchants] = useState<
     { value: string; label: string }[]
@@ -187,6 +192,7 @@ export default function AddProductPage() {
 
   // Excel import state
   const [importProducts, setImportProducts] = useState<MasterProduct[]>([]);
+  const [importBrands, setImportBrands] = useState<MasterBrand[]>([]);
   const [importStoreProducts, setImportStoreProducts] = useState<
     MasterStoreProduct[]
   >([]);
@@ -211,7 +217,7 @@ export default function AddProductPage() {
       const useCase = new GetMerchantsUseCase(merchantRepo);
       const data = await useCase.execute(1, 100);
       setMerchants(
-        data.merchants.map((m) => ({ value: m.uid, label: m.name }))
+        data.merchants.map((m) => ({ value: m.uid, label: m.displayName(language) }))
       );
     })();
   }, []);
@@ -226,7 +232,7 @@ export default function AddProductPage() {
           new ApiStoreRepository()
         ).execute(selectedMerchant);
         if (!cancelled)
-          setStores(data.map((st) => ({ value: st.uid, label: st.name })));
+          setStores(data.map((st) => ({ value: st.uid, label: st.displayName(language) })));
       } catch {
         if (!cancelled)
           setResult({ type: 'error', message: 'Failed to load stores' });
@@ -257,6 +263,7 @@ export default function AddProductPage() {
       }
       setImportProducts(parsed.products);
       setImportStoreProducts(parsed.storeProducts);
+      setImportBrands(parsed.brands);
       setImportErrors([]);
       setResult(null);
     } catch (err) {
@@ -275,7 +282,10 @@ export default function AddProductPage() {
   const clearImport = () => {
     setImportProducts([]);
     setImportStoreProducts([]);
+    setImportBrands([]);
   };
+
+  const brandNameByUid = new Map(importBrands.map((b) => [b.uid, language === 'en' ? b.name_en : b.name_th]));
 
   /* ─── Import submit ──────────────────────────────────── */
 
@@ -299,16 +309,28 @@ export default function AddProductPage() {
     setImportErrors([]);
 
     try {
+      // brands first, so the products can reference them by brand_uid
+      let brandMessage = '';
+      if (importBrands.length > 0) {
+        const brandResult = await new BatchUpsertBrandsUseCase(new ApiBrandRepository()).execute(
+          importBrands.map((b) => ({ uid: b.uid, nameEn: b.name_en, nameTh: b.name_th }))
+        );
+        brandMessage = ` Brands: ${brandResult.created} added, ${brandResult.updated} updated.`;
+      }
+
       const repo = new ApiProductRepository();
       const useCase = new BatchCreateProductsUseCase(repo);
       const requests = importProducts.map((p) => ({
         uid: p.uid,
         merchantId: selectedMerchant,
-        name: p.name_th || p.name_en || '',
+        nameEn: p.name_en || p.name_th || '',
+        nameTh: p.name_th || p.name_en || '',
         barcode: p.barcode || '',
         basePrice: p.base_price,
-        imageUrl: p.image_url || [],
-        brand: p.brand_th || p.brand_en || '',
+        // the API keeps one image url per product
+        imageUrl: p.image_url[0] || '',
+        // a uid of sheet `brand`; a uid that is not a brand is reported by the API as `Brand not found`
+        brandUid: p.brand_uid || '',
         unitName: p.unit_name || ''
       }));
 
@@ -316,7 +338,7 @@ export default function AddProductPage() {
         setProgress({ done, total })
       );
       const errors = [...res.errors];
-      let message = `Successfully created ${res.created} product(s).`;
+      let message = `Successfully created ${res.created} product(s).${brandMessage}`;
 
       // map price/stock for the products in the file (rows of products that failed above are reported by the API)
       if (importStoreProducts.length > 0 && res.created > 0) {
@@ -396,8 +418,9 @@ export default function AddProductPage() {
               onFile={processFile}
               hint={
                 <>
-                  Sheet &quot;product&quot; (required) and sheet
-                  &quot;store_product&quot; (optional: stock/price)
+                  Sheet &quot;product&quot; (required), sheet
+                  &quot;store_product&quot; (optional: stock/price) and sheet
+                  &quot;brand&quot; (optional)
                 </>
               }
             >
@@ -429,6 +452,9 @@ export default function AddProductPage() {
                 }}
               >
                 <PreviewBadge>{importProducts.length} items</PreviewBadge>
+                {importBrands.length > 0 && (
+                  <PreviewBadge>{importBrands.length} brand(s)</PreviewBadge>
+                )}
                 {importStoreProducts.length > 0 && (
                   <PreviewBadge>
                     {importStoreProducts.length} store product(s)
@@ -461,7 +487,7 @@ export default function AddProductPage() {
                     <tr key={idx}>
                       <td style={{ color: 'var(--text-sub)' }}>{idx + 1}</td>
                       <td>{p.name_th || p.name_en || '—'}</td>
-                      <td>{p.brand_th || p.brand_en || '—'}</td>
+                      <td>{(p.brand_uid && brandNameByUid.get(p.brand_uid)) || p.brand_th || p.brand_en || '—'}</td>
                       <td style={{ fontFamily: 'monospace' }}>
                         {p.barcode || '—'}
                       </td>

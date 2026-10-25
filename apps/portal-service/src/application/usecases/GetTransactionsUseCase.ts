@@ -1,6 +1,5 @@
 import { ITransactionRepository, TransactionFilter } from '../../domain/repositories/ITransactionRepository';
 import { IStaffRepository } from '../../domain/repositories/IStaffRepository';
-import { IMerchantRepository } from '../../domain/repositories/IMerchantRepository';
 import { Transaction } from '../../domain/entities/Transaction';
 import { Actor, findOwnMerchantUid, isProductOwner } from '../auth/Actor';
 import { toRangeEnd, toRangeStart } from '../utils/dateRange';
@@ -27,26 +26,20 @@ export class GetTransactionsUseCase {
   constructor(
     private transactionRepository: ITransactionRepository,
     private staffRepository: IStaffRepository,
-    private merchantRepository: IMerchantRepository,
   ) {}
 
   async execute(actor: Actor, input: GetTransactionsInput): Promise<GetTransactionsOutput> {
     const { page, limit } = input;
-    const empty: GetTransactionsOutput = { transactions: [], total: 0, page, limit };
 
-    let merchantMid: string | undefined;
+    let merchantUid: string | undefined;
     if (!isProductOwner(actor)) {
       const ownMerchantUid = await findOwnMerchantUid(this.staffRepository, actor);
-      if (!ownMerchantUid) return empty;
-
-      // transactions.merchant_id holds the merchant id (mid), as sent by the pos
-      const merchant = await this.merchantRepository.getById(ownMerchantUid);
-      if (!merchant) return empty;
-      merchantMid = merchant.mid;
+      if (!ownMerchantUid) return { transactions: [], total: 0, page, limit };
+      merchantUid = ownMerchantUid;
     }
 
     const filters: TransactionFilter = {
-      merchantMid,
+      merchantUid,
       transactionId: input.transactionId,
       orderId: input.orderId,
       method: input.method,

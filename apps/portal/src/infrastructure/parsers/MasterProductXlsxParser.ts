@@ -11,6 +11,14 @@ export interface MasterProduct {
   unit_name: string | null;
   barcode: string | null;
   qrcode: string | null;
+  /** uid of a row in sheet `brand` */
+  brand_uid: string | null;
+}
+
+export interface MasterBrand {
+  uid: string;
+  name_en: string;
+  name_th: string;
 }
 
 export interface MasterStoreProduct {
@@ -23,10 +31,12 @@ export interface MasterStoreProduct {
 export interface MasterProductFile {
   products: MasterProduct[];
   storeProducts: MasterStoreProduct[];
+  brands: MasterBrand[];
 }
 
 const PRODUCT_SHEET = 'product';
 const STORE_PRODUCT_SHEET = 'store_product';
+const BRAND_SHEET = 'brand';
 
 const toText = (value: unknown): string | null => {
   if (value === null || value === undefined) return null;
@@ -104,6 +114,7 @@ export async function parseMasterProductXlsx(buffer: ArrayBuffer): Promise<Maste
       unit_name: toText(cell('unit_name')),
       barcode: toText(cell('barcode')),
       qrcode: toText(cell('qrcode')),
+      brand_uid: toText(cell('brand_uid')),
     });
   });
 
@@ -126,5 +137,22 @@ export async function parseMasterProductXlsx(buffer: ArrayBuffer): Promise<Maste
     });
   }
 
-  return { products, storeProducts };
+  const brands: MasterBrand[] = [];
+  const brandSheet = workbook.getWorksheet(BRAND_SHEET);
+  if (brandSheet) {
+    const bc = columnsOf(brandSheet);
+    requireColumns(BRAND_SHEET, bc, ['uid', 'name_en', 'name_th']);
+    brandSheet.eachRow((row, rowNumber) => {
+      if (rowNumber === 1) return;
+      const cell = (name: string) => toText(row.getCell(bc.get(name)!).value);
+      const uid = cell('uid');
+      if (!uid) return;
+      // the API requires both names, so a missing one falls back to the other
+      const nameEn = cell('name_en') ?? cell('name_th') ?? '';
+      const nameTh = cell('name_th') ?? nameEn;
+      brands.push({ uid, name_en: nameEn, name_th: nameTh });
+    });
+  }
+
+  return { products, storeProducts, brands };
 }

@@ -8,6 +8,8 @@ export const PERMISSION_NAMES = [
   'merchants:view',
   'merchants:create',
   'merchant_detail:view',
+  'merchant_credentials:create',
+  'merchant_credentials:rotate',
   'stores:view',
   'stores:create',
   'store_detail:view',

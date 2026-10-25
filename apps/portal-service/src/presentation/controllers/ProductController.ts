@@ -11,6 +11,7 @@ import { idParamSchema } from '../dtos/request/CommonRequestDto';
 import {
   BulkCreateProductsResponseDto,
   ProductMetadataResponseDto,
+  toBrandResponseDto,
   toProductResponseDto,
 } from '../dtos/response/ProductResponseDto';
 import { toPaginatedResponseDto } from '../dtos/response/PaginatedResponseDto';
@@ -50,7 +51,7 @@ export class ProductController {
   async getMetadata(req: Request, res: Response, next: NextFunction) {
     try {
       const metadata = await this.getProductFilterMetadataUseCase.execute(actorOf(req));
-      sendOk<ProductMetadataResponseDto>(res, metadata);
+      sendOk<ProductMetadataResponseDto>(res, { brands: metadata.brands.map(toBrandResponseDto), units: metadata.units });
     } catch (error) {
       next(error);
     }
@@ -71,11 +72,12 @@ export class ProductController {
       const body = createProductSchema.parse(req.body);
       const product = await this.createProductUseCase.execute(actorOf(req), {
         merchantUid: body.merchant_uid,
-        name: body.name,
+        nameEn: body.name_en,
+        nameTh: body.name_th,
         barcode: body.barcode,
         basePrice: body.base_price,
         imageUrl: body.image_url,
-        brand: body.brand,
+        brandUid: body.brand_uid,
         unitName: body.unit_name,
       });
       sendOk(res, toProductResponseDto(product), 201);
@@ -93,16 +95,20 @@ export class ProductController {
         products.map(p => ({
           uid: p.uid || undefined,
           merchantUid: p.merchant_uid,
-          name: p.name,
+          nameEn: p.name_en,
+          nameTh: p.name_th,
           barcode: p.barcode,
           basePrice: p.base_price,
           imageUrl: p.image_url,
-          brand: p.brand,
+          brandUid: p.brand_uid,
           unitName: p.unit_name,
         }))
       );
 
-      sendOk<BulkCreateProductsResponseDto>(res, result, 201);
+      sendOk<BulkCreateProductsResponseDto>(res, {
+        created: result.created,
+        errors: result.errors.map((e) => ({ index: e.index, name_en: e.nameEn, message: e.message })),
+      }, 201);
     } catch (error) {
       next(error);
     }

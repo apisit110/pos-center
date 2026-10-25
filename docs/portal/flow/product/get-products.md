@@ -41,7 +41,7 @@ response body (fields below are the value of `data`, wrapped in [Ok](../../../ap
 | items                | array    | list of product                                            |
 | items[].uid          | string   | product uid                                                |
 | items[].merchant_uid | string   | uid of the merchant that owns the product                  |
-| items[].mid          | string/null | merchant id of the merchant that owns the product (from `merchant_profile`) |
+| items[].partner_id   | string   | partner id of the merchant that owns the product           |
 | items[].name_en      | string   | product name (English)                                     |
 | items[].name_th      | string   | product name (Thai)                                        |
 | items[].sku          | string   | product sku                                                |
@@ -65,7 +65,7 @@ example response body:
       {
         "uid": "string",
         "merchant_uid": "string",
-        "mid": "string",
+        "partner_id": "string",
         "name_en": "string",
         "name_th": "string",
         "sku": "string",
@@ -126,7 +126,7 @@ Logic:
     - force the `merchant_uid` filter to own merchant uid
   - if role is `PRODUCT_OWNER`
     - use `merchant_uid` from query as is (optional)
-- Find products from database (join merchant to get `merchant_uid`, left join `merchant_profile` to get `mid`, left join `brand`)
+- Find products from database (join merchant to get `merchant_uid` and `partner_id`, left join `brand`)
   - order by `id` descending (newest first)
   - offset = `(page - 1) * limit`, limit = `limit`
   - if `barcode` is provided, filter `barcode` with ILIKE `%barcode%`
@@ -140,4 +140,4 @@ Logic:
 - Count total products with the same filter (`count(distinct product.id)`)
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response product list follow these items (uid, merchant_uid, mid, name_en, name_th, sku, barcode, base_price, image_url, brand, unit_name), total, page, limit
+- response product list follow these items (uid, merchant_uid, partner_id, name_en, name_th, sku, barcode, base_price, image_url, brand, unit_name), total, page, limit

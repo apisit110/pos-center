@@ -20,8 +20,7 @@ create db lightning_pos ใน pgadmin4
 rm -rf packages/database/drizzle
 pnpm --filter @pos-center/database db:generate
 pnpm --filter @pos-center/database db:migrate
-
-<!-- pnpm --filter @pos-center/database db:seed -->
+pnpm --filter @pos-center/database db:seed
 
 ---
 
@@ -68,6 +67,8 @@ TERMINAL_ID=0001000101
 
 # กรณี mode = offline
 
+## Cashier
+
 อยากให้สร้าง user 2 คนสำหรับ manager และ cashier
 
 Config
@@ -90,7 +91,7 @@ Migrate & Seed
 
 # กรณี mode = online
 
-center
+## Center
 
 - สร้าง merchant
 - สร้าง store
@@ -104,7 +105,24 @@ center
   - tid
   - credential
 
-cashier
+สร้าง api สำหระบบ sync
+- [ ][api] sync pull merchant store terminal staff
+- [x][api] sync pull product
+- [ ][api] sync pull order
+- [ ][api] sync pull transaction
+
+- [x][api] sync push order
+- [x][api] sync push transaction
+- [ ][api] sync push product create
+
+/api/v1/sync/products/receive
+
+- [ ][api] sync push product edit
+
+/api/v1/sync/products/receive
+
+
+## Cashier
 
 - config ให้ใช้ online mode
 - เข้าเว็บจะแสดงให้กรอก terminal id ตอนกรอก terminal id จะ sync ข้อมูล

@@ -1,7 +1,9 @@
-import { pgTable, varchar, timestamp, serial } from 'drizzle-orm/pg-core';
+import { pgTable, varchar, timestamp, serial, integer } from 'drizzle-orm/pg-core';
+import { provinces } from './masterProvinces';
 
-export const provinces = pgTable('provinces', {
+export const districts = pgTable('master_districts', {
   id: serial('id').primaryKey(),
+  provinceId: integer('province_id').references(() => provinces.id),
   code: varchar('code', { length: 20 }).unique(),
   nameEn: varchar('name_en', { length: 255 }),
   nameTh: varchar('name_th', { length: 255 }),

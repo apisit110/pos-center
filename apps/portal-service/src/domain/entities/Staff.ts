@@ -11,6 +11,7 @@ export class Staff {
     public pinHash?: string,
     public status: StaffStatus = 'ACTIVE',
     public createdAt?: Date,
-    public merchantName?: string,
+    public merchantNameEn?: string,
+    public merchantNameTh?: string,
   ) {}
 }

@@ -4,7 +4,7 @@ import { limitSchema, pageSchema } from './CommonRequestDto';
 export const getMerchantsQuerySchema = z.object({
   page: pageSchema,
   limit: limitSchema,
-  mid: z.string().optional(),
+  partner_id: z.string().optional(),
   name: z.string().optional(),
 });
 

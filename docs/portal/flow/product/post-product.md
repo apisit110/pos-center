@@ -59,7 +59,7 @@ same as [get product detail](get-product-detail.md)
 | ------------ | -------- | ------------------------------------------------- |
 | uid          | string   | product uid (generated)                           |
 | merchant_uid | string   | uid of the merchant that owns the product         |
-| mid          | string/null | merchant id of the merchant that owns the product |
+| partner_id   | string   | partner id of the merchant that owns the product  |
 | name_en      | string   | product name (English)                            |
 | name_th      | string   | product name (Thai)                               |
 | sku          | string   | product sku (same as `barcode`)                   |
@@ -78,7 +78,7 @@ example response body:
   "data": {
     "uid": "string",
     "merchant_uid": "string",
-    "mid": "string",
+    "partner_id": "string",
     "name_en": "string",
     "name_th": "string",
     "sku": "string",
@@ -148,4 +148,4 @@ Logic:
   - update `sync_version` of every `map_store_product` of this product to the new `product_version` (so pos can sync the changed product)
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response `201 Created` with product follow these items (uid, merchant_uid, mid, name_en, name_th, sku, barcode, base_price, image_url, brand, unit_name)
+- response `201 Created` with product follow these items (uid, merchant_uid, partner_id, name_en, name_th, sku, barcode, base_price, image_url, brand, unit_name)

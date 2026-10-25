@@ -1,8 +1,8 @@
 import { Transaction, TransactionDetail } from '../../domain/entities/Transaction';
 
 export interface TransactionFilter {
-  /** only transactions of this merchant (`transactions.merchant_id` holds the merchant id / mid) */
-  merchantMid?: string;
+  /** only transactions of this merchant (by merchant uid) */
+  merchantUid?: string;
   /** created_at >= startDate */
   startDate?: Date;
   /** created_at <= endDate */

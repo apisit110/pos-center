@@ -1,5 +1,6 @@
-import { db, transactions, stores, orders, orderItems, products } from '@pos-center/database';
-import { eq, and, like, gte, lte, count, desc, SQL } from 'drizzle-orm';
+import { db, transactions, stores, terminals, merchants, orders, orderItems, products } from '@pos-center/database';
+import { eq, and, like, gte, lte, count, desc, inArray, SQL } from 'drizzle-orm';
+import { merchantUidIs } from '../utils/merchant';
 import { Transaction, TransactionDetail, TransactionItem } from '../../domain/entities/Transaction';
 import { ITransactionRepository, TransactionFilter } from '../../domain/repositories/ITransactionRepository';
 
@@ -8,8 +9,12 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
     const offset = (page - 1) * limit;
     const conditions: SQL[] = [];
 
-    if (filters?.merchantMid) {
-      conditions.push(eq(transactions.merchantId, filters.merchantMid));
+    if (filters?.merchantUid) {
+      // transactions.merchant_id is a logical reference (no FK) to merchant.id
+      conditions.push(inArray(
+        transactions.merchantId,
+        db.select({ id: merchants.id }).from(merchants).where(merchantUidIs(filters.merchantUid)),
+      ));
     }
 
     if (filters?.transactionId) {
@@ -21,11 +26,11 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
     }
 
     if (filters?.method) {
-      conditions.push(eq(transactions.paymentMethod, filters.method));
+      conditions.push(eq(transactions.paymentMethod, filters.method as any));
     }
 
     if (filters?.status) {
-      conditions.push(eq(transactions.status, filters.status));
+      conditions.push(eq(transactions.status, filters.status as any));
     }
 
     if (filters?.startDate) {
@@ -46,11 +51,13 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
         paymentMethod: transactions.paymentMethod,
         status: transactions.status,
         amount: transactions.amount,
-        storeName: stores.name,
+        storeNameEn: stores.nameEn,
+        storeNameTh: stores.nameTh,
+        staffName: transactions.staffName,
         createdAt: transactions.createdAt,
       })
       .from(transactions)
-      .leftJoin(orders, eq(transactions.orderId, orders.id))
+      .leftJoin(orders, eq(transactions.orderId, orders.orderId))
       .leftJoin(stores, eq(transactions.storeId, stores.id))
       .where(whereClause)
       .orderBy(desc(transactions.createdAt), desc(transactions.id))
@@ -60,7 +67,7 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
     const totalCount = await db
       .select({ value: count() })
       .from(transactions)
-      .leftJoin(orders, eq(transactions.orderId, orders.id))
+      .leftJoin(orders, eq(transactions.orderId, orders.orderId))
       .leftJoin(stores, eq(transactions.storeId, stores.id))
       .where(whereClause);
 
@@ -68,13 +75,15 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
       transactions: results.map(t => new Transaction(
         t.id.toString(),
         t.uid,
-        t.paymentMethod,
-        t.status,
-        Number(t.amount),
+        t.paymentMethod ?? '',
+        t.status ?? '',
+        Number(t.amount ?? 0),
         'THB',
-        t.storeName ?? '',
-        t.createdAt ?? new Date(),
-        t.orderId?.toString() ?? '',
+        t.storeNameEn ?? '',
+        t.storeNameTh ?? '',
+        t.staffName ?? '',
+        t.createdAt,
+        t.orderId ?? '',
       )),
       total: Number(totalCount[0].value),
     };
@@ -89,18 +98,22 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
         orderId: orders.orderId,
         orderStatus: orders.status,
         orderTotalAmount: orders.totalAmount,
-        merchantMid: transactions.merchantId,
-        terminalId: transactions.terminalId,
+        merchantUid: merchants.uid,
+        partnerId: merchants.partnerId,
+        tid: terminals.tid,
         staffName: transactions.staffName,
         paymentMethod: transactions.paymentMethod,
         status: transactions.status,
         amount: transactions.amount,
-        storeName: stores.name,
+        storeNameEn: stores.nameEn,
+        storeNameTh: stores.nameTh,
         createdAt: transactions.createdAt,
       })
       .from(transactions)
-      .leftJoin(orders, eq(transactions.orderId, orders.id))
+      .leftJoin(orders, eq(transactions.orderId, orders.orderId))
       .leftJoin(stores, eq(transactions.storeId, stores.id))
+      .leftJoin(terminals, eq(transactions.terminalId, terminals.id))
+      .leftJoin(merchants, eq(transactions.merchantId, merchants.id))
       .where(eq(transactions.uid, uid))
       .limit(1);
 
@@ -109,7 +122,8 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
     const items = row.orderPk === null ? [] : await db
       .select({
         productUid: products.uid,
-        name: products.name,
+        nameEn: products.nameEn,
+        nameTh: products.nameTh,
         sku: products.sku,
         barcode: products.barcode,
         quantity: orderItems.quantity,
@@ -124,22 +138,25 @@ export class DrizzleTransactionRepository implements ITransactionRepository {
       new Transaction(
         row.id.toString(),
         row.uid,
-        row.paymentMethod,
-        row.status,
-        Number(row.amount),
+        row.paymentMethod ?? '',
+        row.status ?? '',
+        Number(row.amount ?? 0),
         'THB',
-        row.storeName ?? '',
-        row.createdAt ?? new Date(),
+        row.storeNameEn ?? '',
+        row.storeNameTh ?? '',
+        row.staffName ?? '',
+        row.createdAt,
         row.orderId ?? '',
       ),
-      row.merchantMid,
-      row.terminalId ?? '',
-      row.staffName,
+      row.merchantUid ?? '',
+      row.partnerId ?? '',
+      row.tid ?? '',
       row.orderStatus ?? '',
       Number(row.orderTotalAmount ?? 0),
       items.map(i => new TransactionItem(
         i.productUid ?? '',
-        i.name ?? '',
+        i.nameEn ?? '',
+        i.nameTh ?? '',
         i.sku ?? '',
         i.barcode ?? '',
         i.quantity,

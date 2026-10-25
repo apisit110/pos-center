@@ -35,7 +35,7 @@ array of store (no pagination, when filter by merchant max 500 items, no guarant
 | [].uid          | string | store uid                                        |
 | [].sid          | string | store id (unique)                                |
 | [].merchant_uid | string | uid of the merchant that owns the store          |
-| [].mid          | string/null | merchant id of the merchant (from `merchant_profile`, null if none) |
+| [].partner_id   | string | partner id of the merchant                       |
 | [].name_en | string | store name (English) |
 | [].name_th | string | store name (Thai) |
 | [].registered_address | object | registered address (type `REGISTERED`), null if not set |
@@ -53,7 +53,7 @@ example response body:
       "uid": "string",
       "sid": "string",
       "merchant_uid": "string",
-      "mid": "string",
+      "partner_id": "string",
       "name_en": "string",
       "name_th": "string",
       "registered_address": {
@@ -96,10 +96,10 @@ Logic:
 - if `merchant_uid` is provided
   - Find merchant by uid
     - if not found, throw [ServiceError.ErrMerchantNotFound](../../../apiresponse/ServiceError.ts)
-  - Find stores of the merchant from database (join merchant to get `merchant_uid`, left join `merchant_profile` to get `mid`, left join `map_store_address` -> `address` -> master data to get both addresses), limit 500 rows
+  - Find stores of the merchant from database (join merchant to get `merchant_uid` and `partner_id`, left join `map_store_address` -> `address` -> master data to get both addresses), limit 500 rows
 - if `merchant_uid` is not provided (Product Owner only)
-  - Find all stores from database (join merchant to get `merchant_uid`, left join `merchant_profile` to get `mid`, left join `map_store_address` -> `address` -> master data to get both addresses)
+  - Find all stores from database (join merchant to get `merchant_uid` and `partner_id`, left join `map_store_address` -> `address` -> master data to get both addresses)
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response store list follow these items (uid, sid, merchant_uid, mid, name_en, name_th, registered_address, contract_address)
+- response store list follow these items (uid, sid, merchant_uid, partner_id, name_en, name_th, registered_address, contract_address)
   - `registered_address` / `contract_address` are null if the store has no `map_store_address` of that type

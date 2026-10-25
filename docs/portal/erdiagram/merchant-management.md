@@ -196,7 +196,7 @@ erDiagram
 
 ```mermaid
 erDiagram
-  provinces {
+  master_provinces {
     int id PK "AUTO INCREMENT, NOT NULL"
     varchar code UK
     varchar name_en
@@ -204,7 +204,7 @@ erDiagram
     datetime created_at "NOT NULL"
     datetime updated_at "NOT NULL"
   }
-  districts {
+  master_districts {
     int id PK "AUTO INCREMENT, NOT NULL"
     int province_id FK
     varchar code UK
@@ -213,7 +213,7 @@ erDiagram
     datetime created_at "NOT NULL"
     datetime updated_at "NOT NULL"
   }
-  sub_districts {
+  master_sub_districts {
     int id PK "AUTO INCREMENT, NOT NULL"
     int district_id FK
     varchar code UK
@@ -224,19 +224,19 @@ erDiagram
     datetime created_at "NOT NULL"
     datetime updated_at "NOT NULL"
   }
-  postal_code {
+  master_postal_code {
     int id PK "AUTO INCREMENT, NOT NULL"
-    int sub_district_id FK
-    varchar code UK
+    int sub_district_id FK "UK(sub_district_id, code)"
+    varchar code "UK(sub_district_id, code)"
   }
 
-  provinces ||--o{ districts : "has"
-  districts ||--o{ sub_districts : "has"
-  sub_districts ||--o{ postal_code : "has"
-  provinces ||--o{ address : "referenced by"
-  districts ||--o{ address : "referenced by"
-  sub_districts ||--o{ address : "referenced by"
-  postal_code ||--o{ address : "referenced by"
+  master_provinces ||--o{ master_districts : "has"
+  master_districts ||--o{ master_sub_districts : "has"
+  master_sub_districts ||--o{ master_postal_code : "has"
+  master_provinces ||--o{ address : "referenced by"
+  master_districts ||--o{ address : "referenced by"
+  master_sub_districts ||--o{ address : "referenced by"
+  master_postal_code ||--o{ address : "referenced by"
 ```
 
 ## Cashier
@@ -355,10 +355,10 @@ erDiagram
 | Field Name      | Data Type | Length | Key | Nullable | Description                       |
 | --------------- | --------- | ------ | --- | -------- | --------------------------------- |
 | id              | int       | -      | PK  | No       | รหัสอ้างอิงภายใน (auto increment) |
-| province_id     | int       | -      | FK  | No       | อ้างอิง provinces.id              |
-| district_id     | int       | -      | FK  | No       | อ้างอิง districts.id              |
-| sub_district_id | int       | -      | FK  | No       | อ้างอิง sub_districts.id          |
-| postal_code_id  | int       | -      | FK  | No       | อ้างอิง postal_code.id            |
+| province_id     | int       | -      | FK  | No       | อ้างอิง master_provinces.id              |
+| district_id     | int       | -      | FK  | No       | อ้างอิง master_districts.id              |
+| sub_district_id | int       | -      | FK  | No       | อ้างอิง master_sub_districts.id          |
+| postal_code_id  | int       | -      | FK  | No       | อ้างอิง master_postal_code.id            |
 | address_1       | varchar   | 255    |     | Yes      | รายละเอียดที่อยู่                 |
 | latitude        | decimal   | 10,7   |     | Yes      | ละติจูด                           |
 | longitude       | decimal   | 10,7   |     | Yes      | ลองจิจูด                          |
@@ -526,7 +526,7 @@ erDiagram
 | global_order_id | varchar   | 100    | IDX | Yes      | รหัสคำสั่งซื้อจริงจากศูนย์           |
 | synced_at       | datetime  | -      |     | Yes      | วันที่ sync สำเร็จ                   |
 
-## table: provinces
+## table: master_provinces
 
 ข้อมูลหลักจังหวัด
 
@@ -539,28 +539,28 @@ erDiagram
 | created_at | datetime  | -      |     | No       | วันที่สร้าง                       |
 | updated_at | datetime  | -      |     | No       | วันที่แก้ไขล่าสุด                 |
 
-## table: districts
+## table: master_districts
 
 ข้อมูลหลักอำเภอ/เขต
 
 | Field Name  | Data Type | Length | Key | Nullable | Description                       |
 | ----------- | --------- | ------ | --- | -------- | --------------------------------- |
 | id          | int       | -      | PK  | No       | รหัสอ้างอิงภายใน (auto increment) |
-| province_id | int       | -      | FK  | Yes      | อ้างอิง provinces.id              |
+| province_id | int       | -      | FK  | Yes      | อ้างอิง master_provinces.id              |
 | code        | varchar   | 20     | UK  | Yes      | รหัสอำเภอ/เขต                     |
 | name_en     | varchar   | 255    |     | Yes      | ชื่อภาษาอังกฤษ                    |
 | name_th     | varchar   | 255    |     | Yes      | ชื่อภาษาไทย                       |
 | created_at  | datetime  | -      |     | No       | วันที่สร้าง                       |
 | updated_at  | datetime  | -      |     | No       | วันที่แก้ไขล่าสุด                 |
 
-## table: sub_districts
+## table: master_sub_districts
 
 ข้อมูลหลักตำบล/แขวง
 
 | Field Name  | Data Type | Length | Key | Nullable | Description                       |
 | ----------- | --------- | ------ | --- | -------- | --------------------------------- |
 | id          | int       | -      | PK  | No       | รหัสอ้างอิงภายใน (auto increment) |
-| district_id | int       | -      | FK  | Yes      | อ้างอิง districts.id              |
+| district_id | int       | -      | FK  | Yes      | อ้างอิง master_districts.id              |
 | code        | varchar   | 20     | UK  | Yes      | รหัสตำบล/แขวง                     |
 | name_en     | varchar   | 255    |     | Yes      | ชื่อภาษาอังกฤษ                    |
 | name_th     | varchar   | 255    |     | Yes      | ชื่อภาษาไทย                       |
@@ -569,15 +569,15 @@ erDiagram
 | created_at  | datetime  | -      |     | No       | วันที่สร้าง                       |
 | updated_at  | datetime  | -      |     | No       | วันที่แก้ไขล่าสุด                 |
 
-## table: postal_code
+## table: master_postal_code
 
-ข้อมูลหลักรหัสไปรษณีย์
+ข้อมูลหลักรหัสไปรษณีย์ (รหัสไปรษณีย์หนึ่งรหัสใช้ร่วมกันได้หลายตำบล จึง unique ที่คู่ `sub_district_id, code`)
 
-| Field Name      | Data Type | Length | Key | Nullable | Description                       |
-| --------------- | --------- | ------ | --- | -------- | --------------------------------- |
-| id              | int       | -      | PK  | No       | รหัสอ้างอิงภายใน (auto increment) |
-| sub_district_id | int       | -      | FK  | Yes      | อ้างอิง sub_districts.id          |
-| code            | varchar   | 10     | UK  | Yes      | รหัสไปรษณีย์                      |
+| Field Name      | Data Type | Length | Key    | Nullable | Description                       |
+| --------------- | --------- | ------ | ------ | -------- | --------------------------------- |
+| id              | int       | -      | PK     | No       | รหัสอ้างอิงภายใน (auto increment) |
+| sub_district_id | int       | -      | FK, UK | Yes      | อ้างอิง master_sub_districts.id          |
+| code            | varchar   | 10     | UK     | Yes      | รหัสไปรษณีย์                      |
 
 ## table: cashier_staff
 

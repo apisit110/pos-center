@@ -1,7 +1,7 @@
 import { db, runningNumbers, eq, sql } from '@pos-center/database';
 import { IRunningNumberService } from '../../domain/services/IRunningNumberService';
 
-const DIGITS = { mid: 4, sid: 4, tid: 2, staff: 4 } as const;
+const DIGITS = { partnerId: 4, sid: 4, tid: 2, staff: 4 } as const;
 
 export class RunningNumberService implements IRunningNumberService {
   private async next(key: string, digits: number): Promise<string> {
@@ -27,13 +27,14 @@ export class RunningNumberService implements IRunningNumberService {
     return num.toString().padStart(digits, '0');
   }
 
-  async nextMid(): Promise<string> {
-    return this.next('mid', DIGITS.mid);
+  // keys keep the old `mid` naming so existing running_number rows keep counting
+  async nextPartnerId(): Promise<string> {
+    return this.next('mid', DIGITS.partnerId);
   }
 
-  async nextSid(mid: string): Promise<string> {
-    const num = await this.next(`sid:${mid}`, DIGITS.sid);
-    return `${mid}${num}`;
+  async nextSid(partnerId: string): Promise<string> {
+    const num = await this.next(`sid:${partnerId}`, DIGITS.sid);
+    return `${partnerId}${num}`;
   }
 
   async nextTid(sid: string): Promise<string> {
@@ -41,8 +42,8 @@ export class RunningNumberService implements IRunningNumberService {
     return `${sid}${num}`;
   }
 
-  async nextStaffUsername(mid: string): Promise<string> {
-    const num = await this.next(`staff:${mid}`, DIGITS.staff);
-    return `${mid}${num}`;
+  async nextStaffUsername(partnerId: string): Promise<string> {
+    const num = await this.next(`staff:${partnerId}`, DIGITS.staff);
+    return `${partnerId}${num}`;
   }
 }

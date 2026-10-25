@@ -3,6 +3,7 @@ export class Terminal {
     public readonly id: string,
     public readonly storeId: string,
     public tid: string,
-    public name: string
+    public nameEn: string,
+    public nameTh: string
   ) {}
 }

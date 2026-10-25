@@ -6,7 +6,9 @@ export class Transaction {
     public readonly status: string,
     public readonly amount: number,
     public readonly currency: string = 'THB',
-    public readonly storeName: string = '',
+    public readonly storeNameEn: string = '',
+    public readonly storeNameTh: string = '',
+    public readonly staffName: string = '',
     public readonly createdAt: Date = new Date(),
     public readonly orderId: string = '',
   ) {}
@@ -15,7 +17,8 @@ export class Transaction {
 export class TransactionItem {
   constructor(
     public readonly productUid: string,
-    public readonly name: string,
+    public readonly nameEn: string,
+    public readonly nameTh: string,
     public readonly sku: string,
     public readonly barcode: string,
     public readonly quantity: number,
@@ -26,10 +29,11 @@ export class TransactionItem {
 export class TransactionDetail {
   constructor(
     public readonly transaction: Transaction,
-    /** merchant id (mid) the transaction belongs to */
-    public readonly merchantMid: string,
+    /** uid of the merchant the transaction belongs to, empty string if not found */
+    public readonly merchantUid: string,
+    public readonly partnerId: string,
+    /** tid of the terminal, empty string if not found */
     public readonly terminalId: string,
-    public readonly staffName: string,
     public readonly orderStatus: string,
     public readonly orderTotalAmount: number,
     public readonly items: TransactionItem[],

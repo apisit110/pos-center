@@ -192,7 +192,7 @@ class ServiceError {
     return {
       name: this.name,
       kind: ErrorKind.BAD_REQUEST,
-      resCode: "4015",
+      resCode: "4016",
       resDesc: {
         en: "The merchant already has a credential for this provider.",
         th: "ร้านค้า (merchant) นี้มี credential ของผู้ให้บริการนี้อยู่แล้ว"
@@ -204,7 +204,7 @@ class ServiceError {
     return {
       name: this.name,
       kind: ErrorKind.NOT_FOUND,
-      resCode: "4016",
+      resCode: "4017",
       resDesc: {
         en: "The merchant credential could not be found.",
         th: "ไม่พบ credential ของร้านค้า (merchant) ในระบบ"

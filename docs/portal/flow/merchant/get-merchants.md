@@ -1,4 +1,4 @@
-this api use for list merchant with pagination and filter by mid or name (English/Thai). Product Owner can see all merchants, other roles can see only their own merchant.
+this api use for list merchant with pagination and filter by partner id or name (English/Thai). Product Owner can see all merchants, other roles can see only their own merchant.
 
 **Method**: GET
 
@@ -18,7 +18,7 @@ request query:
 | ----- | ------ | -------- | ------- | --------------------------------------------------------- |
 | page  | number | false    | 1       | page number, integer, min 1                               |
 | limit | number | false    | 10      | items per page, integer, min 1, max 100                   |
-| mid   | string | false    |         | filter by merchant id, partial match (case-insensitive)   |
+| partner_id | string | false |       | filter by merchant partner id, partial match (case-insensitive) |
 | name  | string | false    |         | filter by merchant `name_en` or `name_th`, partial match (case-insensitive) |
 
 request body:
@@ -32,7 +32,6 @@ response body (fields below are the value of `data`, wrapped in [Ok](../../../ap
 | items         | array  | list of merchant                               |
 | items[].uid        | string      | merchant uid                              |
 | items[].partner_id | string      | partner id (unique)                       |
-| items[].mid        | string/null | merchant id (unique, from `merchant_profile`, null if no profile) |
 | items[].name_en    | string      | merchant name (English)                   |
 | items[].name_th    | string      | merchant name (Thai)                      |
 | total         | number | total merchants matching the filter            |
@@ -50,7 +49,6 @@ example response body:
       {
         "uid": "string",
         "partner_id": "string",
-        "mid": "string",
         "name_en": "string",
         "name_th": "string"
       }
@@ -87,7 +85,7 @@ Logic:
     - required: false
     - default: 10
     - If validation fails, throw [ValidationError.ErrInvalidRequest](../../../apiresponse/ValidationError.ts)
-  - mid
+  - partner_id
     - type: string
     - required: false
     - If validation fails, throw [ValidationError.ErrInvalidRequest](../../../apiresponse/ValidationError.ts)
@@ -98,18 +96,18 @@ Logic:
 - Check role in access token
   - if role is not `PRODUCT_OWNER`
     - Find merchant uid of the staff by uid in access token
-    - Find merchant (with `merchant_profile`) by that merchant uid
-    - response only that merchant (ignore page, limit, mid, name)
+    - Find merchant by that merchant uid
+    - response only that merchant (ignore page, limit, partner_id, name)
       - `items` contains own merchant, or empty if not found
       - `total` = number of items, `page` = 1, `limit` = number of items
   - if role is `PRODUCT_OWNER`
-    - Find merchants from database (`merchant` left join `merchant_profile` on `merchant_id`)
+    - Find merchants from database (`merchant`)
       - order by `id` ascending
       - offset = `(page - 1) * limit`
-      - if `mid` is provided, filter `merchant_profile.mid` with ILIKE `%mid%`
+      - if `partner_id` is provided, filter `partner_id` with ILIKE `%partner_id%`
       - if `name` is provided, filter `name_en` ILIKE `%name%` OR `name_th` ILIKE `%name%`
       - if both are provided, combine with AND
     - Count total merchants with the same filter
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response merchant list follow these items (uid, partner_id, mid, name_en, name_th), total, page, limit
+- response merchant list follow these items (uid, partner_id, name_en, name_th), total, page, limit

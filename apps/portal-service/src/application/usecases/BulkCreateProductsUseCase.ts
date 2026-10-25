@@ -9,17 +9,18 @@ import { ServiceError } from '../errors/ServiceError';
 export interface BulkCreateProductItem {
   uid?: string;
   merchantUid: string;
-  name: string;
+  nameEn: string;
+  nameTh: string;
   barcode?: string;
   basePrice: number;
-  imageUrl?: string[];
-  brand?: string;
+  imageUrl?: string;
+  brandUid?: string;
   unitName?: string;
 }
 
 export interface BulkCreateProductsResult {
   created: number;
-  errors: Array<{ index: number; name: string; message: string }>;
+  errors: Array<{ index: number; nameEn: string; message: string }>;
 }
 
 export class BulkCreateProductsUseCase {
@@ -43,21 +44,30 @@ export class BulkCreateProductsUseCase {
     const failedIndexes = new Set<number>();
     const fail = (index: number, message: string) => {
       failedIndexes.add(index);
-      errors.push({ index, name: items[index].name, message });
+      errors.push({ index, nameEn: items[index].nameEn, message });
     };
 
     // Find each unique merchant once
-    const merchantMid = new Map<string, string>();
+    const merchantPartnerId = new Map<string, string>();
     for (const merchantUid of new Set(items.map((item) => item.merchantUid))) {
       const merchant = await this.merchantRepository.getById(merchantUid);
       if (merchant) {
-        merchantMid.set(merchantUid, merchant.mid);
+        merchantPartnerId.set(merchantUid, merchant.partnerId);
         continue;
       }
       items.forEach((item, index) => {
         if (item.merchantUid === merchantUid) fail(index, `Merchant not found: ${merchantUid}`);
       });
     }
+
+    // Find each unique brand once
+    const brandUids = [...new Set(items.filter((item, index) => item.brandUid && !failedIndexes.has(index)).map((item) => item.brandUid!))];
+    const brandsByUid = new Map((await this.productRepository.findBrandsByUids(brandUids)).map((brand) => [brand.uid, brand]));
+    items.forEach((item, index) => {
+      if (item.brandUid && !failedIndexes.has(index) && !brandsByUid.has(item.brandUid)) {
+        fail(index, `Brand not found: ${item.brandUid}`);
+      }
+    });
 
     // Check uid (only when provided), in request order:
     //  - the same uid already appears in an earlier product of the request
@@ -123,13 +133,14 @@ export class BulkCreateProductsUseCase {
       .map(({ item }) => new Product(
         item.uid || uuidv4(),
         item.merchantUid,
-        merchantMid.get(item.merchantUid)!,
-        item.name,
+        merchantPartnerId.get(item.merchantUid)!,
+        item.nameEn,
+        item.nameTh,
         item.barcode || '', // sku = barcode
         item.barcode || '',
         item.basePrice,
-        item.imageUrl ?? [],
-        item.brand ?? '',
+        item.imageUrl ?? '',
+        item.brandUid ? brandsByUid.get(item.brandUid)! : null,
         item.unitName ?? '',
       ));
 

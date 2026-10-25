@@ -243,18 +243,14 @@ const NavButton = styled.button`
 export default function ProductDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const td = t.productDetail;
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
 
 
-  const images = Array.isArray(product?.imageUrl) 
-    ? product.imageUrl 
-    : product?.imageUrl 
-      ? [product.imageUrl] 
-      : [];
+  const images = product?.imageUrl ? [product.imageUrl] : [];
 
   const handlePrevImage = () => {
     setActiveImageIndex((prev) => (prev > 0 ? prev - 1 : images.length - 1));
@@ -298,7 +294,7 @@ export default function ProductDetailPage() {
               <>
                 <MainImage 
                   src={images[activeImageIndex].startsWith('http') ? images[activeImageIndex] : `/${images[activeImageIndex]}`} 
-                  alt={product.name} 
+                  alt={product.displayName(language)}
                 />
                 {images.length > 1 && (
                   <>
@@ -333,7 +329,7 @@ export default function ProductDetailPage() {
                   >
                     <ThumbnailImg 
                       src={img.startsWith('http') ? img : `/${img}`} 
-                      alt={`${product.name} ${idx + 1}`} 
+                      alt={`${product.displayName(language)} ${idx + 1}`}
                     />
                   </Thumbnail>
                 ))}
@@ -347,13 +343,15 @@ export default function ProductDetailPage() {
             <InfoRow>
               <IconWrapper><FiTag /></IconWrapper>
               <div>
-                <Label>{td.productName}</Label>
-                <Value>{product.name}</Value>
+                <Label>{td.productName} (EN)</Label>
+                <Value>{product.nameEn}</Value>
+                <Label style={{ marginTop: '0.75rem' }}>{td.productName} (TH)</Label>
+                <Value>{product.nameTh}</Value>
               </div>
             </InfoRow>
             <div style={{ marginTop: '1rem' }}>
               <Label>{td.brand}</Label>
-              <Badge>{product.brand}</Badge>
+              <Badge>{product.brandName(language) || '-'}</Badge>
             </div>
           </Card>
 
@@ -389,8 +387,8 @@ export default function ProductDetailPage() {
         <h3 style={{ margin: '0 0 1.5rem 0', color: 'var(--text-main)' }}>{td.additionalInfo}</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem' }}>
           <div>
-            <Label>{td.merchantMid}</Label>
-            <Value>{product.mid}</Value>
+            <Label>{td.merchantPartnerId}</Label>
+            <Value>{product.partnerId}</Value>
           </div>
           <div>
             <Label>{td.sku}</Label>

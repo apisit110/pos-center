@@ -9,7 +9,7 @@ export const syncOrderRequestSchema = z.object({
     staff_id: z.string().min(1),
     member_id: z.string().nullable().optional(),
     total_amount: z.number(),
-    status: z.enum(['PENDING', 'PAID', 'CANCELLED']),
+    status: z.enum(['PENDING', 'PAID', 'CANCELLED', 'VOID', 'REFUNDED']),
     items: z.array(z.object({
       product_id: z.string().min(1),
       quantity: z.number().int(),

@@ -1,8 +1,8 @@
 import { pgTable, varchar, decimal, timestamp, serial, integer } from 'drizzle-orm/pg-core';
-import { provinces } from './provinces';
-import { districts } from './districts';
-import { subDistricts } from './subDistricts';
-import { postalCodes } from './postalCodes';
+import { provinces } from './masterProvinces';
+import { districts } from './masterDistricts';
+import { subDistricts } from './masterSubDistricts';
+import { postalCodes } from './masterPostalCodes';
 
 export const addresses = pgTable('address', {
   id: serial('id').primaryKey(),

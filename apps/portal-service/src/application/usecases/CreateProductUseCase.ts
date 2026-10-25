@@ -4,15 +4,17 @@ import { IMerchantRepository } from '../../domain/repositories/IMerchantReposito
 import { IStaffRepository } from '../../domain/repositories/IStaffRepository';
 import { Actor, assertMerchantAccess } from '../auth/Actor';
 import { ServiceError } from '../errors/ServiceError';
+import { ValidationError } from '../errors/ValidationError';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface CreateProductRequest {
   merchantUid: string;
-  name: string;
+  nameEn: string;
+  nameTh: string;
   barcode?: string;
   basePrice: number;
-  imageUrl?: string[];
-  brand?: string;
+  imageUrl?: string;
+  brandUid?: string;
   unitName?: string;
 }
 
@@ -29,6 +31,12 @@ export class CreateProductUseCase {
     const merchant = await this.merchantRepository.getById(request.merchantUid);
     if (!merchant) throw ServiceError.ErrMerchantNotFound();
 
+    let brand = null;
+    if (request.brandUid) {
+      [brand = null] = await this.productRepository.findBrandsByUids([request.brandUid]);
+      if (!brand) throw ValidationError.ErrInvalidRequest('brand_uid: not found');
+    }
+
     const uid = uuidv4();
     const barcode = request.barcode || '';
 
@@ -40,13 +48,14 @@ export class CreateProductUseCase {
     const product = new Product(
       uid,
       request.merchantUid,
-      merchant.mid,
-      request.name,
+      merchant.partnerId,
+      request.nameEn,
+      request.nameTh,
       barcode, // sku = barcode
       barcode,
       request.basePrice,
-      request.imageUrl ?? [],
-      request.brand ?? '',
+      request.imageUrl ?? '',
+      brand,
       request.unitName ?? '',
     );
 

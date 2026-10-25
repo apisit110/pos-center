@@ -1,105 +1,97 @@
 import { merchantUidIs } from '../utils/merchant';
-import { db, stores, merchants, eq } from '@pos-center/database';
+import {
+  db, stores, merchants, addresses, mapStoreAddress, provinces, districts, subDistricts, postalCodes, eq, inArray, SQL,
+} from '@pos-center/database';
 import { IStoreRepository } from '../../domain/repositories/IStoreRepository';
-import { Store } from '../../domain/entities/Store';
+import { Store, StoreAddress } from '../../domain/entities/Store';
 
 const MAX_MERCHANT_SCOPED_RESULTS = 500;
 
+const toNumberOrNull = (value: string | null): number | null => (value === null ? null : Number(value));
+
+/** REGISTERED / CONTRACT address of each store, by store id */
+async function findAddresses(storeIds: number[]): Promise<Map<number, { registered: StoreAddress | null; contract: StoreAddress | null }>> {
+  const result = new Map<number, { registered: StoreAddress | null; contract: StoreAddress | null }>();
+  if (storeIds.length === 0) return result;
+
+  const rows = await db.select({
+    storeId: mapStoreAddress.storeId,
+    type: mapStoreAddress.type,
+    address1: addresses.address1,
+    latitude: addresses.latitude,
+    longitude: addresses.longitude,
+    provinceCode: provinces.code,
+    provinceNameTh: provinces.nameTh,
+    provinceNameEn: provinces.nameEn,
+    districtCode: districts.code,
+    districtNameTh: districts.nameTh,
+    districtNameEn: districts.nameEn,
+    subDistrictCode: subDistricts.code,
+    subDistrictNameTh: subDistricts.nameTh,
+    subDistrictNameEn: subDistricts.nameEn,
+    postalCode: postalCodes.code,
+  })
+    .from(mapStoreAddress)
+    .innerJoin(addresses, eq(mapStoreAddress.addressId, addresses.id))
+    .innerJoin(provinces, eq(addresses.provinceId, provinces.id))
+    .innerJoin(districts, eq(addresses.districtId, districts.id))
+    .innerJoin(subDistricts, eq(addresses.subDistrictId, subDistricts.id))
+    .innerJoin(postalCodes, eq(addresses.postalCodeId, postalCodes.id))
+    .where(inArray(mapStoreAddress.storeId, storeIds));
+
+  for (const row of rows) {
+    const entry = result.get(row.storeId) ?? { registered: null, contract: null };
+    const address: StoreAddress = {
+      address1: row.address1 ?? '',
+      province: { code: row.provinceCode ?? '', nameTh: row.provinceNameTh ?? '', nameEn: row.provinceNameEn ?? '' },
+      district: { code: row.districtCode ?? '', nameTh: row.districtNameTh ?? '', nameEn: row.districtNameEn ?? '' },
+      subDistrict: { code: row.subDistrictCode ?? '', nameTh: row.subDistrictNameTh ?? '', nameEn: row.subDistrictNameEn ?? '' },
+      postalCode: row.postalCode ?? '',
+      latitude: toNumberOrNull(row.latitude),
+      longitude: toNumberOrNull(row.longitude),
+    };
+    if (row.type === 'REGISTERED') entry.registered = address;
+    else entry.contract = address;
+    result.set(row.storeId, entry);
+  }
+  return result;
+}
+
 export class DrizzleStoreRepository implements IStoreRepository {
-  async getById(uid: string): Promise<Store | null> {
-    const result = await db.select({
+  private async find(condition?: SQL, limit?: number): Promise<Store[]> {
+    const query = db.select({
       store: stores,
       merchantUid: merchants.uid,
-      mid: merchants.mid
+      partnerId: merchants.partnerId,
     })
-    .from(stores)
-    .innerJoin(merchants, eq(stores.merchantId, merchants.id))
-    .where(eq(stores.uid, uid))
-    .limit(1);
+      .from(stores)
+      .innerJoin(merchants, eq(stores.merchantId, merchants.id))
+      .where(condition);
+    const rows = limit === undefined ? await query : await query.limit(limit);
 
-    if (result.length === 0) return null;
-
-    const { store, merchantUid, mid } = result[0];
-    return new Store(
+    const addressesByStore = await findAddresses(rows.map((r) => r.store.id));
+    return rows.map(({ store, merchantUid, partnerId }) => new Store(
       store.uid,
       store.sid,
       merchantUid,
-      mid,
-      store.name,
-      store.address || '',
-      Number(store.latitude || 0),
-      Number(store.longitude || 0)
-    );
+      partnerId,
+      store.nameEn,
+      store.nameTh,
+      addressesByStore.get(store.id)?.registered ?? null,
+      addressesByStore.get(store.id)?.contract ?? null,
+    ));
+  }
+
+  async getById(uid: string): Promise<Store | null> {
+    const [store] = await this.find(eq(stores.uid, uid), 1);
+    return store ?? null;
   }
 
   async getByMerchantId(merchantId: string): Promise<Store[]> {
-    const result = await db.select({
-      store: stores,
-      merchantUid: merchants.uid,
-      mid: merchants.mid
-    })
-    .from(stores)
-    .innerJoin(merchants, eq(stores.merchantId, merchants.id))
-    .where(merchantUidIs(merchantId))
-    .limit(MAX_MERCHANT_SCOPED_RESULTS);
-
-    return result.map(({ store, merchantUid, mid }) => new Store(
-      store.uid,
-      store.sid,
-      merchantUid,
-      mid,
-      store.name,
-      store.address || '',
-      Number(store.latitude || 0),
-      Number(store.longitude || 0)
-    ));
+    return this.find(merchantUidIs(merchantId), MAX_MERCHANT_SCOPED_RESULTS);
   }
 
   async findAll(): Promise<Store[]> {
-    const result = await db.select({
-      store: stores,
-      merchantUid: merchants.uid,
-      mid: merchants.mid
-    })
-    .from(stores)
-    .innerJoin(merchants, eq(stores.merchantId, merchants.id));
-
-    return result.map(({ store, merchantUid, mid }) => new Store(
-      store.uid,
-      store.sid,
-      merchantUid,
-      mid,
-      store.name,
-      store.address || '',
-      Number(store.latitude || 0),
-      Number(store.longitude || 0)
-    ));
-  }
-
-  async save(store: Store): Promise<void> {
-    const merchant = await db.query.merchants.findFirst({
-      where: eq(merchants.uid, store.merchantId)
-    });
-
-    if (!merchant) throw new Error('Merchant not found');
-
-    await db.insert(stores).values({
-      uid: store.uid,
-      sid: store.sid,
-      merchantId: merchant.id,
-      name: store.name,
-      address: store.address,
-      latitude: store.latitude.toString(),
-      longitude: store.longitude.toString()
-    }).onConflictDoUpdate({
-      target: stores.uid,
-      set: {
-        sid: store.sid,
-        name: store.name,
-        address: store.address,
-        latitude: store.latitude.toString(),
-        longitude: store.longitude.toString()
-      }
-    });
+    return this.find();
   }
 }

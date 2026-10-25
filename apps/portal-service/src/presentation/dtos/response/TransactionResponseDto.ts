@@ -7,7 +7,9 @@ export interface TransactionResponseDto {
   status: string;
   amount: number;
   currency: string;
-  store_name: string;
+  store_name_en: string;
+  store_name_th: string;
+  staff_name: string;
   created_at: string;
 }
 
@@ -19,14 +21,17 @@ export function toTransactionResponseDto(transaction: Transaction): TransactionR
     status: transaction.status,
     amount: transaction.amount,
     currency: transaction.currency,
-    store_name: transaction.storeName,
+    store_name_en: transaction.storeNameEn,
+    store_name_th: transaction.storeNameTh,
+    staff_name: transaction.staffName,
     created_at: transaction.createdAt.toISOString(),
   };
 }
 
 export interface TransactionItemResponseDto {
   product_uid: string;
-  name: string;
+  name_en: string;
+  name_th: string;
   sku: string;
   barcode: string;
   quantity: number;
@@ -35,9 +40,8 @@ export interface TransactionItemResponseDto {
 }
 
 export interface TransactionDetailResponseDto extends TransactionResponseDto {
-  mid: string;
+  partner_id: string;
   terminal_id: string;
-  staff_name: string;
   order_status: string;
   order_total_amount: number;
   items: TransactionItemResponseDto[];
@@ -46,14 +50,14 @@ export interface TransactionDetailResponseDto extends TransactionResponseDto {
 export function toTransactionDetailResponseDto(detail: TransactionDetail): TransactionDetailResponseDto {
   return {
     ...toTransactionResponseDto(detail.transaction),
-    mid: detail.merchantMid,
+    partner_id: detail.partnerId,
     terminal_id: detail.terminalId,
-    staff_name: detail.staffName,
     order_status: detail.orderStatus,
     order_total_amount: detail.orderTotalAmount,
     items: detail.items.map(i => ({
       product_uid: i.productUid,
-      name: i.name,
+      name_en: i.nameEn,
+      name_th: i.nameTh,
       sku: i.sku,
       barcode: i.barcode,
       quantity: i.quantity,

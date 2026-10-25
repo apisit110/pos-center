@@ -32,7 +32,7 @@ response body (fields below are the value of `data`, wrapped in [Ok](../../../ap
 | ------------ | -------- | ------------------------------------------------- |
 | uid          | string   | product uid                                       |
 | merchant_uid | string   | uid of the merchant that owns the product         |
-| mid          | string/null | merchant id of the merchant that owns the product (from `merchant_profile`) |
+| partner_id   | string   | partner id of the merchant that owns the product  |
 | name_en      | string   | product name (English)                            |
 | name_th      | string   | product name (Thai)                               |
 | sku          | string   | product sku                                       |
@@ -51,7 +51,7 @@ example response body:
   "data": {
     "uid": "string",
     "merchant_uid": "string",
-    "mid": "string",
+    "partner_id": "string",
     "name_en": "string",
     "name_th": "string",
     "sku": "string",
@@ -79,7 +79,7 @@ Logic:
     - min: 1
     - required: true
     - If validation fails, throw [ValidationError.ErrInvalidRequest](../../../apiresponse/ValidationError.ts)
-- Find product by uid (path `id`) with its merchant (`merchant_uid`, `mid` from `merchant_profile`) and brand
+- Find product by uid (path `id`) with its merchant (`merchant_uid`, `partner_id`) and brand
   - if not found, throw [ServiceError.ErrProductNotFound](../../../apiresponse/ServiceError.ts)
 - Check merchant ownership by role in access token
   - if role is `PRODUCT_OWNER`
@@ -89,4 +89,4 @@ Logic:
     - if not found or not equal to `merchant_uid` of the product, throw [ServiceError.ErrForbidden](../../../apiresponse/ServiceError.ts)
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response product follow these items (uid, merchant_uid, mid, name_en, name_th, sku, barcode, base_price, image_url, brand, unit_name)
+- response product follow these items (uid, merchant_uid, partner_id, name_en, name_th, sku, barcode, base_price, image_url, brand, unit_name)

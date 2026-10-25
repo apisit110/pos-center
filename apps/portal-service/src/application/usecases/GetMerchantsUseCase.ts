@@ -6,7 +6,7 @@ import { Actor, findOwnMerchantUid, isProductOwner } from '../auth/Actor';
 export interface GetMerchantsInput {
   page: number;
   limit: number;
-  mid?: string;
+  partnerId?: string;
   name?: string;
 }
 
@@ -25,7 +25,7 @@ export class GetMerchantsUseCase {
 
   async execute(actor: Actor, input: GetMerchantsInput): Promise<GetMerchantsOutput> {
     if (!isProductOwner(actor)) {
-      // other roles only ever see their own merchant: page, limit, mid and name are ignored
+      // other roles only ever see their own merchant: page, limit, partnerId and name are ignored
       const ownMerchantUid = await findOwnMerchantUid(this.staffRepository, actor);
       const ownMerchant = ownMerchantUid ? await this.merchantRepository.getById(ownMerchantUid) : null;
       const merchants = ownMerchant ? [ownMerchant] : [];
@@ -33,7 +33,7 @@ export class GetMerchantsUseCase {
     }
 
     const { merchants, total } = await this.merchantRepository.findAll(input.page, input.limit, {
-      mid: input.mid,
+      partnerId: input.partnerId,
       name: input.name,
     });
     return { merchants, total, page: input.page, limit: input.limit };

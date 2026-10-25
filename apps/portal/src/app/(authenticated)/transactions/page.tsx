@@ -70,7 +70,7 @@ const statusValues = ['pending', 'approved', 'failed', 'voided', 'refunded'];
 
 export default function TransactionsPage() {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const methodOptions = [
     { value: 'cash', label: t.transactionList.methodCash },
     { value: 'qr', label: t.transactionList.methodQr },
@@ -110,7 +110,7 @@ export default function TransactionsPage() {
         </span>
       ),
     },
-    { header: t.transactionList.store, key: 'storeName' },
+    { header: t.transactionList.store, key: 'storeName', render: (tx: Transaction) => tx.storeName(language) || '-' },
     {
       header: t.transactionList.status,
       key: 'status',
@@ -131,17 +131,17 @@ export default function TransactionsPage() {
   useEffect(() => {
     const loadOptions = async () => {
       const merchantData = await new GetMerchantsUseCase(new ApiMerchantRepository()).execute(1, 100);
-      setMerchants(merchantData.merchants.map(m => ({ value: m.uid, label: m.name })));
+      setMerchants(merchantData.merchants.map(m => ({ value: m.uid, label: m.displayName(language) })));
       const storeData = await new GetStoresUseCase(new ApiStoreRepository()).execute();
-      setStores(storeData.map(s => ({ value: s.uid, label: s.name })));
+      setStores(storeData.map(s => ({ value: s.uid, label: s.displayName(language) })));
     };
     loadOptions();
-  }, []);
+  }, [language]);
 
   const handleMerchantChange = async (merchantId: string) => {
     setPendingFilters(f => ({ ...f, merchantId, storeId: '' }));
     const storeData = await new GetStoresUseCase(new ApiStoreRepository()).execute(merchantId || undefined);
-    setStores(storeData.map(s => ({ value: s.uid, label: s.name })));
+    setStores(storeData.map(s => ({ value: s.uid, label: s.displayName(language) })));
   };
 
   useEffect(() => {
@@ -180,7 +180,7 @@ export default function TransactionsPage() {
     setActiveFilters(getEmptyFilters());
     setPage(1);
     new GetStoresUseCase(new ApiStoreRepository()).execute().then(data =>
-      setStores(data.map(s => ({ value: s.uid, label: s.name })))
+      setStores(data.map(s => ({ value: s.uid, label: s.displayName(language) })))
     );
   };
 

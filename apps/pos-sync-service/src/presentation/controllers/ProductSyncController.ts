@@ -5,6 +5,7 @@ import { syncProductRequestSchema } from '../dtos/request/SyncProductRequestDto'
 import { receiveProductsRequestSchema } from '../dtos/request/ReceiveProductsRequestDto';
 import { buildSyncProductsSuccessResponse, buildSyncProductsFailureResponse } from '../dtos/response/SyncProductsResponseDto';
 import { buildReceiveProductsResponse } from '../dtos/response/ReceiveProductsResponseDto';
+import { assertTokenScope } from '../middleware/SyncTokenMiddleware';
 
 export class ProductSyncController {
   constructor(
@@ -16,6 +17,7 @@ export class ProductSyncController {
     try {
       const validatedData = syncProductRequestSchema.parse(req.body);
       const { mid, sid, syncVersion } = validatedData;
+      assertTokenScope(req.syncAuth, { partnerIds: [mid], sids: [sid] });
 
       console.log(`[pos-sync-service] Triggering sync for merchant: ${mid}, store: ${sid}, version: ${syncVersion}`);
 
@@ -35,6 +37,7 @@ export class ProductSyncController {
     try {
       const validatedData = receiveProductsRequestSchema.parse(req.body);
       const { mid, sid, products } = validatedData;
+      assertTokenScope(req.syncAuth, { partnerIds: [mid], sids: [sid] });
 
       console.log(`[pos-sync-service] Receiving ${products.length} product(s) from merchant: ${mid}, store: ${sid}`);
 

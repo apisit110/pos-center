@@ -78,7 +78,7 @@ const getEmptyFilters = (): StaffFilter => ({
 });
 
 export default function StaffPage() {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const roleLabel = (role: string) =>
     t.staffRole[role.toLowerCase() as keyof typeof t.staffRole] ?? role.charAt(0).toUpperCase() + role.slice(1);
   const statusLabel = (status: string) =>
@@ -159,7 +159,7 @@ export default function StaffPage() {
         </StatusBadge>
       ),
     },
-    { header: t.staffList.columnMerchant, key: 'merchant', render: (s: Staff) => s.merchantName || s.merchantUid },
+    { header: t.staffList.columnMerchant, key: 'merchant', render: (s: Staff) => s.merchantName(language) || s.merchantUid },
     {
       header: t.staffList.columnCreatedAt,
       key: 'createdAt',

@@ -1,3 +1,5 @@
+import { NameLanguage, pickName } from './LocalizedName';
+
 export type StaffStatus = 'ACTIVE' | 'PENDING' | 'INACTIVE' | 'SUSPENDED';
 
 export class Staff {
@@ -13,6 +15,11 @@ export class Staff {
     public syncId: string | null = null,
     public updatedAt: Date = new Date(),
     public createdAt: Date = new Date(),
-    public merchantName: string = '',
+    public merchantNameEn: string = '',
+    public merchantNameTh: string = '',
   ) {}
+
+  public merchantName(language: NameLanguage): string {
+    return pickName(language, this.merchantNameEn, this.merchantNameTh);
+  }
 }

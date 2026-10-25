@@ -128,4 +128,18 @@ export class ServiceError {
       th: 'ไม่พบข้อมูลรายการธุรกรรมในระบบ',
     });
   }
+
+  static ErrMerchantCredentialExists(): ServiceError {
+    return new ServiceError(ErrorKind.BAD_REQUEST, '4016', {
+      en: 'The merchant already has a credential for this provider.',
+      th: 'ร้านค้า (merchant) นี้มี credential ของผู้ให้บริการนี้อยู่แล้ว',
+    });
+  }
+
+  static ErrMerchantCredentialNotFound(): ServiceError {
+    return new ServiceError(ErrorKind.NOT_FOUND, '4017', {
+      en: 'The merchant credential could not be found.',
+      th: 'ไม่พบ credential ของร้านค้า (merchant) ในระบบ',
+    });
+  }
 }

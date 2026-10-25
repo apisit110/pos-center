@@ -1,14 +1,42 @@
 import { merchantUidIs } from '../utils/merchant';
-import { db, products, merchants, storeProducts, stores, eq, ilike, and, inArray, lte, sql, runningNumbers, desc, asc, isNotNull, ne, SQL } from '@pos-center/database';
+import {
+  db, products, merchants, brands, storeProducts, stores, eq, ilike, or, and, inArray, lte, sql, runningNumbers, desc, asc,
+  isNotNull, ne, SQL,
+} from '@pos-center/database';
 import { IProductRepository, ProductFilter, BarcodeOwner, ProductOwner } from '../../domain/repositories/IProductRepository';
-import { Product } from '../../domain/entities/Product';
+import { Brand, Product } from '../../domain/entities/Product';
 
-type ProductRow = typeof products.$inferSelect;
+type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
-function toImageUrls(value: unknown): string[] {
-  if (Array.isArray(value)) return value as string[];
-  if (typeof value === 'string' && value) return [value];
-  return [];
+const selectProducts = () => db.select({
+  product: products,
+  merchantUid: merchants.uid,
+  partnerId: merchants.partnerId,
+  brandUid: brands.uid,
+  brandNameEn: brands.nameEn,
+  brandNameTh: brands.nameTh,
+})
+  .from(products)
+  .innerJoin(merchants, eq(products.merchantId, merchants.id))
+  .leftJoin(brands, eq(products.brandId, brands.id));
+
+type ProductRow = Awaited<ReturnType<typeof selectProducts>>[number];
+
+function toEntity(row: ProductRow): Product {
+  const { product } = row;
+  return new Product(
+    product.uid,
+    row.merchantUid,
+    row.partnerId,
+    product.nameEn,
+    product.nameTh,
+    product.sku || '',
+    product.barcode || '',
+    Number(product.basePrice),
+    product.imageUrl || '',
+    row.brandUid ? { uid: row.brandUid, nameEn: row.brandNameEn ?? '', nameTh: row.brandNameTh ?? '' } : null,
+    product.unitName || ''
+  );
 }
 
 /** Increases running number `product_version` by 1; creates the row with 1 when it does not exist. */
@@ -22,50 +50,28 @@ async function nextProductVersion(tx: Pick<typeof db, 'insert'>) {
     .returning({ newVersion: runningNumbers.number });
 }
 
+/** Sets `sync_version` of every store product of the products to a new `product_version`, so pos can sync the changes. */
+async function bumpSyncVersion(tx: Tx, productIds: number[]): Promise<void> {
+  if (productIds.length === 0) return;
+  const [version] = await nextProductVersion(tx);
+  if (version === undefined) return;
+  await tx.update(storeProducts)
+    .set({ syncVersion: version.newVersion, updatedAt: new Date() })
+    .where(inArray(storeProducts.productId, productIds));
+}
+
+/** brand id by brand uid, for the brands of the products */
+async function findBrandIds(productList: Product[]): Promise<Map<string, number>> {
+  const brandUids = [...new Set(productList.flatMap((p) => (p.brand ? [p.brand.uid] : [])))];
+  if (brandUids.length === 0) return new Map();
+  const rows = await db.select({ id: brands.id, uid: brands.uid }).from(brands).where(inArray(brands.uid, brandUids));
+  return new Map(rows.map((r) => [r.uid, r.id]));
+}
+
 export class DrizzleProductRepository implements IProductRepository {
-  private toEntity(product: ProductRow, merchantUid: string, mid: string): Product {
-    return new Product(
-      product.uid,
-      merchantUid,
-      mid,
-      product.name,
-      product.sku || '',
-      product.barcode || '',
-      Number(product.basePrice),
-      toImageUrls(product.imageUrl),
-      product.brand || '',
-      product.unitName || ''
-    );
-  }
-
   async getById(id: string): Promise<Product | null> {
-    const result = await db.select({
-      product: products,
-      merchantUid: merchants.uid,
-      mid: merchants.mid
-    })
-    .from(products)
-    .innerJoin(merchants, eq(products.merchantId, merchants.id))
-    .where(eq(products.uid, id))
-    .limit(1);
-
-    if (result.length === 0) return null;
-
-    const { product, merchantUid, mid } = result[0];
-    return this.toEntity(product, merchantUid, mid);
-  }
-
-  async getByMerchantId(merchantId: string): Promise<Product[]> {
-    const result = await db.select({
-      product: products,
-      merchantUid: merchants.uid,
-      mid: merchants.mid
-    })
-    .from(products)
-    .innerJoin(merchants, eq(products.merchantId, merchants.id))
-    .where(eq(merchants.uid, merchantId));
-
-    return result.map(({ product, merchantUid, mid }) => this.toEntity(product, merchantUid, mid));
+    const result = await selectProducts().where(eq(products.uid, id)).limit(1);
+    return result[0] ? toEntity(result[0]) : null;
   }
 
   async findAll(page: number, limit: number, filters?: ProductFilter): Promise<{ products: Product[], total: number }> {
@@ -75,13 +81,13 @@ export class DrizzleProductRepository implements IProductRepository {
       whereConditions.push(ilike(products.barcode, `%${filters.barcode}%`));
     }
     if (filters?.name) {
-      whereConditions.push(ilike(products.name, `%${filters.name}%`));
+      whereConditions.push(or(ilike(products.nameEn, `%${filters.name}%`), ilike(products.nameTh, `%${filters.name}%`))!);
     }
     if (filters?.merchantUid) {
       whereConditions.push(merchantUidIs(filters.merchantUid));
     }
     if (filters?.brands && filters.brands.length > 0) {
-      whereConditions.push(inArray(products.brand, filters.brands));
+      whereConditions.push(inArray(brands.uid, filters.brands));
     }
     if (filters?.units && filters.units.length > 0) {
       whereConditions.push(inArray(products.unitName, filters.units));
@@ -90,7 +96,7 @@ export class DrizzleProductRepository implements IProductRepository {
       whereConditions.push(lte(products.basePrice, filters.price.toString()));
     }
     if (filters?.storeUid) {
-      // products listed in the store (store_products joined with stores), without duplicating product rows
+      // products listed in the store (map_store_product joined with store), without duplicating product rows
       whereConditions.push(
         inArray(
           products.id,
@@ -109,24 +115,19 @@ export class DrizzleProductRepository implements IProductRepository {
     })
     .from(products)
     .innerJoin(merchants, eq(products.merchantId, merchants.id))
+    .leftJoin(brands, eq(products.brandId, brands.id))
     .where(whereClause);
 
     const total = Number(countResult[0]?.count || 0);
 
-    const result = await db.select({
-      product: products,
-      merchantUid: merchants.uid,
-      mid: merchants.mid
-    })
-    .from(products)
-    .innerJoin(merchants, eq(products.merchantId, merchants.id))
-    .where(whereClause)
-    .orderBy(desc(products.id))
-    .limit(limit)
-    .offset((page - 1) * limit);
+    const result = await selectProducts()
+      .where(whereClause)
+      .orderBy(desc(products.id))
+      .limit(limit)
+      .offset((page - 1) * limit);
 
     return {
-      products: result.map(({ product, merchantUid, mid }) => this.toEntity(product, merchantUid, mid)),
+      products: result.map(toEntity),
       total
     };
   }
@@ -151,14 +152,23 @@ export class DrizzleProductRepository implements IProductRepository {
       .where(inArray(products.uid, productUids));
   }
 
-  async getMetadata(merchantUid?: string): Promise<{ brands: string[], units: string[] }> {
-    const merchantFilter = merchantUid ? eq(merchants.uid, merchantUid) : undefined;
+  async findBrandsByUids(brandUids: string[]): Promise<Brand[]> {
+    if (brandUids.length === 0) return [];
 
-    const brandRows = await db.selectDistinct({ brand: products.brand })
+    return db.select({ uid: brands.uid, nameEn: brands.nameEn, nameTh: brands.nameTh })
+      .from(brands)
+      .where(inArray(brands.uid, brandUids));
+  }
+
+  async getMetadata(merchantUid?: string): Promise<{ brands: Brand[], units: string[] }> {
+    const merchantFilter = merchantUid ? merchantUidIs(merchantUid) : undefined;
+
+    const brandRows = await db.selectDistinct({ uid: brands.uid, nameEn: brands.nameEn, nameTh: brands.nameTh })
       .from(products)
       .innerJoin(merchants, eq(products.merchantId, merchants.id))
-      .where(and(isNotNull(products.brand), ne(products.brand, ''), merchantFilter))
-      .orderBy(asc(products.brand));
+      .innerJoin(brands, eq(products.brandId, brands.id))
+      .where(merchantFilter)
+      .orderBy(asc(brands.nameEn));
 
     const unitRows = await db.selectDistinct({ unit: products.unitName })
       .from(products)
@@ -167,69 +177,45 @@ export class DrizzleProductRepository implements IProductRepository {
       .orderBy(asc(products.unitName));
 
     return {
-      brands: brandRows.map((r) => r.brand as string),
+      brands: brandRows,
       units: unitRows.map((r) => r.unit as string),
     };
   }
 
   async save(product: Product): Promise<void> {
+    const brandIds = await findBrandIds([product]);
+
     await db.transaction(async (tx) => {
-      // 1. Find merchant internal ID
       const merchant = await tx.query.merchants.findFirst({
         where: eq(merchants.uid, product.merchantId)
       });
 
       if (!merchant) throw new Error('Merchant not found');
 
-      // 2. Insert/Update product
-      const inserted = await tx.insert(products).values({
-        uid: product.id,
-        merchantId: merchant.id,
-        name: product.name,
+      const values = {
+        nameEn: product.nameEn,
+        nameTh: product.nameTh,
         sku: product.sku,
         barcode: product.barcode,
         basePrice: product.basePrice.toString(),
-        imageUrl: product.imageUrl,
-        brand: product.brand,
-        unitName: product.unitName
-      }).onConflictDoUpdate({
-        target: products.uid,
-        set: {
-          name: product.name,
-          sku: product.sku,
-          barcode: product.barcode,
-          basePrice: product.basePrice.toString(),
-          imageUrl: product.imageUrl,
-          brand: product.brand,
-          unitName: product.unitName,
-          updatedAt: new Date()
-        }
-      }).returning({ id: products.id });
+        imageUrl: product.imageUrl || null,
+        brandId: product.brand ? brandIds.get(product.brand.uid) ?? null : null,
+        unitName: product.unitName || null,
+      };
 
-      const productId = inserted[0]?.id;
-      if (!productId) return;
+      const inserted = await tx.insert(products)
+        .values({ uid: product.id, merchantId: merchant.id, ...values })
+        .onConflictDoUpdate({ target: products.uid, set: { ...values, updatedAt: new Date() } })
+        .returning({ id: products.id });
 
-      // 3. Increment product_version and get new version
-      const versionResult = await nextProductVersion(tx);
-
-      const newVersion = versionResult[0]?.newVersion;
-
-      if (newVersion !== undefined) {
-        // 4. Update row_version for all store_products associated with this product
-        await tx.update(storeProducts)
-          .set({ 
-            rowVersion: newVersion,
-            updatedAt: new Date()
-          })
-          .where(eq(storeProducts.productId, productId));
-      }
+      await bumpSyncVersion(tx, inserted.map((r) => r.id));
     });
   }
 
   async bulkSave(productList: Product[]): Promise<void> {
     if (productList.length === 0) return;
 
-    // Resolve unique merchants once (avoids N lookups inside the loop)
+    // Resolve unique merchants and brands once (avoids N lookups inside the loop)
     const uniqueMerchantUids = [...new Set(productList.map(p => p.merchantId))];
     const merchantRows = await db.select({ uid: merchants.uid, id: merchants.id })
       .from(merchants)
@@ -239,6 +225,8 @@ export class DrizzleProductRepository implements IProductRepository {
     const missing = uniqueMerchantUids.filter(uid => !merchantIdMap.has(uid));
     if (missing.length > 0) throw new Error(`Merchants not found: ${missing.join(', ')}`);
 
+    const brandIds = await findBrandIds(productList);
+
     const CHUNK_SIZE = 500;
     for (let i = 0; i < productList.length; i += CHUNK_SIZE) {
       const chunk = productList.slice(i, i + CHUNK_SIZE);
@@ -247,44 +235,32 @@ export class DrizzleProductRepository implements IProductRepository {
           chunk.map(p => ({
             uid: p.id,
             merchantId: merchantIdMap.get(p.merchantId)!,
-            name: p.name,
+            nameEn: p.nameEn,
+            nameTh: p.nameTh,
             sku: p.sku,
             barcode: p.barcode,
             basePrice: p.basePrice.toString(),
-            imageUrl: p.imageUrl,
-            brand: p.brand,
-            unitName: p.unitName
+            imageUrl: p.imageUrl || null,
+            brandId: p.brand ? brandIds.get(p.brand.uid) ?? null : null,
+            unitName: p.unitName || null,
           }))
         ).onConflictDoUpdate({
           target: products.uid,
           set: {
-            name: sql`excluded.name`,
+            nameEn: sql`excluded.name_en`,
+            nameTh: sql`excluded.name_th`,
             sku: sql`excluded.sku`,
             barcode: sql`excluded.barcode`,
             basePrice: sql`excluded.base_price`,
             imageUrl: sql`excluded.image_url`,
-            brand: sql`excluded.brand`,
+            brandId: sql`excluded.brand_id`,
             unitName: sql`excluded.unit_name`,
             updatedAt: new Date()
           }
         }).returning({ id: products.id });
 
-        if (inserted.length === 0) return;
-
-        const versionResult = await nextProductVersion(tx);
-
-        const newVersion = versionResult[0]?.newVersion;
-        if (newVersion !== undefined) {
-          const productIds = inserted.map(r => r.id);
-          await tx.update(storeProducts)
-            .set({ rowVersion: newVersion, updatedAt: new Date() })
-            .where(inArray(storeProducts.productId, productIds));
-        }
+        await bumpSyncVersion(tx, inserted.map(r => r.id));
       });
     }
-  }
-
-  async delete(id: string): Promise<void> {
-    await db.delete(products).where(eq(products.uid, id));
   }
 }

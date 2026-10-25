@@ -1,3 +1,4 @@
+import { Brand } from '../../domain/entities/Product';
 import { IProductRepository } from '../../domain/repositories/IProductRepository';
 import { IStaffRepository } from '../../domain/repositories/IStaffRepository';
 import { Actor, findOwnMerchantUid, isProductOwner } from '../auth/Actor';
@@ -8,7 +9,7 @@ export class GetProductFilterMetadataUseCase {
     private staffRepository: IStaffRepository,
   ) {}
 
-  async execute(actor: Actor): Promise<{ brands: string[], units: string[] }> {
+  async execute(actor: Actor): Promise<{ brands: Brand[], units: string[] }> {
     if (isProductOwner(actor)) return this.productRepository.getMetadata();
 
     const ownMerchantUid = await findOwnMerchantUid(this.staffRepository, actor);

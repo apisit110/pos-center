@@ -1,7 +1,7 @@
 import { pgTable, varchar, timestamp, serial, integer } from 'drizzle-orm/pg-core';
-import { districts } from './districts';
+import { districts } from './masterDistricts';
 
-export const subDistricts = pgTable('sub_districts', {
+export const subDistricts = pgTable('master_sub_districts', {
   id: serial('id').primaryKey(),
   districtId: integer('district_id').references(() => districts.id),
   code: varchar('code', { length: 20 }).unique(),

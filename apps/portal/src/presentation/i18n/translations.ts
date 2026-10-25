@@ -50,19 +50,20 @@ export interface Translations {
   merchantList: {
     title: string;
     create: string;
-    mid: string;
-    midPlaceholder: string;
+    partnerId: string;
+    partnerIdPlaceholder: string;
     name: string;
     namePlaceholder: string;
-    columnMid: string;
-    columnName: string;
+    columnPartnerId: string;
+    columnNameEn: string;
+    columnNameTh: string;
   };
   merchantDetail: {
     notFound: string;
     forbidden: string;
     subtitle: string;
     information: string;
-    mid: string;
+    partnerId: string;
     uid: string;
     relatedStores: string;
     staff: string;
@@ -73,6 +74,21 @@ export interface Translations {
     columnUsername: string;
     columnRole: string;
     columnStatus: string;
+    credentials: string;
+    noCredentials: string;
+    columnProvider: string;
+    columnClientId: string;
+    columnCreatedAt: string;
+    columnLastRotatedAt: string;
+    createCredential: string;
+    rotateSecret: string;
+    rotateConfirm: string;
+    clientSecret: string;
+    secretShownOnce: string;
+    secretSaved: string;
+    copy: string;
+    copied: string;
+    credentialFailed: string;
   };
   productList: {
     addProduct: string;
@@ -102,7 +118,7 @@ export interface Translations {
     barcode: string;
     productSku: string;
     additionalInfo: string;
-    merchantMid: string;
+    merchantPartnerId: string;
     sku: string;
     company: string;
     notAvailable: string;
@@ -140,7 +156,7 @@ export interface Translations {
     details: string;
     transactionId: string;
     orderId: string;
-    merchantMid: string;
+    merchantPartnerId: string;
     store: string;
     terminal: string;
     staff: string;
@@ -222,19 +238,20 @@ export const en: Translations = {
   merchantList: {
     title: 'Merchants',
     create: 'Create Merchant',
-    mid: 'MID',
-    midPlaceholder: 'Search by MID...',
+    partnerId: 'Partner ID',
+    partnerIdPlaceholder: 'Search by Partner ID...',
     name: 'Merchant Name',
-    namePlaceholder: 'Search by name...',
-    columnMid: 'MID',
-    columnName: 'Merchant Name',
+    namePlaceholder: 'Search by name (EN/TH)...',
+    columnPartnerId: 'Partner ID',
+    columnNameEn: 'Merchant Name (EN)',
+    columnNameTh: 'Merchant Name (TH)',
   },
   merchantDetail: {
     notFound: 'Merchant not found',
     forbidden: 'Forbidden',
     subtitle: 'MERCHANT MANAGEMENT',
     information: 'Merchant Information',
-    mid: 'Merchant ID (MID)',
+    partnerId: 'Partner ID',
     uid: 'Unique ID (UID)',
     relatedStores: 'Related Stores',
     staff: 'Staff',
@@ -245,6 +262,21 @@ export const en: Translations = {
     columnUsername: 'Username',
     columnRole: 'Role',
     columnStatus: 'Status',
+    credentials: 'Credentials',
+    noCredentials: 'No credentials yet.',
+    columnProvider: 'Provider',
+    columnClientId: 'Client ID',
+    columnCreatedAt: 'Created At',
+    columnLastRotatedAt: 'Last Rotated At',
+    createCredential: 'Create Credential',
+    rotateSecret: 'Rotate',
+    rotateConfirm: 'Rotate the client secret? The current secret stops working immediately.',
+    clientSecret: 'Client Secret',
+    secretShownOnce: 'Copy the client secret now. It is shown only once and cannot be viewed again.',
+    secretSaved: 'I have saved it',
+    copy: 'Copy',
+    copied: 'Copied',
+    credentialFailed: 'Could not issue the credential.',
   },
   productList: {
     addProduct: '+ Add Product',
@@ -274,7 +306,7 @@ export const en: Translations = {
     barcode: 'Barcode',
     productSku: 'Product SKU',
     additionalInfo: 'Additional Information',
-    merchantMid: 'Merchant MID',
+    merchantPartnerId: 'Partner ID',
     sku: 'SKU',
     company: 'Company',
     notAvailable: 'N/A',
@@ -312,7 +344,7 @@ export const en: Translations = {
     details: 'Details',
     transactionId: 'Transaction ID',
     orderId: 'Order ID',
-    merchantMid: 'Merchant MID',
+    merchantPartnerId: 'Partner ID',
     store: 'Store',
     terminal: 'Terminal',
     staff: 'Staff',
@@ -394,19 +426,20 @@ export const th: Translations = {
   merchantList: {
     title: 'ร้านค้า',
     create: 'สร้างร้านค้า',
-    mid: 'MID',
-    midPlaceholder: 'ค้นหาด้วย MID...',
+    partnerId: 'Partner ID',
+    partnerIdPlaceholder: 'ค้นหาด้วย Partner ID...',
     name: 'ชื่อร้านค้า',
-    namePlaceholder: 'ค้นหาด้วยชื่อ...',
-    columnMid: 'MID',
-    columnName: 'ชื่อร้านค้า',
+    namePlaceholder: 'ค้นหาด้วยชื่อ (EN/TH)...',
+    columnPartnerId: 'Partner ID',
+    columnNameEn: 'ชื่อร้านค้า (EN)',
+    columnNameTh: 'ชื่อร้านค้า (TH)',
   },
   merchantDetail: {
     notFound: 'ไม่พบร้านค้า',
     forbidden: 'ไม่มีสิทธิ์เข้าถึง',
     subtitle: 'จัดการร้านค้า',
     information: 'ข้อมูลร้านค้า',
-    mid: 'รหัสร้านค้า (MID)',
+    partnerId: 'รหัสพาร์ทเนอร์ (Partner ID)',
     uid: 'รหัสเฉพาะ (UID)',
     relatedStores: 'สาขาที่เกี่ยวข้อง',
     staff: 'พนักงาน',
@@ -417,6 +450,21 @@ export const th: Translations = {
     columnUsername: 'ชื่อผู้ใช้',
     columnRole: 'ตำแหน่ง',
     columnStatus: 'สถานะ',
+    credentials: 'ข้อมูลรับรอง (Credentials)',
+    noCredentials: 'ยังไม่มี credential',
+    columnProvider: 'ผู้ให้บริการ',
+    columnClientId: 'Client ID',
+    columnCreatedAt: 'วันที่สร้าง',
+    columnLastRotatedAt: 'Rotate ล่าสุด',
+    createCredential: 'สร้าง Credential',
+    rotateSecret: 'Rotate',
+    rotateConfirm: 'ต้องการ rotate client secret ใช่ไหม? secret เดิมจะใช้งานไม่ได้ทันที',
+    clientSecret: 'Client Secret',
+    secretShownOnce: 'คัดลอก client secret เก็บไว้ตอนนี้ ระบบจะแสดงเพียงครั้งเดียวและไม่สามารถดูได้อีก',
+    secretSaved: 'บันทึกแล้ว',
+    copy: 'คัดลอก',
+    copied: 'คัดลอกแล้ว',
+    credentialFailed: 'ไม่สามารถออก credential ได้',
   },
   productList: {
     addProduct: '+ เพิ่มสินค้า',
@@ -446,7 +494,7 @@ export const th: Translations = {
     barcode: 'บาร์โค้ด',
     productSku: 'SKU สินค้า',
     additionalInfo: 'ข้อมูลเพิ่มเติม',
-    merchantMid: 'MID ร้านค้า',
+    merchantPartnerId: 'Partner ID ร้านค้า',
     sku: 'SKU',
     company: 'บริษัท',
     notAvailable: 'ไม่มีข้อมูล',
@@ -484,7 +532,7 @@ export const th: Translations = {
     details: 'รายละเอียด',
     transactionId: 'รหัสรายการ',
     orderId: 'รหัสคำสั่งซื้อ',
-    merchantMid: 'MID ร้านค้า',
+    merchantPartnerId: 'Partner ID ร้านค้า',
     store: 'สาขา',
     terminal: 'เครื่องขาย',
     staff: 'พนักงาน',

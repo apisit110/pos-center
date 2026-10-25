@@ -108,7 +108,7 @@ const capitalize = (value: string) => (value ? value.charAt(0).toUpperCase() + v
 export default function TransactionDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const td = t.transactionDetail;
   const methodLabels: Record<string, string> = {
     cash: t.transactionList.methodCash,
@@ -118,7 +118,7 @@ export default function TransactionDetailPage() {
     t.transactionStatus[status?.toLowerCase() as keyof typeof t.transactionStatus] ?? capitalize(status);
   const itemColumns = [
     { header: '#', key: 'index', render: (_: TransactionItem, index?: number) => (index ?? 0) + 1 },
-    { header: td.columnProduct, key: 'name' },
+    { header: td.columnProduct, key: 'name', render: (i: TransactionItem) => i.displayName(language) },
     { header: td.columnSku, key: 'sku', render: (i: TransactionItem) => i.sku || '-' },
     { header: td.columnBarcode, key: 'barcode', render: (i: TransactionItem) => i.barcode || '-' },
     { header: td.columnQuantity, key: 'quantity' },
@@ -185,12 +185,12 @@ export default function TransactionDetailPage() {
               <Value style={{ fontFamily: 'monospace' }}>{tx.orderId || '-'}</Value>
             </div>
             <div>
-              <Label>{td.merchantMid}</Label>
-              <Value>{detail.mid}</Value>
+              <Label>{td.merchantPartnerId}</Label>
+              <Value>{detail.partnerId || '-'}</Value>
             </div>
             <div>
               <Label>{td.store}</Label>
-              <Value>{tx.storeName || '-'}</Value>
+              <Value>{tx.storeName(language) || '-'}</Value>
             </div>
             <div>
               <Label>{td.terminal}</Label>
@@ -198,7 +198,7 @@ export default function TransactionDetailPage() {
             </div>
             <div>
               <Label>{td.staff}</Label>
-              <Value>{detail.staffName || '-'}</Value>
+              <Value>{tx.staffName || '-'}</Value>
             </div>
           </InfoGrid>
         </Card>

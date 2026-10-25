@@ -4,8 +4,9 @@ import { Staff, StaffStatus } from '../../../domain/entities/Staff';
 export interface StaffResponseDto {
   uid: string;
   merchant_uid: string;
-  merchant_name: string;
-  name: string;
+  merchant_name_en: string;
+  merchant_name_th: string;
+  full_name: string;
   role: string;
   username: string;
   status: StaffStatus;
@@ -16,8 +17,9 @@ export function toStaffResponseDto(staff: Staff): StaffResponseDto {
   return {
     uid: staff.id,
     merchant_uid: staff.merchantId,
-    merchant_name: staff.merchantName ?? '',
-    name: staff.name,
+    merchant_name_en: staff.merchantNameEn ?? '',
+    merchant_name_th: staff.merchantNameTh ?? '',
+    full_name: staff.name,
     role: staff.role,
     username: staff.username ?? '',
     status: staff.status,
@@ -28,7 +30,7 @@ export function toStaffResponseDto(staff: Staff): StaffResponseDto {
 /** staff of a merchant (merchant detail page) */
 export interface MerchantStaffResponseDto {
   uid: string;
-  name: string;
+  full_name: string;
   role: string;
   username: string;
   status: StaffStatus;
@@ -37,7 +39,7 @@ export interface MerchantStaffResponseDto {
 export function toMerchantStaffResponseDto(staff: Staff): MerchantStaffResponseDto {
   return {
     uid: staff.id,
-    name: staff.name,
+    full_name: staff.name,
     role: staff.role,
     username: staff.username ?? '',
     status: staff.status,

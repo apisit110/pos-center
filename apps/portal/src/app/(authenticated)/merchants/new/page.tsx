@@ -1,10 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import { RegisterMerchantUseCase } from '../../../../domain/usecases/RegisterMerchantUseCase';
 import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
+import { ApiMasterDataRepository } from '../../../../infrastructure/repositories/ApiMasterDataRepository';
+import { AddressRequest } from '../../../../domain/repositories/MerchantRepository';
+import { MasterDataRef } from '../../../../domain/entities/Store';
+import { pickName } from '../../../../domain/entities/LocalizedName';
+import { useTranslation } from '../../../../presentation/i18n/LanguageContext';
 import { InputField, PinInputField, SelectFilter, Button } from '@apisit110/pos-ui';
 
 const PageContainer = styled.div`
@@ -90,13 +95,137 @@ interface StaffEntry {
   role: StaffRole;
 }
 
+interface StoreEntry {
+  nameEn: string;
+  nameTh: string;
+  registeredAddress: AddressRequest;
+  /** when true, the registered address is also sent as the contract address */
+  contractSameAsRegistered: boolean;
+  contractAddress: AddressRequest;
+  terminals: { nameEn: string; nameTh: string }[];
+}
+
+const emptyAddress = (): AddressRequest => ({
+  address1: '',
+  provinceCode: '',
+  districtCode: '',
+  subDistrictCode: '',
+  postalCode: '',
+  latitude: '',
+  longitude: '',
+});
+
+const emptyStore = (): StoreEntry => ({
+  nameEn: '',
+  nameTh: '',
+  registeredAddress: emptyAddress(),
+  contractSameAsRegistered: true,
+  contractAddress: emptyAddress(),
+  terminals: [{ nameEn: '', nameTh: '' }],
+});
+
+type Option = { value: string; label: string };
+
+const masterDataRepository = new ApiMasterDataRepository();
+
+/** select options of one master data level, reloaded when the parent code changes (empty while no parent) */
+function useMasterDataOptions(parentCode: string, load: (code: string) => Promise<Option[]>): Option[] {
+  const [options, setOptions] = useState<Option[]>([]);
+  useEffect(() => {
+    setOptions([]);
+    if (!parentCode) return;
+    let cancelled = false;
+    load(parentCode).then((loaded) => { if (!cancelled) setOptions(loaded); }).catch(() => {});
+    return () => { cancelled = true; };
+  }, [parentCode]);
+  return options;
+}
+
+/** address by master data (province -> district -> sub district -> postal code) */
+function AddressFields({ title, value, onChange, provinceOptions, language }: {
+  title: string;
+  value: AddressRequest;
+  onChange: (value: AddressRequest) => void;
+  provinceOptions: Option[];
+  language: 'en' | 'th';
+}) {
+  const toOptions = (refs: MasterDataRef[]) => refs.map((r) => ({ value: r.code, label: pickName(language, r.nameEn, r.nameTh) }));
+  const districtOptions = useMasterDataOptions(value.provinceCode, async (code) => toOptions(await masterDataRepository.getDistricts(code)));
+  const subDistrictOptions = useMasterDataOptions(value.districtCode, async (code) => toOptions(await masterDataRepository.getSubDistricts(code)));
+  const postalCodeOptions = useMasterDataOptions(value.subDistrictCode, async (code) =>
+    (await masterDataRepository.getPostalCodes(code)).map((c) => ({ value: c, label: c })));
+
+  // a sub district usually has one postal code: select it
+  useEffect(() => {
+    if (postalCodeOptions.length === 1 && value.postalCode !== postalCodeOptions[0].value) {
+      onChange({ ...value, postalCode: postalCodeOptions[0].value });
+    }
+  }, [postalCodeOptions]);
+
+  const set = (field: 'address1' | 'latitude' | 'longitude') => (e: React.ChangeEvent<HTMLInputElement>) =>
+    onChange({ ...value, [field]: e.target.value });
+
+  return (
+    <div>
+      <span style={{ fontSize: '0.9rem', fontWeight: 500, color: 'var(--text-sub)' }}>{title}</span>
+      <InputField label="Address" value={value.address1} onChange={set('address1')} placeholder="House no., building, road" />
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+        <SelectFilter
+          label="Province"
+          value={value.provinceCode}
+          options={provinceOptions}
+          placeholder="Select province"
+          // a new parent clears the levels below it
+          onChange={(provinceCode) => onChange({ ...value, provinceCode, districtCode: '', subDistrictCode: '', postalCode: '' })}
+        />
+        <SelectFilter
+          label="District"
+          value={value.districtCode}
+          options={districtOptions}
+          placeholder="Select district"
+          disabled={!value.provinceCode}
+          onChange={(districtCode) => onChange({ ...value, districtCode, subDistrictCode: '', postalCode: '' })}
+        />
+        <SelectFilter
+          label="Sub District"
+          value={value.subDistrictCode}
+          options={subDistrictOptions}
+          placeholder="Select sub district"
+          disabled={!value.districtCode}
+          onChange={(subDistrictCode) => onChange({ ...value, subDistrictCode, postalCode: '' })}
+        />
+        <SelectFilter
+          label="Postal Code"
+          value={value.postalCode}
+          options={postalCodeOptions}
+          placeholder="Select postal code"
+          disabled={!value.subDistrictCode}
+          onChange={(postalCode) => onChange({ ...value, postalCode })}
+        />
+        <InputField label="Latitude" type="number" step="any" value={value.latitude} onChange={set('latitude')} />
+        <InputField label="Longitude" type="number" step="any" value={value.longitude} onChange={set('longitude')} />
+      </div>
+    </div>
+  );
+}
+
+const isAddressComplete = (a: AddressRequest) => Boolean(a.provinceCode && a.districtCode && a.subDistrictCode && a.postalCode);
+
 export default function CreateMerchantPage() {
   const router = useRouter();
-  const [merchantName, setMerchantName] = useState('');
+  const { language } = useTranslation();
+  const [provinces, setProvinces] = useState<MasterDataRef[]>([]);
+  const [merchantNameEn, setMerchantNameEn] = useState('');
+  const [merchantNameTh, setMerchantNameTh] = useState('');
   const [staffMembers, setStaffMembers] = useState<StaffEntry[]>([
     { fullName: '', pin: '', confirmPin: '', role: 'manager' },
   ]);
-  const [stores, setStores] = useState([{ name: '', address: '', latitude: 0, longitude: 0, terminals: [{ name: '' }] }]);
+  const [stores, setStores] = useState<StoreEntry[]>([emptyStore()]);
+
+  useEffect(() => {
+    masterDataRepository.getProvinces().then(setProvinces).catch(() => alert('Failed to load provinces'));
+  }, []);
+  const provinceOptions = provinces.map((p) => ({ value: p.code, label: pickName(language, p.nameEn, p.nameTh) }));
 
   const addStaff = () => {
     setStaffMembers([...staffMembers, { fullName: '', pin: '', confirmPin: '', role: 'cashier' }]);
@@ -113,35 +242,31 @@ export default function CreateMerchantPage() {
   };
 
   const addStore = () => {
-    setStores([...stores, { name: '', address: '', latitude: 0, longitude: 0, terminals: [{ name: '' }] }]);
+    setStores([...stores, emptyStore()]);
   };
 
   const removeStore = (index: number) => {
     setStores(stores.filter((_, i) => i !== index));
   };
 
-  const updateStore = (index: number, field: string, value: any) => {
-    const newStores = [...stores];
-    (newStores[index] as any)[field] = value;
-    setStores(newStores);
+  const updateStore = <K extends keyof StoreEntry>(index: number, field: K, value: StoreEntry[K]) => {
+    setStores(stores.map((store, i) => (i === index ? { ...store, [field]: value } : store)));
   };
 
   const addTerminal = (storeIndex: number) => {
-    const newStores = [...stores];
-    newStores[storeIndex].terminals.push({ name: '' });
-    setStores(newStores);
+    updateStore(storeIndex, 'terminals', [...stores[storeIndex].terminals, { nameEn: '', nameTh: '' }]);
   };
 
   const removeTerminal = (storeIndex: number, terminalIndex: number) => {
-    const newStores = [...stores];
-    newStores[storeIndex].terminals = newStores[storeIndex].terminals.filter((_, i) => i !== terminalIndex);
-    setStores(newStores);
+    updateStore(storeIndex, 'terminals', stores[storeIndex].terminals.filter((_, i) => i !== terminalIndex));
   };
 
-  const updateTerminal = (storeIndex: number, terminalIndex: number, value: string) => {
-    const newStores = [...stores];
-    newStores[storeIndex].terminals[terminalIndex].name = value;
-    setStores(newStores);
+  const updateTerminal = (storeIndex: number, terminalIndex: number, field: 'nameEn' | 'nameTh', value: string) => {
+    updateStore(
+      storeIndex,
+      'terminals',
+      stores[storeIndex].terminals.map((terminal, i) => (i === terminalIndex ? { ...terminal, [field]: value } : terminal)),
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -159,13 +284,29 @@ export default function CreateMerchantPage() {
       return;
     }
 
+    for (const store of stores) {
+      const addresses = store.contractSameAsRegistered ? [store.registeredAddress] : [store.registeredAddress, store.contractAddress];
+      if (!addresses.every(isAddressComplete)) {
+        alert(`Please select province, district, sub district and postal code for "${store.nameEn || 'a store'}"`);
+        return;
+      }
+      if (addresses.some((a) => (a.latitude === '') !== (a.longitude === ''))) {
+        alert(`Latitude and longitude must be both filled or both empty for "${store.nameEn || 'a store'}"`);
+        return;
+      }
+    }
+
     try {
       const repository = new ApiMerchantRepository();
       const useCase = new RegisterMerchantUseCase(repository);
       await useCase.execute({
-        merchantName,
+        merchantNameEn,
+        merchantNameTh,
         staffMembers: staffMembers.map(({ confirmPin, ...s }) => s),
-        stores,
+        stores: stores.map(({ contractSameAsRegistered, contractAddress, ...store }) => ({
+          ...store,
+          contractAddress: contractSameAsRegistered ? store.registeredAddress : contractAddress,
+        })),
       });
       router.push('/merchants');
       router.refresh();
@@ -185,11 +326,19 @@ export default function CreateMerchantPage() {
       <FormCard>
         <form onSubmit={handleSubmit}>
           <InputField
-            label="Merchant Name"
+            label="Merchant Name (English)"
             required
-            value={merchantName}
-            onChange={(e) => setMerchantName(e.target.value)}
-            placeholder="Enter merchant name"
+            value={merchantNameEn}
+            onChange={(e) => setMerchantNameEn(e.target.value)}
+            placeholder="Enter merchant name in English"
+          />
+
+          <InputField
+            label="Merchant Name (Thai)"
+            required
+            value={merchantNameTh}
+            onChange={(e) => setMerchantNameTh(e.target.value)}
+            placeholder="Enter merchant name in Thai"
           />
 
           <SectionTitle>
@@ -255,38 +404,49 @@ export default function CreateMerchantPage() {
                 )}
               </div>
 
-              <InputField
-                label="Store Name"
-                required
-                value={store.name}
-                onChange={(e) => updateStore(sIdx, 'name', e.target.value)}
-                placeholder="Store name"
-              />
-
-              <InputField
-                label="Address"
-                required
-                value={store.address}
-                onChange={(e) => updateStore(sIdx, 'address', e.target.value)}
-                placeholder="Store address"
-              />
-
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <InputField
-                  label="Latitude"
-                  type="number"
-                  step="any"
-                  value={store.latitude}
-                  onChange={(e) => updateStore(sIdx, 'latitude', parseFloat(e.target.value))}
+                  label="Store Name (English)"
+                  required
+                  value={store.nameEn}
+                  onChange={(e) => updateStore(sIdx, 'nameEn', e.target.value)}
+                  placeholder="Store name in English"
                 />
                 <InputField
-                  label="Longitude"
-                  type="number"
-                  step="any"
-                  value={store.longitude}
-                  onChange={(e) => updateStore(sIdx, 'longitude', parseFloat(e.target.value))}
+                  label="Store Name (Thai)"
+                  required
+                  value={store.nameTh}
+                  onChange={(e) => updateStore(sIdx, 'nameTh', e.target.value)}
+                  placeholder="Store name in Thai"
                 />
               </div>
+
+              <AddressFields
+                title="Registered Address"
+                value={store.registeredAddress}
+                onChange={(value) => updateStore(sIdx, 'registeredAddress', value)}
+                provinceOptions={provinceOptions}
+                language={language}
+              />
+
+              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', color: 'var(--text-sub)' }}>
+                <input
+                  type="checkbox"
+                  checked={store.contractSameAsRegistered}
+                  onChange={(e) => updateStore(sIdx, 'contractSameAsRegistered', e.target.checked)}
+                />
+                Contract address is the same as the registered address
+              </label>
+
+              {!store.contractSameAsRegistered && (
+                <AddressFields
+                  title="Contract Address"
+                  value={store.contractAddress}
+                  onChange={(value) => updateStore(sIdx, 'contractAddress', value)}
+                  provinceOptions={provinceOptions}
+                  language={language}
+                />
+              )}
 
               <div style={{ marginTop: '1.5rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
@@ -297,9 +457,15 @@ export default function CreateMerchantPage() {
                   <TerminalRow key={tIdx}>
                     <TerminalInput
                       required
-                      value={terminal.name}
-                      onChange={(e) => updateTerminal(sIdx, tIdx, e.target.value)}
-                      placeholder="Terminal Name"
+                      value={terminal.nameEn}
+                      onChange={(e) => updateTerminal(sIdx, tIdx, 'nameEn', e.target.value)}
+                      placeholder="Terminal Name (English)"
+                    />
+                    <TerminalInput
+                      required
+                      value={terminal.nameTh}
+                      onChange={(e) => updateTerminal(sIdx, tIdx, 'nameTh', e.target.value)}
+                      placeholder="Terminal Name (Thai)"
                     />
                     {store.terminals.length > 1 && (
                       <Button type="button" variant="danger" style={{ width: 'auto' }} onClick={() => removeTerminal(sIdx, tIdx)}>&times;</Button>

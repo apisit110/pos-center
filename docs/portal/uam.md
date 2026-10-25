@@ -1,4 +1,21 @@
-# UAM
+# UAM Cashier
+
+User Access Management (UAM)
+
+| Action           | Guest | Manager | Cashier |
+| ---------------- | ----- | ------- | ------- |
+| login            | [x]   | [ ]     | [ ]     |
+| dashboard:view   | [ ]   | [x]     | [ ]     |
+| sell:create      | [ ]   | [x]     | [x]     |
+| transaction:view | [ ]   | [x]     | [ ]     |
+| products:view    | [ ]   | [x]     | [ ]     |
+| product:create   | [ ]   | [x]     | [ ]     |
+| product:edit     | [ ]   | [x]     | [ ]     |
+| products:sync    | [ ]   | [x]     | [ ]     |
+| staff:view       | [ ]   | [x]     | [ ]     |
+| staff:create     | [ ]   | [x]     | [ ]     |
+
+# UAM Cashier Center
 
 User Access Matrix หรือ ตารางกำหนดสิทธิ์การเข้าถึงของผู้ใช้ ใช้สำหรับการ บริหารจัดการและควบคุมสิทธิ์การเข้าถึงระบบ
 

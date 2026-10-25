@@ -3,6 +3,8 @@ import { seedSyncMetadata } from './seeds/syncMetadata.seed';
 import { seedPermissions } from './seeds/permissions.seed';
 import { seedUamRoles } from './seeds/uamRoles.seed';
 import { seedAdminStaff } from './seeds/adminStaff.seed';
+import { seedCashierUam } from './seeds/cashierUam.seed';
+import { seedThaiAddress } from './seeds/thaiAddress.seed';
 import { resetSequences } from './seeds/sequences.seed';
 
 async function seed() {
@@ -13,10 +15,16 @@ async function seed() {
     await seedRunningNumbers();
     await seedSyncMetadata();
 
+    // seed master data
+    await seedThaiAddress();
+
     // seed center staff
     await seedPermissions();
     await seedUamRoles();
     await seedAdminStaff();
+
+    // seed cashier staff roles
+    await seedCashierUam();
 
     await resetSequences();
 

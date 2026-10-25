@@ -33,7 +33,7 @@ response body (fields below are the value of `data`, wrapped in [Ok](../../../ap
 | uid          | string | store uid                                        |
 | sid          | string | store id (unique)                                |
 | merchant_uid | string | uid of the merchant that owns the store          |
-| mid          | string/null | merchant id of the merchant (from `merchant_profile`, null if none) |
+| partner_id   | string | partner id of the merchant                       |
 | name_en | string | store name (English) |
 | name_th | string | store name (Thai) |
 | registered_address | object | registered address (type `REGISTERED`), null if not set |
@@ -50,7 +50,7 @@ example response body:
     "uid": "string",
     "sid": "string",
     "merchant_uid": "string",
-    "mid": "string",
+    "partner_id": "string",
     "name_en": "string",
     "name_th": "string",
     "registered_address": {
@@ -82,7 +82,7 @@ Logic:
     - min: 1
     - required: true
     - If validation fails, throw [ValidationError.ErrInvalidRequest](../../../apiresponse/ValidationError.ts)
-- Find store by uid (path `id`) with its merchant (`merchant_uid`, `mid` from `merchant_profile`) and its addresses (`map_store_address` -> `address` -> `provinces`, `districts`, `sub_districts`, `postal_code`)
+- Find store by uid (path `id`) with its merchant (`merchant_uid`, `partner_id`) and its addresses (`map_store_address` -> `address` -> `master_provinces`, `master_districts`, `master_sub_districts`, `master_postal_code`)
   - if not found, throw [ServiceError.ErrStoreNotFound](../../../apiresponse/ServiceError.ts)
 - Check merchant ownership by role in access token
   - if role is `PRODUCT_OWNER`
@@ -92,5 +92,5 @@ Logic:
     - if not found or not equal to `merchant_uid` of the store, throw [ServiceError.ErrForbidden](../../../apiresponse/ServiceError.ts)
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response store follow these items (uid, sid, merchant_uid, mid, name_en, name_th, registered_address, contract_address)
+- response store follow these items (uid, sid, merchant_uid, partner_id, name_en, name_th, registered_address, contract_address)
   - `registered_address` / `contract_address` are null if the store has no `map_store_address` of that type

@@ -7,9 +7,10 @@ import { ApiStoreRepository } from '../../../../infrastructure/repositories/ApiS
 import { ApiTerminalRepository } from '../../../../infrastructure/repositories/ApiTerminalRepository';
 import { GetStoreDetailUseCase } from '../../../../domain/usecases/GetStoreDetailUseCase';
 import { GetTerminalsByStoreUseCase } from '../../../../domain/usecases/GetTerminalsByStoreUseCase';
-import { Store } from '../../../../domain/entities/Store';
+import { Store, formatStoreAddress } from '../../../../domain/entities/Store';
 import { Terminal } from '../../../../domain/entities/Terminal';
 import { DataTable, Button } from '@apisit110/pos-ui';
+import { useTranslation } from '../../../../presentation/i18n/LanguageContext';
 
 const PageContainer = styled.div`
   display: flex;
@@ -71,6 +72,7 @@ const SectionTitle = styled.h2`
 export default function StoreDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { language } = useTranslation();
   const [store, setStore] = useState<Store | null>(null);
   const [terminals, setTerminals] = useState<Terminal[]>([]);
   const [loading, setLoading] = useState(true);
@@ -102,6 +104,8 @@ export default function StoreDetailPage() {
 
   const terminalColumns = [
     { header: 'Terminal ID', key: 'tid' },
+    { header: 'Terminal Name (EN)', key: 'nameEn' },
+    { header: 'Terminal Name (TH)', key: 'nameTh' },
     { header: 'Internal ID', key: 'id', width: '300px' },
   ];
 
@@ -121,16 +125,24 @@ export default function StoreDetailPage() {
           <Value>{store.sid}</Value>
         </InfoItem>
         <InfoItem>
-          <Label>Store Name</Label>
-          <Value>{store.name}</Value>
+          <Label>Store Name (EN)</Label>
+          <Value>{store.nameEn}</Value>
         </InfoItem>
         <InfoItem>
-          <Label>Merchant ID (MID)</Label>
-          <Value>{store.mid}</Value>
+          <Label>Store Name (TH)</Label>
+          <Value>{store.nameTh}</Value>
         </InfoItem>
         <InfoItem>
-          <Label>Address</Label>
-          <Value>{store.address}</Value>
+          <Label>Partner ID</Label>
+          <Value>{store.partnerId}</Value>
+        </InfoItem>
+        <InfoItem>
+          <Label>Registered Address</Label>
+          <Value>{formatStoreAddress(store.registeredAddress, language) || '-'}</Value>
+        </InfoItem>
+        <InfoItem>
+          <Label>Contract Address</Label>
+          <Value>{formatStoreAddress(store.contractAddress, language) || '-'}</Value>
         </InfoItem>
         <InfoItem>
           <Label>Unique ID (UID)</Label>

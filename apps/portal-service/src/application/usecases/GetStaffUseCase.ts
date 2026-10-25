@@ -1,4 +1,5 @@
-import { IStaffRepository, StaffFilter } from '../../domain/repositories/IStaffRepository';
+import { IStaffRepository } from '../../domain/repositories/IStaffRepository';
+import { ICashierStaffRepository, StaffFilter } from '../../domain/repositories/ICashierStaffRepository';
 import { IMerchantRepository } from '../../domain/repositories/IMerchantRepository';
 import { Staff } from '../../domain/entities/Staff';
 import { Actor, findOwnMerchantUid, isProductOwner } from '../auth/Actor';
@@ -24,8 +25,10 @@ export interface GetStaffOutput {
   limit: number;
 }
 
+/** Lists cashier staff (the staff of the merchants). */
 export class GetStaffUseCase {
   constructor(
+    private cashierStaffRepository: ICashierStaffRepository,
     private staffRepository: IStaffRepository,
     private merchantRepository: IMerchantRepository,
   ) {}
@@ -55,7 +58,7 @@ export class GetStaffUseCase {
       startDate: toRangeStart(input.startDate),
       endDate: toRangeEnd(input.endDate),
     };
-    const { staff, total } = await this.staffRepository.getStaff(input.page, input.limit, filters);
+    const { staff, total } = await this.cashierStaffRepository.getStaff(input.page, input.limit, filters);
     return { staff, total, page: input.page, limit: input.limit };
   }
 }

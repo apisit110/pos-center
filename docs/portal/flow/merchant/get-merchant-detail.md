@@ -32,7 +32,6 @@ response body (fields below are the value of `data`, wrapped in [Ok](../../../ap
 | ------------------------- | ----------- | ------------------------------------------------------------ |
 | uid                       | string      | merchant uid                                                 |
 | partner_id                | string      | partner id (unique)                                          |
-| mid                       | string/null | merchant id (unique, from `merchant_profile`, null if no profile) |
 | name_en                   | string      | merchant name (English)                                      |
 | name_th                   | string      | merchant name (Thai)                                         |
 | created_at                | string      | created time (ISO 8601 UTC)                                  |
@@ -52,7 +51,6 @@ example response body:
   "data": {
     "uid": "string",
     "partner_id": "string",
-    "mid": "string",
     "name_en": "string",
     "name_th": "string",
     "created_at": "2026-01-01T00:00:00.000Z",
@@ -90,8 +88,8 @@ Logic:
   - if role is not `PRODUCT_OWNER`
     - Find merchant uid of the staff by uid in access token
     - if not found or not equal to path `id`, throw [ServiceError.ErrForbidden](../../../apiresponse/ServiceError.ts)
-- Find merchant by uid (path `id`) with `merchant_profile` (left join) and `merchant_credential` (provider, client_id, created_at, updated_at only, never select `client_secret`)
+- Find merchant by uid (path `id`) with `merchant_credential` (provider, client_id, created_at, updated_at only, never select `client_secret`)
   - if not found, throw [ServiceError.ErrMerchantNotFound](../../../apiresponse/ServiceError.ts)
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response merchant follow these items (uid, partner_id, mid, name_en, name_th, created_at, updated_at, credentials)
+- response merchant follow these items (uid, partner_id, name_en, name_th, created_at, updated_at, credentials)

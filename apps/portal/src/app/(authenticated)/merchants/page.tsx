@@ -53,11 +53,11 @@ const SearchCell = styled.div`
 `;
 
 interface MerchantFilter {
-  mid: string;
+  partnerId: string;
   name: string;
 }
 
-const EMPTY_FILTERS: MerchantFilter = { mid: '', name: '' };
+const EMPTY_FILTERS: MerchantFilter = { partnerId: '', name: '' };
 
 export default function MerchantsPage() {
   const router = useRouter();
@@ -108,8 +108,9 @@ export default function MerchantsPage() {
   };
 
   const columns = [
-    { header: t.merchantList.columnMid, key: 'mid', width: '200px' },
-    { header: t.merchantList.columnName, key: 'name' },
+    { header: t.merchantList.columnPartnerId, key: 'partnerId', width: '200px' },
+    { header: t.merchantList.columnNameEn, key: 'nameEn' },
+    { header: t.merchantList.columnNameTh, key: 'nameTh' },
   ];
 
   if (loading && merchants.length === 0) return <div>{t.common.loading}</div>;
@@ -123,10 +124,10 @@ export default function MerchantsPage() {
 
       <FilterBar style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}>
         <TextFilter
-          label={t.merchantList.mid}
-          placeholder={t.merchantList.midPlaceholder}
-          value={filters.mid}
-          onChange={(value) => setFilters({ ...filters, mid: value })}
+          label={t.merchantList.partnerId}
+          placeholder={t.merchantList.partnerIdPlaceholder}
+          value={filters.partnerId}
+          onChange={(value) => setFilters({ ...filters, partnerId: value })}
         />
         <TextFilter
           label={t.merchantList.name}

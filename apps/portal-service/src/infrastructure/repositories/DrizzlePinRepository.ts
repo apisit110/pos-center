@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import { randomUUID } from 'crypto';
 import { db, pins } from '@pos-center/database';
 import { and, eq, sql } from 'drizzle-orm';
 import { IPinRepository, PinRecord, PinResult } from '../../domain/repositories/IPinRepository';
@@ -27,7 +28,7 @@ export class DrizzlePinRepository implements IPinRepository {
       pinLockedUntil: pins.pinLockedUntil,
       createdAt: pins.createdAt,
     }).from(pins).where(this.byAppAndUsername(appId, username)).limit(1);
-    return rows[0] ?? null;
+    return rows[0] ? { ...rows[0], pinFailedAttempts: rows[0].pinFailedAttempts ?? 0 } : null;
   }
 
   async createPin(appId: string, username: string, pin: string): Promise<PinResult> {
@@ -38,7 +39,7 @@ export class DrizzlePinRepository implements IPinRepository {
 
     const pinHash = await bcrypt.hash(pin, PIN_BCRYPT_COST);
     try {
-      await db.insert(pins).values({ appId, username, pinHash });
+      await db.insert(pins).values({ uuid: randomUUID(), appId, username, pinHash });
     } catch (error) {
       if ((error as { code?: string }).code === UNIQUE_VIOLATION) {
         return failed(PinErrorMessage.PIN_ALREADY_EXISTS);
@@ -73,11 +74,11 @@ export class DrizzlePinRepository implements IPinRepository {
     }
 
     const [updated] = await db.update(pins)
-      .set({ pinFailedAttempts: sql`${pins.pinFailedAttempts} + 1`, updatedAt: new Date() })
+      .set({ pinFailedAttempts: sql`COALESCE(${pins.pinFailedAttempts}, 0) + 1`, updatedAt: new Date() })
       .where(this.byAppAndUsername(appId, username))
       .returning({ pinFailedAttempts: pins.pinFailedAttempts });
 
-    if (updated && updated.pinFailedAttempts >= PIN_MAX_FAILED_ATTEMPTS) {
+    if (updated && (updated.pinFailedAttempts ?? 0) >= PIN_MAX_FAILED_ATTEMPTS) {
       await db.update(pins)
         .set({ pinLockedUntil: addMillisecondsFromNow(PIN_LOCK_DURATION_MS), updatedAt: new Date() })
         .where(this.byAppAndUsername(appId, username));

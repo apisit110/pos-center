@@ -24,7 +24,7 @@ const LOGGER = pino({
   base: null
 })
 
-const SENSITIVE_KEYS = ['access_token', 'refresh_token', 'api_key', 'password', 'pinHash']
+const SENSITIVE_KEYS = ['access_token', 'refresh_token', 'api_key', 'password', 'pinHash', 'pin_hash', 'x-client-secret', 'authorization']
 
 const maskSensitiveData = (data: any): any => {
   if (data == null) return data

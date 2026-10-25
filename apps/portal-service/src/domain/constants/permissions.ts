@@ -1,6 +1,8 @@
 export const PERMISSION_MERCHANTS_VIEW = 'merchants:view';
 export const PERMISSION_MERCHANTS_CREATE = 'merchants:create';
 export const PERMISSION_MERCHANT_DETAIL_VIEW = 'merchant_detail:view';
+export const PERMISSION_MERCHANT_CREDENTIALS_CREATE = 'merchant_credentials:create';
+export const PERMISSION_MERCHANT_CREDENTIALS_ROTATE = 'merchant_credentials:rotate';
 export const PERMISSION_STORES_VIEW = 'stores:view';
 export const PERMISSION_STORE_DETAIL_VIEW = 'store_detail:view';
 export const PERMISSION_TERMINALS_VIEW = 'terminals:view';

@@ -8,7 +8,10 @@ import { sql } from 'drizzle-orm';
 export async function resetSequences() {
   console.log('🔄 Resetting sequences...');
 
-  await db.execute(sql`SELECT setval('merchants_id_seq', COALESCE((SELECT MAX(id) FROM merchants), 1), (SELECT MAX(id) IS NOT NULL FROM merchants))`);
-  await db.execute(sql`SELECT setval('stores_id_seq', COALESCE((SELECT MAX(id) FROM stores), 1), (SELECT MAX(id) IS NOT NULL FROM stores))`);
-  await db.execute(sql`SELECT setval('products_id_seq', COALESCE((SELECT MAX(id) FROM products), 1), (SELECT MAX(id) IS NOT NULL FROM products))`);
+  await db.execute(sql`SELECT setval('merchant_id_seq', COALESCE((SELECT MAX(id) FROM merchant), 1), (SELECT MAX(id) IS NOT NULL FROM merchant))`);
+  await db.execute(sql`SELECT setval('store_id_seq', COALESCE((SELECT MAX(id) FROM store), 1), (SELECT MAX(id) IS NOT NULL FROM store))`);
+  await db.execute(sql`SELECT setval('product_id_seq', COALESCE((SELECT MAX(id) FROM product), 1), (SELECT MAX(id) IS NOT NULL FROM product))`);
+  await db.execute(sql`SELECT setval('master_provinces_id_seq', COALESCE((SELECT MAX(id) FROM master_provinces), 1), (SELECT MAX(id) IS NOT NULL FROM master_provinces))`);
+  await db.execute(sql`SELECT setval('master_districts_id_seq', COALESCE((SELECT MAX(id) FROM master_districts), 1), (SELECT MAX(id) IS NOT NULL FROM master_districts))`);
+  await db.execute(sql`SELECT setval('master_sub_districts_id_seq', COALESCE((SELECT MAX(id) FROM master_sub_districts), 1), (SELECT MAX(id) IS NOT NULL FROM master_sub_districts))`);
 }

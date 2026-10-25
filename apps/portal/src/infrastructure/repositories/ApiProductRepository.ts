@@ -1,4 +1,4 @@
-import { Product } from '../../domain/entities/Product';
+import { Brand, Product } from '../../domain/entities/Product';
 import { ProductRepository, ProductFilter, CreateProductRequest } from '../../domain/repositories/ProductRepository';
 import ApiClient, { API_V1, cleanParams, unwrap } from '../api/ApiClient';
 
@@ -6,48 +6,59 @@ const PRODUCTS_PATH = `${API_V1}/products`;
 // max items per batch request (see docs/portal/flow/product/post-products-batch.md)
 const BATCH_CHUNK_SIZE = 1000;
 
+interface BrandResponse {
+  uid: string;
+  name_en: string;
+  name_th: string;
+}
+
 interface ProductResponse {
   uid: string;
   merchant_uid: string;
-  mid: string;
-  name: string;
+  partner_id: string;
+  name_en: string;
+  name_th: string;
   sku: string;
   barcode: string;
   base_price: number;
-  image_url: string[];
-  brand: string;
+  image_url: string;
+  brand: BrandResponse | null;
   unit_name: string;
 }
 
 interface BatchProductError {
   index: number;
-  name: string;
+  name_en: string;
   message: string;
 }
+
+const toBrand = (b: BrandResponse): Brand => ({ uid: b.uid, nameEn: b.name_en, nameTh: b.name_th });
 
 const toProduct = (p: ProductResponse): Product =>
   new Product(
     p.uid,
     p.merchant_uid,
-    p.mid,
-    p.name,
+    p.partner_id,
+    p.name_en,
+    p.name_th,
     p.sku,
     p.barcode,
     Number(p.base_price),
-    p.image_url,
-    p.brand,
+    p.image_url ?? '',
+    p.brand ? toBrand(p.brand) : null,
     p.unit_name,
   );
 
 const toProductBody = (r: CreateProductRequest) => ({
   uid: r.uid,
   merchant_uid: r.merchantId,
-  name: r.name,
+  name_en: r.nameEn,
+  name_th: r.nameTh,
   barcode: r.barcode,
   base_price: r.basePrice,
-  image_url: r.imageUrl,
-  brand: r.brand,
-  unit_name: r.unitName,
+  image_url: r.imageUrl || undefined,
+  brand_uid: r.brandUid || undefined,
+  unit_name: r.unitName || undefined,
 });
 
 export class ApiProductRepository implements ProductRepository {
@@ -81,9 +92,10 @@ export class ApiProductRepository implements ProductRepository {
     }
   }
 
-  public async getFilterMetadata(): Promise<{ brands: string[], units: string[] }> {
+  public async getFilterMetadata(): Promise<{ brands: Brand[], units: string[] }> {
     const response = await ApiClient.get(`${PRODUCTS_PATH}/metadata`);
-    return unwrap<{ brands: string[]; units: string[] }>(response);
+    const { brands, units } = unwrap<{ brands: BrandResponse[]; units: string[] }>(response);
+    return { brands: brands.map(toBrand), units };
   }
 
   public async createProduct(request: CreateProductRequest): Promise<Product> {
@@ -107,7 +119,7 @@ export class ApiProductRepository implements ProductRepository {
       totalCreated += created;
       for (const e of errors ?? []) {
         // `index` is relative to the chunk; report the row number in the whole import (1-based)
-        allErrors.push(`Row ${offset + e.index + 1} (${e.name}): ${e.message}`);
+        allErrors.push(`Row ${offset + e.index + 1} (${e.name_en}): ${e.message}`);
       }
       onProgress?.(Math.min(offset + BATCH_CHUNK_SIZE, requests.length), requests.length);
     }

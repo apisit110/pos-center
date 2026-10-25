@@ -9,13 +9,22 @@ import { ApiStaffRepository } from '../../../../infrastructure/repositories/ApiS
 import { GetMerchantUseCase } from '../../../../domain/usecases/GetMerchantUseCase';
 import { GetStoresUseCase } from '../../../../domain/usecases/GetStoresUseCase';
 import { GetStaffByMerchantUseCase } from '../../../../domain/usecases/GetStaffByMerchantUseCase';
-import { Merchant } from '../../../../domain/entities/Merchant';
-import { Store } from '../../../../domain/entities/Store';
+import { CreateMerchantCredentialUseCase } from '../../../../domain/usecases/CreateMerchantCredentialUseCase';
+import { RotateMerchantCredentialUseCase } from '../../../../domain/usecases/RotateMerchantCredentialUseCase';
+import {
+  IssuedMerchantCredential,
+  Merchant,
+  MERCHANT_CREDENTIAL_PROVIDERS,
+  MerchantCredential,
+  MerchantCredentialProvider,
+} from '../../../../domain/entities/Merchant';
+import { Store, formatStoreAddress } from '../../../../domain/entities/Store';
 import { Staff } from '../../../../domain/entities/Staff';
 import { DataTable, Button } from '@apisit110/pos-ui';
 import { useTranslation } from '../../../../presentation/i18n/LanguageContext';
+import { formatDateTime } from '../../../../lib/dayjs';
 
-import { FiArrowLeft, FiGrid, FiHash, FiInfo, FiUsers } from 'react-icons/fi';
+import { FiAlertTriangle, FiArrowLeft, FiCopy, FiGrid, FiHash, FiInfo, FiKey, FiPlus, FiRefreshCw, FiUsers } from 'react-icons/fi';
 
 const PageContainer = styled.div`
   display: flex;
@@ -79,6 +88,7 @@ const CardHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 2rem;
 `;
 
@@ -90,6 +100,7 @@ const CardTitle = styled.h2`
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  white-space: nowrap;
 `;
 
 const InfoGrid = styled.div`
@@ -150,15 +161,68 @@ const Badge = styled.span`
   font-weight: 600;
 `;
 
+const SecretPanel = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+`;
+
+const SecretWarning = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #f59e0b;
+  font-weight: 600;
+  font-size: 0.875rem;
+`;
+
+const SecretRow = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+`;
+
+const SecretValueRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const SecretValue = styled.code`
+  flex: 1;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: rgba(15, 23, 42, 0.6);
+  color: var(--text-main);
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+`;
+
+const ErrorText = styled.div`
+  margin-bottom: 1rem;
+  color: #ef4444;
+  font-size: 0.875rem;
+`;
+
 export default function MerchantDetailPage() {
   const params = useParams();
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [merchant, setMerchant] = useState<Merchant | null>(null);
   const [stores, setStores] = useState<Store[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<'forbidden' | 'notFound' | null>(null);
+  const [issued, setIssued] = useState<IssuedMerchantCredential | null>(null);
+  const [credentialBusy, setCredentialBusy] = useState(false);
+  const [credentialError, setCredentialError] = useState<string | null>(null);
+  const [copiedField, setCopiedField] = useState<'clientId' | 'clientSecret' | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -198,8 +262,84 @@ export default function MerchantDetailPage() {
 
   const storeColumns = [
     { header: t.merchantDetail.columnSid, key: 'sid', width: '150px' },
-    { header: t.merchantDetail.columnStoreName, key: 'name' },
-    { header: t.merchantDetail.columnAddress, key: 'address' },
+    { header: t.merchantDetail.columnStoreName, key: 'name', render: (s: Store) => s.displayName(language) },
+    {
+      header: t.merchantDetail.columnAddress,
+      key: 'address',
+      render: (s: Store) => formatStoreAddress(s.registeredAddress, language) || '-',
+    },
+  ];
+
+  const issueCredential = async (action: 'create' | 'rotate', provider: MerchantCredentialProvider) => {
+    if (!merchant) return;
+    if (action === 'rotate' && !window.confirm(t.merchantDetail.rotateConfirm)) return;
+
+    setCredentialBusy(true);
+    setCredentialError(null);
+    setIssued(null);
+    const merchantRepo = new ApiMerchantRepository();
+    try {
+      const useCase = action === 'create'
+        ? new CreateMerchantCredentialUseCase(merchantRepo)
+        : new RotateMerchantCredentialUseCase(merchantRepo);
+      setIssued(await useCase.execute(merchant.uid, provider));
+      // reload to show the new created / rotated time
+      const refreshed = await new GetMerchantUseCase(merchantRepo).execute(merchant.uid);
+      if (refreshed) setMerchant(refreshed);
+    } catch (err) {
+      setCredentialError((err instanceof Error && err.message) || t.merchantDetail.credentialFailed);
+    } finally {
+      setCredentialBusy(false);
+    }
+  };
+
+  const copyToClipboard = async (field: 'clientId' | 'clientSecret', value: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedField(field);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch {
+      // clipboard not available (e.g. not https), the value is still shown to copy by hand
+    }
+  };
+
+  const missingProvider = MERCHANT_CREDENTIAL_PROVIDERS.find(
+    (provider) => !merchant?.credentials.some((c) => c.provider === provider),
+  );
+
+  const credentialColumns = [
+    { header: t.merchantDetail.columnProvider, key: 'provider', width: '160px' },
+    {
+      header: t.merchantDetail.columnClientId,
+      key: 'clientId',
+      render: (c: MerchantCredential) => <span style={{ fontFamily: 'monospace' }}>{c.clientId}</span>,
+    },
+    {
+      header: t.merchantDetail.columnCreatedAt,
+      key: 'createdAt',
+      width: '200px',
+      render: (c: MerchantCredential) => formatDateTime(c.createdAt),
+    },
+    {
+      header: t.merchantDetail.columnLastRotatedAt,
+      key: 'updatedAt',
+      width: '200px',
+      render: (c: MerchantCredential) => formatDateTime(c.updatedAt),
+    },
+    {
+      header: '',
+      key: 'actions',
+      width: '140px',
+      render: (c: MerchantCredential) => (
+        <Button
+          variant="secondary"
+          disabled={credentialBusy}
+          onClick={() => issueCredential('rotate', c.provider as MerchantCredentialProvider)}
+        >
+          <FiRefreshCw /> {t.merchantDetail.rotateSecret}
+        </Button>
+      ),
+    },
   ];
 
   const staffColumns = [
@@ -230,7 +370,7 @@ export default function MerchantDetailPage() {
           </Button>
           <TitleContainer>
             <Subtitle>{t.merchantDetail.subtitle}</Subtitle>
-            <Title>{merchant.name}</Title>
+            <Title>{merchant.displayName(language)}</Title>
           </TitleContainer>
         </HeaderLeft>
       </Header>
@@ -248,8 +388,8 @@ export default function MerchantDetailPage() {
                 <FiHash />
               </IconWrapper>
               <InfoContent>
-                <Label>{t.merchantDetail.mid}</Label>
-                <Value>{merchant.mid}</Value>
+                <Label>{t.merchantDetail.partnerId}</Label>
+                <Value>{merchant.partnerId}</Value>
               </InfoContent>
             </InfoItem>
             <InfoItem>
@@ -262,6 +402,62 @@ export default function MerchantDetailPage() {
               </InfoContent>
             </InfoItem>
           </InfoGrid>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <FiKey /> {t.merchantDetail.credentials}
+              <Badge>{merchant.credentials.length}</Badge>
+            </CardTitle>
+            {missingProvider && (
+              <Button
+                style={{ width: 'auto', flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap' }}
+                isLoading={credentialBusy}
+                disabled={credentialBusy}
+                onClick={() => issueCredential('create', missingProvider)}
+              >
+                <FiPlus /> {t.merchantDetail.createCredential}
+              </Button>
+            )}
+          </CardHeader>
+          {credentialError && <ErrorText>{credentialError}</ErrorText>}
+          {issued && (
+            <SecretPanel>
+              <SecretWarning>
+                <FiAlertTriangle /> {t.merchantDetail.secretShownOnce}
+              </SecretWarning>
+              <SecretRow>
+                <Label>{t.merchantDetail.columnClientId} ({issued.provider})</Label>
+                <SecretValueRow>
+                  <SecretValue>{issued.clientId}</SecretValue>
+                  <Button variant="secondary" onClick={() => copyToClipboard('clientId', issued.clientId)}>
+                    <FiCopy /> {copiedField === 'clientId' ? t.merchantDetail.copied : t.merchantDetail.copy}
+                  </Button>
+                </SecretValueRow>
+              </SecretRow>
+              <SecretRow>
+                <Label>{t.merchantDetail.clientSecret}</Label>
+                <SecretValueRow>
+                  <SecretValue>{issued.clientSecret}</SecretValue>
+                  <Button variant="secondary" onClick={() => copyToClipboard('clientSecret', issued.clientSecret)}>
+                    <FiCopy /> {copiedField === 'clientSecret' ? t.merchantDetail.copied : t.merchantDetail.copy}
+                  </Button>
+                </SecretValueRow>
+              </SecretRow>
+              <div>
+                <Button variant="secondary" onClick={() => setIssued(null)}>
+                  {t.merchantDetail.secretSaved}
+                </Button>
+              </div>
+            </SecretPanel>
+          )}
+          <DataTable
+            columns={credentialColumns}
+            data={merchant.credentials}
+            rowKey="clientId"
+            emptyMessage={t.merchantDetail.noCredentials}
+          />
         </Card>
 
         <Card>
