@@ -24,7 +24,7 @@ import { DataTable, Button } from '@apisit110/pos-ui';
 import { useTranslation } from '../../../../presentation/i18n/LanguageContext';
 import { formatDateTime } from '../../../../lib/dayjs';
 
-import { FiAlertTriangle, FiArrowLeft, FiCopy, FiGrid, FiHash, FiInfo, FiKey, FiPlus, FiRefreshCw, FiUsers } from 'react-icons/fi';
+import { FiAlertTriangle, FiArrowLeft, FiCheck, FiCopy, FiGrid, FiHash, FiInfo, FiKey, FiPlus, FiUsers } from 'react-icons/fi';
 
 const PageContainer = styled.div`
   display: flex;
@@ -184,24 +184,63 @@ const SecretWarning = styled.div`
 const SecretRow = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.5rem;
 `;
 
-const SecretValueRow = styled.div`
+const ProviderTag = styled.span`
+  margin-left: 0.5rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+`;
+
+const SecretField = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  padding: 0.5rem 0.5rem 0.5rem 1rem;
+  border-radius: 0.75rem;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 `;
 
 const SecretValue = styled.code`
   flex: 1;
   min-width: 0;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.5rem;
-  background: rgba(15, 23, 42, 0.6);
   color: var(--text-main);
+  font-family: monospace;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  word-break: break-all;
+`;
+
+const CopyButton = styled.button<{ $copied: boolean }>`
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border-radius: 0.375rem;
+  border: 1px solid ${props => (props.$copied ? 'rgba(16, 185, 129, 0.5)' : 'rgba(255, 255, 255, 0.12)')};
+  background: ${props => (props.$copied ? 'rgba(16, 185, 129, 0.15)' : 'rgba(255, 255, 255, 0.05)')};
+  color: ${props => (props.$copied ? '#10b981' : 'var(--text-main)')};
   font-size: 0.875rem;
-  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: ${props => (props.$copied ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 255, 255, 0.1)')};
+  }
+`;
+
+const SecretActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
 `;
 
 const ErrorText = styled.div`
@@ -336,7 +375,7 @@ export default function MerchantDetailPage() {
           disabled={credentialBusy}
           onClick={() => issueCredential('rotate', c.provider as MerchantCredentialProvider)}
         >
-          <FiRefreshCw /> {t.merchantDetail.rotateSecret}
+          {t.merchantDetail.rotateSecret}
         </Button>
       ),
     },
@@ -427,29 +466,34 @@ export default function MerchantDetailPage() {
               <SecretWarning>
                 <FiAlertTriangle /> {t.merchantDetail.secretShownOnce}
               </SecretWarning>
-              <SecretRow>
-                <Label>{t.merchantDetail.columnClientId} ({issued.provider})</Label>
-                <SecretValueRow>
-                  <SecretValue>{issued.clientId}</SecretValue>
-                  <Button variant="secondary" onClick={() => copyToClipboard('clientId', issued.clientId)}>
-                    <FiCopy /> {copiedField === 'clientId' ? t.merchantDetail.copied : t.merchantDetail.copy}
-                  </Button>
-                </SecretValueRow>
-              </SecretRow>
-              <SecretRow>
-                <Label>{t.merchantDetail.clientSecret}</Label>
-                <SecretValueRow>
-                  <SecretValue>{issued.clientSecret}</SecretValue>
-                  <Button variant="secondary" onClick={() => copyToClipboard('clientSecret', issued.clientSecret)}>
-                    <FiCopy /> {copiedField === 'clientSecret' ? t.merchantDetail.copied : t.merchantDetail.copy}
-                  </Button>
-                </SecretValueRow>
-              </SecretRow>
-              <div>
-                <Button variant="secondary" onClick={() => setIssued(null)}>
+              {([
+                { field: 'clientId', label: t.merchantDetail.columnClientId, value: issued.clientId },
+                { field: 'clientSecret', label: t.merchantDetail.clientSecret, value: issued.clientSecret },
+              ] as const).map(({ field, label, value }) => (
+                <SecretRow key={field}>
+                  <Label>
+                    {label}
+                    {field === 'clientId' && <ProviderTag>{issued.provider}</ProviderTag>}
+                  </Label>
+                  <SecretField>
+                    <SecretValue>{value}</SecretValue>
+                    <CopyButton
+                      type="button"
+                      $copied={copiedField === field}
+                      title={copiedField === field ? t.merchantDetail.copied : t.merchantDetail.copy}
+                      aria-label={t.merchantDetail.copy}
+                      onClick={() => copyToClipboard(field, value)}
+                    >
+                      {copiedField === field ? <FiCheck /> : <FiCopy />}
+                    </CopyButton>
+                  </SecretField>
+                </SecretRow>
+              ))}
+              <SecretActions>
+                <Button variant="secondary" style={{ width: 'auto' }} onClick={() => setIssued(null)}>
                   {t.merchantDetail.secretSaved}
                 </Button>
-              </div>
+              </SecretActions>
             </SecretPanel>
           )}
           <DataTable
