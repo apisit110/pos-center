@@ -17,4 +17,6 @@ export const cashierStaff = pgTable('cashier_staff', {
   updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
 }, (table) => ({
   usernameIdx: index('cashier_staff_username_idx').on(table.username),
+  // pull cashier-profile and pull state, staffs of a merchant
+  merchantIdIdx: index('cashier_staff_merchant_id_idx').on(table.merchantId),
 }));

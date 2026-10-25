@@ -1,7 +1,8 @@
-import { CashierProfile } from '../../../domain/entities/CashierProfile';
+import { PullCashierProfileResponse } from '../../../application/dtos/PullCashierProfileDto';
 
 export interface PullCashierProfileResponseDto {
   message: string;
+  profile_version: string;
   merchant: {
     uid: string;
     partner_id: string;
@@ -31,8 +32,12 @@ export interface PullCashierProfileResponseDto {
   }[];
 }
 
-export const buildPullCashierProfileResponse = ({ merchant, store, terminal, staffs }: CashierProfile): PullCashierProfileResponseDto => ({
+export const buildPullCashierProfileResponse = ({
+  profile: { merchant, store, terminal, staffs },
+  profileVersion,
+}: PullCashierProfileResponse): PullCashierProfileResponseDto => ({
   message: 'Sync completed successfully',
+  profile_version: profileVersion,
   merchant: {
     uid: merchant.uid,
     partner_id: merchant.partnerId,

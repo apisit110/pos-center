@@ -147,6 +147,35 @@ paths:
           $ref: '#/components/responses/InternalServerError'
 
   # ---------------------------------------------------------------- Pull
+  /api/v1/sync/pull/state:
+    post:
+      tags: [Pull]
+      summary: Pull sync state (versions)
+      description: |
+        Cheap check before pull products / pull cashier-profile, call it on login and after a sale.
+        The client pulls products when `productVersion` > its last `syncVersion`, and the cashier profile
+        when `profileVersion` != its last `profile_version`. The same versions are returned as `syncState`
+        in the push responses. No request body.
+      parameters:
+        - $ref: '#/components/parameters/CorrelationId'
+      responses:
+        '200':
+          description: Current versions
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - type: object
+                    properties:
+                      message:
+                        type: string
+                        example: Sync completed successfully
+                  - $ref: '#/components/schemas/SyncState'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
   /api/v1/sync/pull/cashier-profile:
     post:
       tags: [Pull]
@@ -168,6 +197,10 @@ paths:
                   message:
                     type: string
                     example: Sync completed successfully
+                  profile_version:
+                    type: string
+                    description: Version of this profile, compare with `profileVersion` of pull state
+                    example: 8b06e33cda24719c5e0a5d417505821b
                   merchant:
                     type: object
                     properties:
@@ -404,6 +437,8 @@ paths:
                         error:
                           type: string
                           description: Only when `status` is `error`
+                  syncState:
+                    $ref: '#/components/schemas/SyncState'
         '400':
           $ref: '#/components/responses/ValidationFailed'
         '401':
@@ -519,6 +554,8 @@ paths:
                           example: '1'
                         status:
                           $ref: '#/components/schemas/SyncResultStatus'
+                  syncState:
+                    $ref: '#/components/schemas/SyncState'
         '400':
           $ref: '#/components/responses/ValidationFailed'
         '401':
@@ -618,6 +655,8 @@ paths:
                           description: Transaction id in POS center, empty string when `status` is `error`
                         status:
                           $ref: '#/components/schemas/SyncResultStatus'
+                  syncState:
+                    $ref: '#/components/schemas/SyncState'
         '400':
           $ref: '#/components/responses/ValidationFailed'
         '401':
@@ -728,6 +767,19 @@ components:
                 type: string
         request_id:
           type: string
+
+    SyncState:
+      type: object
+      description: Current versions, see pull state. Left out of a push response when the lookup failed (the push is still saved)
+      properties:
+        productVersion:
+          type: integer
+          description: Max `map_store_product.sync_version` of the store, 0 if the store has no products
+          example: 40
+        profileVersion:
+          type: string
+          description: Version (md5 fingerprint) of the cashier profile
+          example: 8b06e33cda24719c5e0a5d417505821b
 
     SyncResultStatus:
       type: string

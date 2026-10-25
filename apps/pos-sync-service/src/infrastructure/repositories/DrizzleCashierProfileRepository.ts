@@ -24,7 +24,7 @@ import {
 } from '../../domain/repositories/ICashierProfileRepository';
 
 // docs/portal/erdiagram/pin.md: APP0001 = cashier
-const CASHIER_APP_ID = 'APP0001';
+export const CASHIER_APP_ID = 'APP0001';
 
 export class DrizzleCashierProfileRepository implements ICashierProfileRepository {
   async findMerchantByPartnerId(partnerId: string): Promise<Merchant | null> {

@@ -1,11 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
 import { SyncOrdersFromClientUseCase } from '../../application/usecases/SyncOrdersFromClientUseCase';
+import { GetSyncStateUseCase } from '../../application/usecases/GetSyncStateUseCase';
 import { syncOrderRequestSchema } from '../dtos/request/SyncOrderRequestDto';
 import { buildSyncOrdersResponse } from '../dtos/response/SyncOrdersResponseDto';
+import { buildPushSyncState } from '../dtos/response/SyncStateResponseDto';
 import { assertTokenScope } from '../middleware/SyncTokenMiddleware';
 
 export class OrderSyncController {
-  constructor(private readonly syncOrdersFromClientUseCase: SyncOrdersFromClientUseCase) {}
+  constructor(
+    private readonly syncOrdersFromClientUseCase: SyncOrdersFromClientUseCase,
+    private readonly getSyncStateUseCase: GetSyncStateUseCase
+  ) {}
 
   async sync(req: Request, res: Response, next: NextFunction) {
     try {
@@ -20,7 +25,9 @@ export class OrderSyncController {
 
       const result = await this.syncOrdersFromClientUseCase.execute({ orders });
 
-      return res.status(200).json(buildSyncOrdersResponse(result));
+      const syncState = await this.getSyncStateUseCase.executeOrNull(req.syncAuth);
+
+      return res.status(200).json({ ...buildSyncOrdersResponse(result), ...buildPushSyncState(syncState) });
     } catch (error) {
       next(error);
     }

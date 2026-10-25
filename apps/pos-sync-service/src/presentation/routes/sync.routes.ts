@@ -4,6 +4,7 @@ import { OrderSyncController } from '../controllers/OrderSyncController';
 import { TransactionSyncController } from '../controllers/TransactionSyncController';
 import { CashierProfileSyncController } from '../controllers/CashierProfileSyncController';
 import { SyncAuthController } from '../controllers/SyncAuthController';
+import { SyncStateController } from '../controllers/SyncStateController';
 
 export const createSyncRouter = (
   productSyncController: ProductSyncController,
@@ -11,6 +12,7 @@ export const createSyncRouter = (
   transactionSyncController: TransactionSyncController,
   cashierProfileSyncController: CashierProfileSyncController,
   syncAuthController: SyncAuthController,
+  syncStateController: SyncStateController,
   syncTokenMiddleware: RequestHandler
 ): Router => {
   const router = Router();
@@ -20,6 +22,9 @@ export const createSyncRouter = (
 
   // every other sync api requires the access token, sets req.syncAuth
   const auth = syncTokenMiddleware;
+
+  // cheap check before the pulls: the client pulls products / cashier-profile only when their version changed
+  router.post('/api/v1/sync/pull/state', auth, (req, res, next) => syncStateController.pull(req, res, next));
 
   router.post('/api/v1/sync/pull/cashier-profile', auth, (req, res, next) => cashierProfileSyncController.pull(req, res, next));
 

@@ -31,6 +31,7 @@ response body:
 | key                  | type   | description                                              |
 | -------------------- | ------ | -------------------------------------------------------- |
 | message              | string | `Sync completed successfully`                            |
+| profile_version      | string | version of this profile, the client keeps it and compares with `profileVersion` of [pull state](./pull-state.md) |
 | merchant             | object | merchant of the credential                               |
 | merchant.uid         | string | merchant `uid`                                           |
 | merchant.partner_id  | string | merchant `partner_id`                                    |
@@ -60,6 +61,7 @@ example response body:
 ```json
 {
   "message": "Sync completed successfully",
+  "profile_version": "8b06e33cda24719c5e0a5d417505821b",
   "merchant": {
     "uid": "string",
     "partner_id": "0001",
@@ -103,6 +105,8 @@ error response:
 Logic:
 
 - Verify access token, see [authentication](./authentication.md) (401 `Invalid token` / `Token expired`), the terminal is `req.syncAuth`
+- Find profile version, see [pull state](./pull-state.md)
+  - before reading the profile, so a change in between makes the client pull again, never miss it
 - Find merchant
   - find `merchant` by `partner_id` = `req.syncAuth.partnerId`
 - Find terminal and store
@@ -121,7 +125,7 @@ Logic:
   - find `pin` by `app_id` = `APP0001` AND `username` in staffs `username`
   - map `pin_hash` to staff by `username`, the client uses `pin_hash` to verify pin when offline
 - DTO Response
-- response http status 200 with `message`, `merchant`, `store`, `terminal` and `staffs`
+- response http status 200 with `message`, `profile_version`, `merchant`, `store`, `terminal` and `staffs`
   - `full_name` is empty string if not set
   - `roles` is empty array if staff has no role
   - `pin_hash` is empty string if staff has no pin

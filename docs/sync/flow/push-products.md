@@ -64,6 +64,9 @@ response body:
 | results[].id      | string | product `uid` from request                                  |
 | results[].status  | string | `synced` (new in the store), `already_synced` (already in the store, updated), `error` |
 | results[].error   | string | error message, only when `status` is `error`                |
+| syncState               | object | current versions, see [pull state](./pull-state.md); left out if the lookup failed (the push is still saved) |
+| syncState.productVersion | number | max `map_store_product.sync_version` of the store |
+| syncState.profileVersion | string | version of the cashier profile |
 
 example response body:
 
@@ -75,7 +78,11 @@ example response body:
       "id": "PRD-0001",
       "status": "synced"
     }
-  ]
+  ],
+  "syncState": {
+    "productVersion": 40,
+    "profileVersion": "8b06e33cda24719c5e0a5d417505821b"
+  }
 }
 ```
 
@@ -132,5 +139,7 @@ Logic:
     - if found, update `map_store_product` (price = `basePrice`, sync_version, updated_at = now) and push result `already_synced`
     - if not found, insert `map_store_product` (store_id, product_id, price = `basePrice`, stock = 0, sync_version) and push result `synced`
   - if any error, log error and push result `error` with `error` message
+- Find sync state, see [pull state](./pull-state.md), of `req.syncAuth`, after the products are saved (`productVersion` includes them)
+  - if it fails, log error and leave out `syncState`
 - DTO Response
-- response http status 200 with `message` and `results`
+- response http status 200 with `message`, `results` and `syncState`

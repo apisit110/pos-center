@@ -68,6 +68,9 @@ response body:
 | results[].transactionId       | string | transaction uid (currently = `order_id` from request)             |
 | results[].globalTransactionId | string | transaction id in pos center, empty string if `status` is `error` |
 | results[].status              | string | `synced`, `already_synced`, `error`                               |
+| syncState               | object | current versions, see [pull state](./pull-state.md); left out if the lookup failed (the push is still saved) |
+| syncState.productVersion | number | max `map_store_product.sync_version` of the store |
+| syncState.profileVersion | string | version of the cashier profile |
 
 example response body:
 
@@ -80,7 +83,11 @@ example response body:
       "globalTransactionId": "string",
       "status": "synced"
     }
-  ]
+  ],
+  "syncState": {
+    "productVersion": 40,
+    "profileVersion": "8b06e33cda24719c5e0a5d417505821b"
+  }
 }
 ```
 
@@ -143,5 +150,7 @@ Logic:
   - Insert `transactions` (uid, order_id = `order_id` (client order id), merchant_id = merchant id, store_id = store id, terminal_id = terminal id, amount, payment_method, status, staff_name, created_at), `id` is auto increment
   - push result `synced` with `globalTransactionId` = saved transaction id
   - if any error, log error and push result `error` with `globalTransactionId` = empty string
+- Find sync state, see [pull state](./pull-state.md), of `req.syncAuth`
+  - if it fails, log error and leave out `syncState`
 - DTO Response
-- response http status 200 with `message` and `results`
+- response http status 200 with `message`, `results` and `syncState`

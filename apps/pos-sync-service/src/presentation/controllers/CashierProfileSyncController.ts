@@ -10,9 +10,9 @@ export class CashierProfileSyncController {
       console.log(`[pos-sync-service] Pulling cashier profile for partner: ${req.syncAuth.partnerId}, terminal: ${req.syncAuth.tid}`);
 
       const { partnerId, tid } = req.syncAuth;
-      const profile = await this.pullCashierProfileUseCase.execute({ partnerId, tid });
+      const result = await this.pullCashierProfileUseCase.execute({ partnerId, tid });
 
-      return res.status(200).json(buildPullCashierProfileResponse(profile));
+      return res.status(200).json(buildPullCashierProfileResponse(result));
     } catch (error) {
       next(error);
     }
