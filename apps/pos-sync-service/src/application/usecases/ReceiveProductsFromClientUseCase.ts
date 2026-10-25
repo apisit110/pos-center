@@ -4,8 +4,8 @@ import { ReceiveProductsFromClientRequest, ReceiveProductsFromClientResponse } f
 export class ReceiveProductsFromClientUseCase {
   constructor(private readonly productRepository: IProductRepository) {}
 
-  async execute({ mid, sid, products }: ReceiveProductsFromClientRequest): Promise<ReceiveProductsFromClientResponse> {
-    const results = await this.productRepository.receiveProductsFromClient(mid, sid, products);
+  async execute({ partnerId, sid, products }: ReceiveProductsFromClientRequest): Promise<ReceiveProductsFromClientResponse> {
+    const results = await this.productRepository.receiveProductsFromClient(partnerId, sid, products);
     return { results };
   }
 }

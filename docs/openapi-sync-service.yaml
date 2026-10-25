@@ -255,16 +255,18 @@ paths:
           application/json:
             schema:
               type: object
-              required: [mid, sid, syncVersion]
+              required: [syncVersion]
               properties:
                 mid:
                   type: string
                   minLength: 1
-                  description: Merchant `partner_id` (must match the token)
+                  deprecated: true
+                  description: Deprecated, taken from the token. Merchant `partner_id`; when sent it must match the token
                 sid:
                   type: string
                   minLength: 1
-                  description: Store `sid` (must match the token)
+                  deprecated: true
+                  description: Deprecated, taken from the token. Store `sid`; when sent it must match the token
                 syncVersion:
                   type: integer
                   minimum: 0
@@ -320,7 +322,7 @@ paths:
 
         - `barcode` is also saved as `sku`, `name` as both `name_en` and `name_th`, `basePrice` also as the store price
         - `brand` is matched by `name_en` or `name_th`; not found -> no brand
-        - merchant / store not found -> every product gets `error` (`Merchant <mid> not found` / `Store <sid> not found`)
+        - merchant / store not found -> every product gets `error` (`Merchant <partnerId> not found` / `Store <sid> not found`)
       parameters:
         - $ref: '#/components/parameters/CorrelationId'
       requestBody:
@@ -329,16 +331,18 @@ paths:
           application/json:
             schema:
               type: object
-              required: [mid, sid, products]
+              required: [products]
               properties:
                 mid:
                   type: string
                   minLength: 1
-                  description: Merchant `partner_id` (must match the token)
+                  deprecated: true
+                  description: Deprecated, taken from the token. Merchant `partner_id`; when sent it must match the token
                 sid:
                   type: string
                   minLength: 1
-                  description: Store `sid` (must match the token)
+                  deprecated: true
+                  description: Deprecated, taken from the token. Store `sid`; when sent it must match the token
                 products:
                   type: array
                   minItems: 1

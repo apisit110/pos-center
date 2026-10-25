@@ -1,4 +1,4 @@
-this api use for list stores (used in store list page and store select option). Product Owner can see stores of all merchants or filter by a merchant, other roles can see only stores of their own merchant.
+this api use for list stores (used in store list page, store select option and merchant detail page). Product Owner can see stores of all merchants or filter by a merchant, other roles can see only stores of their own merchant.
 
 **Method**: GET
 

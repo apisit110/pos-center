@@ -1,4 +1,4 @@
-this api use for list terminals of a store (used in store detail page). Product Owner can see terminals of any store, other roles can see only terminals of stores of their own merchant.
+this api use for list terminals of a store (used in store detail page and merchant detail page, called once per store of the merchant). Product Owner can see terminals of any store, other roles can see only terminals of stores of their own merchant.
 
 **Method**: GET
 

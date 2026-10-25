@@ -6,10 +6,10 @@ export class SyncPOSProductsUseCase {
     private readonly productRepository: IProductRepository
   ) {}
 
-  async execute({ mid, sid, syncVersion }: SyncPOSProductsRequest): Promise<SyncPOSProductsResponse> {
+  async execute({ partnerId, sid, syncVersion }: SyncPOSProductsRequest): Promise<SyncPOSProductsResponse> {
     try {
       // Query products with version > syncVersion
-      const products = await this.productRepository.findByVersion(mid, sid, syncVersion);
+      const products = await this.productRepository.findByVersion(partnerId, sid, syncVersion);
 
       return {
         success: true,

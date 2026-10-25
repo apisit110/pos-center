@@ -72,12 +72,12 @@ Migrate & Seed
 - สร้าง terminal
 - สร้าง staff ของระบบ cashier
 - [optional] - สร้าง product เข้า store และ กำหนดราคาใน xlsx
-- สร้าง credential?
-- ส่ง config ให้ cashier
-  - mid
-  - sid
-  - tid
-  - credential
+- สร้าง credential (provider `POS_CASHIER`) ในหน้า merchant detail, `client_secret` แสดงครั้งเดียว
+- ส่ง config ให้ cashier (ดูได้ในหน้า merchant detail)
+  - partner_id
+  - client_id
+  - client_secret
+  - tid (ไม่ต้องส่ง sid, ระบบหาจาก tid)
 
 
 ## Cashier

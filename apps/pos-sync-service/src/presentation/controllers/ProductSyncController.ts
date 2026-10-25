@@ -16,12 +16,13 @@ export class ProductSyncController {
   async sync(req: Request, res: Response, next: NextFunction) {
     try {
       const validatedData = syncProductRequestSchema.parse(req.body);
-      const { mid, sid, syncVersion } = validatedData;
-      assertTokenScope(req.syncAuth, { partnerIds: [mid], sids: [sid] });
+      const { mid, sid: bodySid, syncVersion } = validatedData;
+      assertTokenScope(req.syncAuth, { partnerIds: mid ? [mid] : [], sids: bodySid ? [bodySid] : [] });
+      const { partnerId, sid } = req.syncAuth;
 
-      console.log(`[pos-sync-service] Triggering sync for merchant: ${mid}, store: ${sid}, version: ${syncVersion}`);
+      console.log(`[pos-sync-service] Triggering sync for merchant: ${partnerId}, store: ${sid}, version: ${syncVersion}`);
 
-      const result = await this.syncPOSProductsUseCase.execute({ mid, sid, syncVersion });
+      const result = await this.syncPOSProductsUseCase.execute({ partnerId, sid, syncVersion });
 
       if (result.success) {
         return res.status(200).json(buildSyncProductsSuccessResponse(result.products));
@@ -36,12 +37,13 @@ export class ProductSyncController {
   async receive(req: Request, res: Response, next: NextFunction) {
     try {
       const validatedData = receiveProductsRequestSchema.parse(req.body);
-      const { mid, sid, products } = validatedData;
-      assertTokenScope(req.syncAuth, { partnerIds: [mid], sids: [sid] });
+      const { mid, sid: bodySid, products } = validatedData;
+      assertTokenScope(req.syncAuth, { partnerIds: mid ? [mid] : [], sids: bodySid ? [bodySid] : [] });
+      const { partnerId, sid } = req.syncAuth;
 
-      console.log(`[pos-sync-service] Receiving ${products.length} product(s) from merchant: ${mid}, store: ${sid}`);
+      console.log(`[pos-sync-service] Receiving ${products.length} product(s) from merchant: ${partnerId}, store: ${sid}`);
 
-      const result = await this.receiveProductsFromClientUseCase.execute({ mid, sid, products });
+      const result = await this.receiveProductsFromClientUseCase.execute({ partnerId, sid, products });
 
       return res.status(200).json(buildReceiveProductsResponse(result));
     } catch (error) {

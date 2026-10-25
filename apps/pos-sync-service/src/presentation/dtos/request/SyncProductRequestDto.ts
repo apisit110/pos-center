@@ -1,8 +1,10 @@
 import { z } from 'zod';
 
 export const syncProductRequestSchema = z.object({
-  mid: z.string().min(1, 'mid is required'),
-  sid: z.string().min(1, 'sid is required'),
+  /** deprecated: taken from the sync token; checked against it when sent */
+  mid: z.string().min(1).optional(),
+  /** deprecated: taken from the sync token; checked against it when sent */
+  sid: z.string().min(1).optional(),
   syncVersion: z.number().int().min(0, 'syncVersion must be a non-negative integer'),
 });
 

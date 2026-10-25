@@ -19,12 +19,12 @@ export class DrizzleProductRepository implements IProductRepository {
     console.log('[DrizzleProductRepository] saveMany not implemented - service acts as distributor');
   }
 
-  async receiveProductsFromClient(mid: string, sid: string, productsList: ProductFromClient[]): Promise<ProductFromClientResult[]> {
+  async receiveProductsFromClient(partnerId: string, sid: string, productsList: ProductFromClient[]): Promise<ProductFromClientResult[]> {
     const results: ProductFromClientResult[] = [];
 
-    const merchant = await db.select().from(merchants).where(eq(merchants.partnerId, mid)).limit(1);
+    const merchant = await db.select().from(merchants).where(eq(merchants.partnerId, partnerId)).limit(1);
     if (!merchant.length) {
-      return productsList.map(p => ({ id: p.id, status: 'error', error: `Merchant ${mid} not found` }));
+      return productsList.map(p => ({ id: p.id, status: 'error', error: `Merchant ${partnerId} not found` }));
     }
 
     const merchantId = merchant[0].id;
@@ -107,7 +107,7 @@ export class DrizzleProductRepository implements IProductRepository {
     return results;
   }
 
-  async findByVersion(mid: string, sid: string, version: number): Promise<Product[]> {
+  async findByVersion(partnerId: string, sid: string, version: number): Promise<Product[]> {
     const result = await db.select({
       product: products,
       storeProduct: storeProducts,
@@ -122,7 +122,7 @@ export class DrizzleProductRepository implements IProductRepository {
     .leftJoin(brands, eq(products.brandId, brands.id))
     .where(
       and(
-        eq(merchants.partnerId, mid),
+        eq(merchants.partnerId, partnerId),
         eq(stores.sid, sid),
         gt(storeProducts.syncVersion, version)
       )

@@ -2,7 +2,7 @@ import { ProductFromClient, ProductFromClientResult } from '../../domain/reposit
 
 export interface ReceiveProductsFromClientRequest {
   /** merchant `partner_id` */
-  mid: string;
+  partnerId: string;
   /** store `sid` */
   sid: string;
   products: ProductFromClient[];

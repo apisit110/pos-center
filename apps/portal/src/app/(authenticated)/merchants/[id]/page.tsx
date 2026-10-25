@@ -6,9 +6,11 @@ import { useParams, useRouter } from 'next/navigation';
 import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
 import { ApiStoreRepository } from '../../../../infrastructure/repositories/ApiStoreRepository';
 import { ApiStaffRepository } from '../../../../infrastructure/repositories/ApiStaffRepository';
+import { ApiTerminalRepository } from '../../../../infrastructure/repositories/ApiTerminalRepository';
 import { GetMerchantUseCase } from '../../../../domain/usecases/GetMerchantUseCase';
 import { GetStoresUseCase } from '../../../../domain/usecases/GetStoresUseCase';
 import { GetStaffByMerchantUseCase } from '../../../../domain/usecases/GetStaffByMerchantUseCase';
+import { GetTerminalsByStoreUseCase } from '../../../../domain/usecases/GetTerminalsByStoreUseCase';
 import { CreateMerchantCredentialUseCase } from '../../../../domain/usecases/CreateMerchantCredentialUseCase';
 import { RotateMerchantCredentialUseCase } from '../../../../domain/usecases/RotateMerchantCredentialUseCase';
 import {
@@ -20,11 +22,12 @@ import {
 } from '../../../../domain/entities/Merchant';
 import { Store, formatStoreAddress } from '../../../../domain/entities/Store';
 import { Staff } from '../../../../domain/entities/Staff';
+import { Terminal } from '../../../../domain/entities/Terminal';
 import { DataTable, Button } from '@apisit110/pos-ui';
 import { useTranslation } from '../../../../presentation/i18n/LanguageContext';
 import { formatDateTime } from '../../../../lib/dayjs';
 
-import { FiAlertTriangle, FiArrowLeft, FiCheck, FiCopy, FiGrid, FiHash, FiInfo, FiKey, FiPlus, FiUsers } from 'react-icons/fi';
+import { FiAlertTriangle, FiArrowLeft, FiCheck, FiCopy, FiGrid, FiHash, FiInfo, FiKey, FiMonitor, FiPlus, FiUsers } from 'react-icons/fi';
 
 const PageContainer = styled.div`
   display: flex;
@@ -256,6 +259,7 @@ export default function MerchantDetailPage() {
   const [merchant, setMerchant] = useState<Merchant | null>(null);
   const [stores, setStores] = useState<Store[]>([]);
   const [staff, setStaff] = useState<Staff[]>([]);
+  const [terminals, setTerminals] = useState<Terminal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<'forbidden' | 'notFound' | null>(null);
   const [issued, setIssued] = useState<IssuedMerchantCredential | null>(null);
@@ -285,9 +289,14 @@ export default function MerchantDetailPage() {
           getStaffUseCase.execute(merchantId)
         ]);
 
+        // terminals are listed per store, there is no merchant level api
+        const getTerminalsUseCase = new GetTerminalsByStoreUseCase(new ApiTerminalRepository());
+        const terminalsData = await Promise.all(storesData.map((s) => getTerminalsUseCase.execute(s.uid)));
+
         setMerchant(merchantData);
         setStores(storesData);
         setStaff(staffData);
+        setTerminals(terminalsData.flat());
       } catch (err: any) {
         setMerchant(null);
         setError(err?.response?.status === 403 ? 'forbidden' : 'notFound');
@@ -306,6 +315,24 @@ export default function MerchantDetailPage() {
       header: t.merchantDetail.columnAddress,
       key: 'address',
       render: (s: Store) => formatStoreAddress(s.registeredAddress, language) || '-',
+    },
+  ];
+
+  const terminalColumns = [
+    {
+      header: t.merchantDetail.columnTid,
+      key: 'tid',
+      width: '180px',
+      render: (tm: Terminal) => <span style={{ fontFamily: 'monospace' }}>{tm.tid}</span>,
+    },
+    { header: t.merchantDetail.columnTerminalName, key: 'name', render: (tm: Terminal) => tm.displayName(language) || '-' },
+    {
+      header: t.merchantDetail.columnStore,
+      key: 'store',
+      render: (tm: Terminal) => {
+        const store = stores.find((s) => s.uid === tm.storeId);
+        return store ? `${store.sid} · ${store.displayName(language)}` : '-';
+      },
     },
   ];
 
@@ -516,6 +543,22 @@ export default function MerchantDetailPage() {
             data={stores}
             rowKey="uid"
             onRowClick={(store) => router.push(`/stores/${store.uid}`)}
+          />
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              <FiMonitor /> {t.merchantDetail.terminals}
+              <Badge>{terminals.length}</Badge>
+            </CardTitle>
+          </CardHeader>
+          <DataTable
+            columns={terminalColumns}
+            data={terminals}
+            rowKey="id"
+            emptyMessage={t.merchantDetail.noTerminals}
+            onRowClick={(terminal) => router.push(`/stores/${terminal.storeId}`)}
           />
         </Card>
 

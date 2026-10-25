@@ -2,7 +2,7 @@ import { Product } from '../../domain/entities/Product';
 
 export interface SyncPOSProductsRequest {
   /** merchant `partner_id` */
-  mid: string;
+  partnerId: string;
   /** store `sid` */
   sid: string;
   /** returns products with version > syncVersion */

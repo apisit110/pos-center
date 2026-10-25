@@ -67,6 +67,11 @@ export interface Translations {
     uid: string;
     relatedStores: string;
     staff: string;
+    terminals: string;
+    noTerminals: string;
+    columnTid: string;
+    columnTerminalName: string;
+    columnStore: string;
     columnSid: string;
     columnStoreName: string;
     columnAddress: string;
@@ -255,6 +260,11 @@ export const en: Translations = {
     uid: 'Unique ID (UID)',
     relatedStores: 'Related Stores',
     staff: 'Staff',
+    terminals: 'Terminals',
+    noTerminals: 'No terminals yet.',
+    columnTid: 'TID',
+    columnTerminalName: 'Terminal Name',
+    columnStore: 'Store',
     columnSid: 'SID',
     columnStoreName: 'Store Name',
     columnAddress: 'Address',
@@ -443,6 +453,11 @@ export const th: Translations = {
     uid: 'รหัสเฉพาะ (UID)',
     relatedStores: 'สาขาที่เกี่ยวข้อง',
     staff: 'พนักงาน',
+    terminals: 'เครื่อง POS (Terminals)',
+    noTerminals: 'ยังไม่มี terminal',
+    columnTid: 'TID',
+    columnTerminalName: 'ชื่อเครื่อง',
+    columnStore: 'สาขา',
     columnSid: 'SID',
     columnStoreName: 'ชื่อสาขา',
     columnAddress: 'ที่อยู่',

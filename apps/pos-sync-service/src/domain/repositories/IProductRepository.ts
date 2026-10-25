@@ -18,6 +18,6 @@ export interface ProductFromClientResult {
 
 export interface IProductRepository {
   saveMany(products: Product[]): Promise<void>;
-  findByVersion(mid: string, sid: string, version: number): Promise<Product[]>;
-  receiveProductsFromClient(mid: string, sid: string, products: ProductFromClient[]): Promise<ProductFromClientResult[]>;
+  findByVersion(partnerId: string, sid: string, version: number): Promise<Product[]>;
+  receiveProductsFromClient(partnerId: string, sid: string, products: ProductFromClient[]): Promise<ProductFromClientResult[]>;
 }
