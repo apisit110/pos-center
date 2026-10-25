@@ -28,7 +28,7 @@ request query:
 | role         | string | false    |         | filter by role name (exact match, e.g. `manager`, `cashier`)                                          |
 | username     | string | false    |         | filter by username, partial match                                                                     |
 | status       | string | false    |         | filter by status (exact match): `ACTIVE`, `PENDING`, `INACTIVE`, `SUSPENDED`                          |
-| query        | string | false    |         | search by staff name, partial match                                                                   |
+| query        | string | false    |         | search by staff `full_name`, partial match                                                                   |
 | start_date   | string | false    |         | filter staff created on or after this date. `YYYY-MM-DD` = start of that day in `Asia/Bangkok` (00:00:00.000+07:00), or ISO 8601 date time with timezone = that exact instant |
 | end_date     | string | false    |         | filter staff created on or before this date. `YYYY-MM-DD` = end of that day in `Asia/Bangkok` (23:59:59.999+07:00), or ISO 8601 date time with timezone = that exact instant |
 
@@ -43,8 +43,9 @@ response body (fields below are the value of `data`, wrapped in [Ok](../../../ap
 | items                 | array  | list of staff                                                          |
 | items[].uid           | string | staff uid                                                              |
 | items[].merchant_uid  | string | uid of the merchant of the staff                                       |
-| items[].merchant_name | string | name of the merchant of the staff                                      |
-| items[].name          | string | staff name                                                             |
+| items[].merchant_name_en | string | name (English) of the merchant of the staff |
+| items[].merchant_name_th | string | name (Thai) of the merchant of the staff |
+| items[].full_name     | string | staff name, empty string if not set                                    |
 | items[].role          | string | staff role (e.g. `manager`, `cashier`), `cashier` if staff has no role |
 | items[].username      | string | staff username, empty string if not set                                |
 | items[].status        | string | staff status: `ACTIVE`, `PENDING`, `INACTIVE`, `SUSPENDED`            |
@@ -64,8 +65,9 @@ example response body:
       {
         "uid": "string",
         "merchant_uid": "string",
-        "merchant_name": "string",
-        "name": "string",
+        "merchant_name_en": "string",
+        "merchant_name_th": "string",
+        "full_name": "string",
         "role": "manager",
         "username": "string",
         "status": "ACTIVE",
@@ -122,20 +124,20 @@ Logic:
     - use `merchant_uid` from query as is (optional)
 - if `merchant_uid` is provided, find merchant by uid
   - if not found, respond empty list (`items` = [], `total` = 0, `page`, `limit`), do not ignore the filter
-- Find staff from database (join merchant to get `merchant_uid`, `merchant_name`, left join staff role to get role name)
+- Find staff from database (join merchant to get `merchant_uid`, `merchant_name_en`, `merchant_name_th`, left join staff role to get role name)
   - order by `id` descending (newest first)
   - offset = `(page - 1) * limit`, limit = `limit`
   - if `merchant_uid` is provided, filter staff of that merchant
   - if `role` is provided, filter role name equal to `role`
   - if `username` is provided, filter `username` with LIKE `%username%`
   - if `status` is provided, filter `status` equal to `status`
-  - if `query` is provided, filter `name` with LIKE `%query%`
+  - if `query` is provided, filter `full_name` with LIKE `%query%`
   - if `start_date` is provided, filter `created_at` >= start of `start_date` (`Asia/Bangkok`, see [date and time](../../../specification.md))
   - if `end_date` is provided, filter `created_at` <= end of `end_date` at 23:59:59.999 (`Asia/Bangkok`, see [date and time](../../../specification.md))
   - all provided filters are combined with AND
 - Count total staff with the same filter
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response staff list follow these items (uid, merchant_uid, merchant_name, name, role, username, status, created_at), total, page, limit
+- response staff list follow these items (uid, merchant_uid, merchant_name_en, merchant_name_th, full_name, role, username, status, created_at), total, page, limit
   - `role` is `cashier` if staff has no role
-  - `username` is empty string if staff has no username
+  - `username` and `full_name` are empty string if not set

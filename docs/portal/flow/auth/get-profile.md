@@ -23,7 +23,7 @@ example response body:
   "data": {
     "user": {
       "uid": "string",
-      "name": "string",
+      "full_name": "string",
       "merchant_id": "string"
     }
   }
@@ -45,4 +45,4 @@ Logic:
   - if not found staff throw throw [ServiceError.ErrStaffNotFound](../../../apiresponse/ServiceError.ts)
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response staff detail follow these uid, name, merchant_id
+- response staff detail follow these uid, full_name, merchant_id

@@ -33,7 +33,7 @@ array of staff (no pagination, max 500 items, no guaranteed order)
 | key        | type   | description                                                   |
 | ---------- | ------ | ------------------------------------------------------------- |
 | [].uid      | string | staff uid                                                     |
-| [].name     | string | staff name                                                    |
+| [].full_name | string | staff name, empty string if not set                          |
 | [].role     | string | staff role (e.g. `manager`, `cashier`), default `cashier` if staff has no role |
 | [].username | string | staff username, empty string if not set                       |
 | [].status   | string | staff status: `ACTIVE`, `PENDING`, `INACTIVE`, `SUSPENDED`   |
@@ -47,7 +47,7 @@ example response body:
   "data": [
     {
       "uid": "string",
-      "name": "string",
+      "full_name": "string",
       "role": "manager",
       "username": "string",
       "status": "ACTIVE"
@@ -85,5 +85,5 @@ Logic:
   - limit 500 rows
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response staff list follow these items (uid, name, role, username, status)
+- response staff list follow these items (uid, full_name, role, username, status)
   - `username` is empty string if staff has no username

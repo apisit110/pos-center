@@ -32,8 +32,9 @@ response body (fields below are the value of `data`, wrapped in [Ok](../../../ap
 | ------------- | ------ | ---------------------------------------------------------------------- |
 | uid           | string | staff uid                                                              |
 | merchant_uid  | string | uid of the merchant of the staff                                       |
-| merchant_name | string | name of the merchant of the staff                                      |
-| name          | string | staff name                                                             |
+| merchant_name_en | string | name (English) of the merchant of the staff |
+| merchant_name_th | string | name (Thai) of the merchant of the staff |
+| full_name     | string | staff name, empty string if not set                                    |
 | role          | string | staff role (e.g. `manager`, `cashier`), `cashier` if staff has no role |
 | username      | string | staff username, empty string if not set                                |
 | status        | string | staff status: `ACTIVE`, `PENDING`, `INACTIVE`, `SUSPENDED`            |
@@ -48,8 +49,9 @@ example response body:
   "data": {
     "uid": "string",
     "merchant_uid": "string",
-    "merchant_name": "string",
-    "name": "string",
+    "merchant_name_en": "string",
+    "merchant_name_th": "string",
+    "full_name": "string",
     "role": "manager",
     "username": "string",
     "status": "ACTIVE",
@@ -73,7 +75,7 @@ Logic:
     - min: 1
     - required: true
     - If validation fails, throw [ValidationError.ErrInvalidRequest](../../../apiresponse/ValidationError.ts)
-- Find staff by uid (path `id`) with merchant (`merchant_uid`, `merchant_name`) and role name
+- Find staff by uid (path `id`) with merchant (`merchant_uid`, `merchant_name_en`, `merchant_name_th`) and role name
   - if not found, throw [ServiceError.ErrStaffNotFound](../../../apiresponse/ServiceError.ts)
 - Check merchant ownership by role in access token
   - if role is `PRODUCT_OWNER`
@@ -83,6 +85,6 @@ Logic:
     - if not found or not equal to `merchant_uid` of the staff, throw [ServiceError.ErrForbidden](../../../apiresponse/ServiceError.ts)
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response staff follow these items (uid, merchant_uid, merchant_name, name, role, username, status, created_at)
+- response staff follow these items (uid, merchant_uid, merchant_name_en, merchant_name_th, full_name, role, username, status, created_at)
   - `role` is `cashier` if staff has no role
-  - `username` is empty string if staff has no username
+  - `username` and `full_name` are empty string if not set

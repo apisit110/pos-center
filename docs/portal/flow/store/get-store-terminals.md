@@ -35,7 +35,8 @@ array of terminal (no pagination, no guaranteed order)
 | [].uid     | string | terminal uid                      |
 | [].store_uid | string | uid of the store of the terminal |
 | [].tid     | string | terminal id (e.g. used on the pos) |
-| [].name    | string | terminal name                     |
+| [].name_en | string | terminal name (English)           |
+| [].name_th | string | terminal name (Thai)              |
 
 example response body:
 
@@ -48,7 +49,8 @@ example response body:
       "uid": "string",
       "store_uid": "string",
       "tid": "string",
-      "name": "string"
+      "name_en": "string",
+      "name_th": "string"
     }
   ]
 }
@@ -78,8 +80,8 @@ Logic:
     - Find merchant uid of the staff by uid in access token
     - if not found or not equal to merchant uid of the store, throw [ServiceError.ErrForbidden](../../../apiresponse/ServiceError.ts)
 - Find terminals of the store from database
-  - filter by store of the path `id`
+  - join `map_store_terminal` (store_id, terminal_id) and `terminal`, filter by store of the path `id`
   - respond empty array if the store has no terminal
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response terminal list follow these items (uid, store_uid, tid, name)
+- response terminal list follow these items (uid, store_uid, tid, name_en, name_th)

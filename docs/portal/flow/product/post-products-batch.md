@@ -30,12 +30,13 @@ request body:
 | products                 | array    | true     | list of product, max 1000 items (can be empty, response `created` = 0)                          |
 | products[].uid           | string   | false    | product uid. if not provided, it is generated. if the uid already exists, the product is updated |
 | products[].merchant_uid  | string   | true     | merchant uid that owns the product, min length 1                                                |
-| products[].name          | string   | true     | product name, min length 1                                                                      |
+| products[].name_en       | string   | true     | product name (English), min length 1, max length 255                                            |
+| products[].name_th       | string   | true     | product name (Thai), min length 1, max length 255                                               |
 | products[].barcode       | string   | false    | product barcode. also used as `sku` (empty string if not provided)                              |
 | products[].base_price    | number   | true     | base price, min 0 (coerce from string)                                                          |
-| products[].image_url     | string[] | false    | list of image url, default `[]`                                                                 |
-| products[].brand         | string   | false    | brand name, default empty string                                                                |
-| products[].unit_name     | string   | false    | unit name, default empty string                                                                 |
+| products[].image_url     | string   | false    | image url, max length 500, default null                                                         |
+| products[].brand_uid     | string   | false    | uid of an existing brand, default null                                                          |
+| products[].unit_name     | string   | false    | unit name, max length 50, default null                                                          |
 
 example request body:
 
@@ -45,11 +46,12 @@ example request body:
     {
       "uid": "string",
       "merchant_uid": "string",
-      "name": "string",
+      "name_en": "string",
+      "name_th": "string",
       "barcode": "string",
       "base_price": 25.5,
-      "image_url": ["string"],
-      "brand": "string",
+      "image_url": "string",
+      "brand_uid": "string",
       "unit_name": "string"
     }
   ]
@@ -63,7 +65,7 @@ response body (fields below are the value of `data`, wrapped in [Ok](../../../ap
 | created            | number | number of products saved (inserted or updated)                        |
 | errors             | array  | list of product that cannot be saved, empty array if none             |
 | errors[].index     | number | index of the product in request `products` (start at 0)               |
-| errors[].name      | string | product name                                                          |
+| errors[].name_en   | string | product name (English)                                                |
 | errors[].message   | string | reason                                                                |
 
 example response body:
@@ -77,7 +79,7 @@ example response body:
     "errors": [
       {
         "index": 1,
-        "name": "string",
+        "name_en": "string",
         "message": "Merchant not found: string"
       }
     ]
@@ -99,23 +101,25 @@ Logic:
     - type: array of object
     - max: 1000
     - required: true
-  - products[].uid, products[].barcode, products[].brand, products[].unit_name
+  - products[].uid, products[].barcode, products[].brand_uid, products[].unit_name
     - type: string
     - required: false
   - products[].merchant_uid
     - type: string
     - min: 1
     - required: true
-  - products[].name
+  - products[].name_en, products[].name_th
     - type: string
     - min: 1
+    - max: 255
     - required: true
   - products[].base_price
     - type: number (coerce from string)
     - min: 0
     - required: true
   - products[].image_url
-    - type: array of string
+    - type: string
+    - max: 500
     - required: false
   - If validation fails (any product), throw [ValidationError.ErrInvalidRequest](../../../apiresponse/ValidationError.ts) and nothing is saved
 - Check merchant ownership by role in access token
@@ -127,6 +131,8 @@ Logic:
 - if `products` is empty, respond `201 Created` with `{ "created": 0, "errors": [] }`
 - Find each unique `merchant_uid` once
   - if a merchant is not found, add every product of that merchant to `errors` with message `Merchant not found: <merchant_uid>`, and skip those products
+- Find each unique `brand_uid` once
+  - if a brand is not found, add every product with that brand to `errors` with message `Brand not found: <brand_uid>`, and skip those products
 - Check `uid` of each valid product (only if `uid` is provided)
   - if the same `uid` already appears in an earlier product of the same request, add the product to `errors` with message `Duplicate uid: <uid>` and skip it
   - if a product with this `uid` already exists in database and it belongs to another merchant (not `merchant_uid` of the product), add the product to `errors` with message `Forbidden: uid belongs to another merchant` and skip it (nothing is updated)
@@ -139,11 +145,11 @@ Logic:
   - `uid` = `uid` or generate uuid v4
   - `sku` = `barcode` or empty string
   - `barcode` = `barcode` or empty string
-  - `image_url` = `[]`, `brand` = empty string, `unit_name` = empty string if not provided
+  - `image_url`, `unit_name`, `brand_id` = null if not provided
 - Save valid products in database, chunk of 500 products, each chunk in one transaction
   - upsert product by `uid` (insert, or update when `uid` already exists)
-  - increase running number `product_version` by 1 (create the `product_version` row with number `1` if it does not exist yet)
-  - update `row_version` of every `store_product` of the saved products to the new `product_version`
+  - increase running number `product_version` by 1 (create the `running_numbers` row of type `product_version` with number `1` if it does not exist yet)
+  - update `sync_version` of every `map_store_product` of the saved products to the new `product_version`
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
 - response `201 Created` with follow these items (created, errors)

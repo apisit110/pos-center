@@ -22,7 +22,7 @@ example response body:
     "token": "string",
     "user": {
       "uid": "string",
-      "name": "string",
+      "full_name": "string",
       "merchant_id": "string"
     }
   }
@@ -61,7 +61,7 @@ Logic:
 - Create a new JWT token contain uid, role, scope follow [uam](../../uam.md) and expire in 30m
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response staff detail follow these uid, name, merchant_id
+- response staff detail follow these uid, full_name, merchant_id
 - response token in cookie
   - set secure = true if NODE_ENV === 'production'
   

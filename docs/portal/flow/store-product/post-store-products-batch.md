@@ -112,15 +112,14 @@ Logic:
   - Find stores by `store_uid` and products by `product_uid` (one query per chunk)
     - if store is not found, add `Row <n>: store_uid "<store_uid>" not found` to `errors`
     - if product is not found, add `Row <n>: product_uid "<product_uid>" not found` to `errors`
-  - Find existing `store_product` by (store, product)
+  - Find existing `map_store_product` by (store, product)
   - Save in one transaction
-    - if `store_product` exists
+    - if `map_store_product` exists
       - update `stock`, `price`
-      - update `unit` = `unit_name` of the product (keep old value if product has no `unit_name`)
-      - increase `row_version` by 1 (so pos can sync the changed product)
+      - set `sync_version` = new `product_version` (increase running number `product_version` of `running_numbers` by 1 first, so pos can sync the changed product)
       - updated += 1
     - if not exists
-      - insert `store_product` with generated `uid` (uuid v4), `stock`, `price`, `unit` = `unit_name` of the product
+      - insert `map_store_product` (store_id, product_id, `stock`, `price`, `sync_version` = new `product_version`)
       - created += 1
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`

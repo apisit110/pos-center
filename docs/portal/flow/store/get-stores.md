@@ -35,11 +35,12 @@ array of store (no pagination, when filter by merchant max 500 items, no guarant
 | [].uid          | string | store uid                                        |
 | [].sid          | string | store id (unique)                                |
 | [].merchant_uid | string | uid of the merchant that owns the store          |
-| [].mid          | string | merchant id of the merchant that owns the store  |
-| [].name         | string | store name                                       |
-| [].address      | string | store address, empty string if not set           |
-| [].latitude     | number | latitude, 0 if not set                           |
-| [].longitude    | number | longitude, 0 if not set                          |
+| [].mid          | string/null | merchant id of the merchant (from `merchant_profile`, null if none) |
+| [].name_en | string | store name (English) |
+| [].name_th | string | store name (Thai) |
+| [].registered_address | object | registered address (type `REGISTERED`), null if not set |
+| [].contract_address   | object | contract address (type `CONTRACT`), null if not set     |
+| address object fields | | `address_1` (string, empty if not set), `province` / `district` / `sub_district` (`{ code, name_th, name_en }`), `postal_code` (string), `latitude` / `longitude` (number, null if not set) |
 
 example response body:
 
@@ -53,10 +54,18 @@ example response body:
       "sid": "string",
       "merchant_uid": "string",
       "mid": "string",
-      "name": "string",
-      "address": "string",
-      "latitude": 13.7563,
-      "longitude": 100.5018
+      "name_en": "string",
+      "name_th": "string",
+      "registered_address": {
+        "address_1": "string",
+        "province": { "code": "10", "name_th": "string", "name_en": "string" },
+        "district": { "code": "1001", "name_th": "string", "name_en": "string" },
+        "sub_district": { "code": "100101", "name_th": "string", "name_en": "string" },
+        "postal_code": "10200",
+        "latitude": 13.7563,
+        "longitude": 100.5018
+      },
+      "contract_address": null
     }
   ]
 }
@@ -87,10 +96,10 @@ Logic:
 - if `merchant_uid` is provided
   - Find merchant by uid
     - if not found, throw [ServiceError.ErrMerchantNotFound](../../../apiresponse/ServiceError.ts)
-  - Find stores of the merchant from database (join merchant to get `merchant_uid`, `mid`), limit 500 rows
+  - Find stores of the merchant from database (join merchant to get `merchant_uid`, left join `merchant_profile` to get `mid`, left join `map_store_address` -> `address` -> master data to get both addresses), limit 500 rows
 - if `merchant_uid` is not provided (Product Owner only)
-  - Find all stores from database (join merchant to get `merchant_uid`, `mid`)
+  - Find all stores from database (join merchant to get `merchant_uid`, left join `merchant_profile` to get `mid`, left join `map_store_address` -> `address` -> master data to get both addresses)
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response store list follow these items (uid, sid, merchant_uid, mid, name, address, latitude, longitude)
-  - `address` is empty string, `latitude` and `longitude` are 0 if not set
+- response store list follow these items (uid, sid, merchant_uid, mid, name_en, name_th, registered_address, contract_address)
+  - `registered_address` / `contract_address` are null if the store has no `map_store_address` of that type

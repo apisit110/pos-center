@@ -1,4 +1,4 @@
-this api use for list merchant with pagination and filter by mid or name. Product Owner can see all merchants, other roles can see only their own merchant.
+this api use for list merchant with pagination and filter by mid or name (English/Thai). Product Owner can see all merchants, other roles can see only their own merchant.
 
 **Method**: GET
 
@@ -19,7 +19,7 @@ request query:
 | page  | number | false    | 1       | page number, integer, min 1                               |
 | limit | number | false    | 10      | items per page, integer, min 1, max 100                   |
 | mid   | string | false    |         | filter by merchant id, partial match (case-insensitive)   |
-| name  | string | false    |         | filter by merchant name, partial match (case-insensitive) |
+| name  | string | false    |         | filter by merchant `name_en` or `name_th`, partial match (case-insensitive) |
 
 request body:
 
@@ -30,9 +30,11 @@ response body (fields below are the value of `data`, wrapped in [Ok](../../../ap
 | key           | type   | description                                    |
 | ------------- | ------ | ---------------------------------------------- |
 | items         | array  | list of merchant                               |
-| items[].uid   | string | merchant uid                                   |
-| items[].mid   | string | merchant id (unique, e.g. used to search)      |
-| items[].name  | string | merchant name                                  |
+| items[].uid        | string      | merchant uid                              |
+| items[].partner_id | string      | partner id (unique)                       |
+| items[].mid        | string/null | merchant id (unique, from `merchant_profile`, null if no profile) |
+| items[].name_en    | string      | merchant name (English)                   |
+| items[].name_th    | string      | merchant name (Thai)                      |
 | total         | number | total merchants matching the filter            |
 | page          | number | current page                                   |
 | limit         | number | items per page                                 |
@@ -47,8 +49,10 @@ example response body:
     "items": [
       {
         "uid": "string",
+        "partner_id": "string",
         "mid": "string",
-        "name": "string"
+        "name_en": "string",
+        "name_th": "string"
       }
     ],
     "total": 1,
@@ -94,18 +98,18 @@ Logic:
 - Check role in access token
   - if role is not `PRODUCT_OWNER`
     - Find merchant uid of the staff by uid in access token
-    - Find merchant detail by that merchant uid
+    - Find merchant (with `merchant_profile`) by that merchant uid
     - response only that merchant (ignore page, limit, mid, name)
       - `items` contains own merchant, or empty if not found
       - `total` = number of items, `page` = 1, `limit` = number of items
   - if role is `PRODUCT_OWNER`
-    - Find merchants from database
+    - Find merchants from database (`merchant` left join `merchant_profile` on `merchant_id`)
       - order by `id` ascending
       - offset = `(page - 1) * limit`
-      - if `mid` is provided, filter `mid` with ILIKE `%mid%`
-      - if `name` is provided, filter `name` with ILIKE `%name%`
+      - if `mid` is provided, filter `merchant_profile.mid` with ILIKE `%mid%`
+      - if `name` is provided, filter `name_en` ILIKE `%name%` OR `name_th` ILIKE `%name%`
       - if both are provided, combine with AND
     - Count total merchants with the same filter
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response merchant list follow these items (uid, mid, name), total, page, limit
+- response merchant list follow these items (uid, partner_id, mid, name_en, name_th), total, page, limit

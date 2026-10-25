@@ -28,11 +28,20 @@ none
 
 response body (fields below are the value of `data`, wrapped in [Ok](../../../apiresponse/middleware.md#ok)):
 
-| key  | type   | description                               |
-| ---- | ------ | ----------------------------------------- |
-| uid  | string | merchant uid                              |
-| mid  | string | merchant id (unique)                      |
-| name | string | merchant name                             |
+| key                       | type        | description                                                  |
+| ------------------------- | ----------- | ------------------------------------------------------------ |
+| uid                       | string      | merchant uid                                                 |
+| partner_id                | string      | partner id (unique)                                          |
+| mid                       | string/null | merchant id (unique, from `merchant_profile`, null if no profile) |
+| name_en                   | string      | merchant name (English)                                      |
+| name_th                   | string      | merchant name (Thai)                                         |
+| created_at                | string      | created time (ISO 8601 UTC)                                  |
+| updated_at                | string      | updated time (ISO 8601 UTC)                                  |
+| credentials               | array       | credentials of the merchant, empty if none (`client_secret` is never returned, only its hash is stored) |
+| credentials[].provider    | string      | `POS_CASHIER`                                                |
+| credentials[].client_id   | string      | client id (unique)                                           |
+| credentials[].created_at  | string      | created time (ISO 8601 UTC)                                  |
+| credentials[].updated_at  | string      | updated time (last rotate, ISO 8601 UTC)                     |
 
 example response body:
 
@@ -42,8 +51,20 @@ example response body:
   "res_desc": "",
   "data": {
     "uid": "string",
+    "partner_id": "string",
     "mid": "string",
-    "name": "string"
+    "name_en": "string",
+    "name_th": "string",
+    "created_at": "2026-01-01T00:00:00.000Z",
+    "updated_at": "2026-01-01T00:00:00.000Z",
+    "credentials": [
+      {
+        "provider": "POS_CASHIER",
+        "client_id": "string",
+        "created_at": "2026-01-01T00:00:00.000Z",
+        "updated_at": "2026-01-01T00:00:00.000Z"
+      }
+    ]
   }
 }
 ```
@@ -69,8 +90,8 @@ Logic:
   - if role is not `PRODUCT_OWNER`
     - Find merchant uid of the staff by uid in access token
     - if not found or not equal to path `id`, throw [ServiceError.ErrForbidden](../../../apiresponse/ServiceError.ts)
-- Find merchant by uid (path `id`)
+- Find merchant by uid (path `id`) with `merchant_profile` (left join) and `merchant_credential` (provider, client_id, created_at, updated_at only, never select `client_secret`)
   - if not found, throw [ServiceError.ErrMerchantNotFound](../../../apiresponse/ServiceError.ts)
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response merchant follow these items (uid, mid, name)
+- response merchant follow these items (uid, partner_id, mid, name_en, name_th, created_at, updated_at, credentials)

@@ -42,9 +42,10 @@ response body (fields below are the value of `data`, wrapped in [Ok](../../../ap
 | items[].order_id       | string | order id of the transaction, empty string if not linked        |
 | items[].payment_method | string | `CASH`, `QR`                                           |
 | items[].status         | string | `PENDING`, `APPROVED`, `FAILED`, `VOIDED`, `REFUNDED`                          |
-| items[].amount         | number | transaction amount (2 decimal places)                          |
-| items[].currency       | string | currency code, always `THB`                                    |
-| items[].store_name     | string | store name of the transaction, empty string if not found       |
+| items[].amount         | number | transaction amount (4 decimal places max), 0 if not set        |
+| items[].store_name_en  | string | store name (English), empty string if not found                |
+| items[].store_name_th  | string | store name (Thai), empty string if not found                   |
+| items[].staff_name     | string | cashier staff name of the transaction, empty string if not set  |
 | items[].created_at     | string | created date time, ISO 8601                                    |
 | total                  | number | total transactions matching the filter                         |
 | page                   | number | current page                                                   |
@@ -64,8 +65,9 @@ example response body:
         "payment_method": "QR",
         "status": "APPROVED",
         "amount": 125.5,
-        "currency": "THB",
-        "store_name": "string",
+        "store_name_en": "string",
+        "store_name_th": "string",
+        "staff_name": "string",
         "created_at": "2026-01-01T00:00:00.000Z"
       }
     ],
@@ -119,7 +121,7 @@ Logic:
     - filter only transactions of that merchant (`transactions.merchant_id` = merchant id)
   - if role is `PRODUCT_OWNER`
     - no merchant filter
-- Find transactions from database (left join `orders` to get `order_id`, left join `stores` to get store name)
+- Find transactions from database (left join `order` on `transactions.order_id` = `order.order_id` to get `order_id`, left join `store` on `transactions.store_id` to get `name_en`, `name_th`)
   - order by `created_at` descending, then `id` descending (newest first)
   - offset = `(page - 1) * limit`, limit = `limit`
   - if `transaction_id` is provided, filter transaction `uid` with LIKE `%transaction_id%`
@@ -132,6 +134,5 @@ Logic:
 - Count total transactions with the same filter and the same joins
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response transaction list follow these items (uid, order_id, payment_method, status, amount, currency, store_name, created_at), total, page, limit
-  - `currency` is `THB`
-  - `order_id` and `store_name` are empty string if not found
+- response transaction list follow these items (uid, order_id, payment_method, status, amount, store_name_en, store_name_th, staff_name, created_at), total, page, limit
+  - `order_id`, `store_name_en`, `store_name_th` and `staff_name` are empty string if not found

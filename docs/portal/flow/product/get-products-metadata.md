@@ -28,7 +28,7 @@ response body (fields below are the value of `data`, wrapped in [Ok](../../../ap
 
 | key    | type     | description                                                       |
 | ------ | -------- | ----------------------------------------------------------------- |
-| brands | string[] | distinct brand names, sorted ascending, empty values are excluded |
+| brands | object[] | distinct brands `{ uid, name_en, name_th }` of the products, sorted by `name_en` ascending |
 | units  | string[] | distinct unit names, sorted ascending, empty values are excluded  |
 
 example response body:
@@ -38,7 +38,7 @@ example response body:
   "res_code": "0000",
   "res_desc": "",
   "data": {
-    "brands": ["string"],
+    "brands": [{ "uid": "string", "name_en": "string", "name_th": "string" }],
     "units": ["string"]
   }
 }
@@ -62,11 +62,11 @@ Logic:
     - only products of that merchant are used in the next step
   - if role is `PRODUCT_OWNER`
     - use products of all merchants
-- Find distinct `brand` and distinct `unit_name` from products in database
+- Find distinct `brand` (join `brand` via `product.brand_id`) and distinct `unit_name` from products in database
   - exclude null and empty string
-  - order ascending
+  - order `brand` by `name_en` ascending, `unit_name` ascending
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
 - response follow these items (brands, units)
 
-The values are used as the options of `brands` and `units` query in [get products](get-products.md).
+The `brands[].uid` and `units` values are used as the options of `brands` and `units` query in [get products](get-products.md).

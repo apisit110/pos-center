@@ -23,9 +23,9 @@ request query:
 | page         | number   | false    | 1       | page number, integer, min 1                                                                          |
 | limit        | number   | false    | 10      | items per page, integer, min 1, max 100                                                              |
 | barcode      | string   | false    |         | filter by barcode, partial match (case-insensitive)                                                  |
-| name         | string   | false    |         | filter by product name, partial match (case-insensitive)                                             |
+| name         | string   | false    |         | filter by product `name_en` or `name_th`, partial match (case-insensitive)                           |
 | merchant_uid | string   | false    |         | filter by merchant uid (exact match)                                                                 |
-| brands       | string[] | false    | `[]`    | filter by brand, match any of the values. repeat the param: `brands=A&brands=B`                      |
+| brands       | string[] | false    | `[]`    | filter by brand uid, match any of the values. repeat the param: `brands=uid1&brands=uid2`            |
 | units        | string[] | false    | `[]`    | filter by unit name, match any of the values. repeat the param: `units=pcs&units=box`                |
 | price        | number   | false    |         | filter products with `base_price` less than or equal to this value, min 0                            |
 | store_uid    | string   | false    |         | filter only products that are listed in this store (see [add products to store](../store-product/post-store-products-batch.md)) |
@@ -41,13 +41,14 @@ response body (fields below are the value of `data`, wrapped in [Ok](../../../ap
 | items                | array    | list of product                                            |
 | items[].uid          | string   | product uid                                                |
 | items[].merchant_uid | string   | uid of the merchant that owns the product                  |
-| items[].mid          | string   | merchant id of the merchant that owns the product          |
-| items[].name         | string   | product name                                               |
-| items[].sku          | string   | product sku, empty string if not set                       |
+| items[].mid          | string/null | merchant id of the merchant that owns the product (from `merchant_profile`) |
+| items[].name_en      | string   | product name (English)                                     |
+| items[].name_th      | string   | product name (Thai)                                        |
+| items[].sku          | string   | product sku                                                |
 | items[].barcode      | string   | product barcode, empty string if not set                   |
-| items[].base_price   | number   | base price (2 decimal places)                              |
-| items[].image_url    | string[] | list of image url, empty array if not set                  |
-| items[].brand        | string   | brand name, empty string if not set                        |
+| items[].base_price   | number   | base price (max 4 decimal places)                          |
+| items[].image_url    | string   | image url, empty string if not set                         |
+| items[].brand        | object/null | brand `{ uid, name_en, name_th }`, null if not set      |
 | items[].unit_name    | string   | unit name (e.g. `pcs`), empty string if not set            |
 | total                | number   | total products matching the filter                         |
 | page                 | number   | current page                                               |
@@ -65,12 +66,13 @@ example response body:
         "uid": "string",
         "merchant_uid": "string",
         "mid": "string",
-        "name": "string",
+        "name_en": "string",
+        "name_th": "string",
         "sku": "string",
         "barcode": "string",
         "base_price": 25.5,
-        "image_url": ["string"],
-        "brand": "string",
+        "image_url": "string",
+        "brand": { "uid": "string", "name_en": "string", "name_th": "string" },
         "unit_name": "string"
       }
     ],
@@ -124,18 +126,18 @@ Logic:
     - force the `merchant_uid` filter to own merchant uid
   - if role is `PRODUCT_OWNER`
     - use `merchant_uid` from query as is (optional)
-- Find products from database (join merchant to get `merchant_uid`, `mid`)
+- Find products from database (join merchant to get `merchant_uid`, left join `merchant_profile` to get `mid`, left join `brand`)
   - order by `id` descending (newest first)
   - offset = `(page - 1) * limit`, limit = `limit`
   - if `barcode` is provided, filter `barcode` with ILIKE `%barcode%`
-  - if `name` is provided, filter `name` with ILIKE `%name%`
+  - if `name` is provided, filter `name_en` ILIKE `%name%` OR `name_th` ILIKE `%name%`
   - if `merchant_uid` is provided, filter merchant `uid` equal to it
-  - if `brands` is not empty, filter `brand` IN `brands`
+  - if `brands` is not empty, filter `brand.uid` IN `brands`
   - if `units` is not empty, filter `unit_name` IN `units`
   - if `price` is provided, filter `base_price` <= `price`
-  - if `store_uid` is provided, join `store_product` and `store`, filter store `uid` equal to it
+  - if `store_uid` is provided, join `map_store_product` and `store`, filter store `uid` equal to it
   - all provided filters are combined with AND
 - Count total products with the same filter (`count(distinct product.id)`)
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response product list follow these items (uid, merchant_uid, mid, name, sku, barcode, base_price, image_url, brand, unit_name), total, page, limit
+- response product list follow these items (uid, merchant_uid, mid, name_en, name_th, sku, barcode, base_price, image_url, brand, unit_name), total, page, limit

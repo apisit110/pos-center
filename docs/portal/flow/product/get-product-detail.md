@@ -32,13 +32,14 @@ response body (fields below are the value of `data`, wrapped in [Ok](../../../ap
 | ------------ | -------- | ------------------------------------------------- |
 | uid          | string   | product uid                                       |
 | merchant_uid | string   | uid of the merchant that owns the product         |
-| mid          | string   | merchant id of the merchant that owns the product |
-| name         | string   | product name                                      |
-| sku          | string   | product sku, empty string if not set              |
+| mid          | string/null | merchant id of the merchant that owns the product (from `merchant_profile`) |
+| name_en      | string   | product name (English)                            |
+| name_th      | string   | product name (Thai)                               |
+| sku          | string   | product sku                                       |
 | barcode      | string   | product barcode, empty string if not set          |
-| base_price   | number   | base price (2 decimal places)                     |
-| image_url    | string[] | list of image url, empty array if not set         |
-| brand        | string   | brand name, empty string if not set               |
+| base_price   | number   | base price (max 4 decimal places)                 |
+| image_url    | string   | image url, empty string if not set                |
+| brand        | object/null | brand `{ uid, name_en, name_th }`, null if not set |
 | unit_name    | string   | unit name, empty string if not set                |
 
 example response body:
@@ -51,12 +52,13 @@ example response body:
     "uid": "string",
     "merchant_uid": "string",
     "mid": "string",
-    "name": "string",
+    "name_en": "string",
+    "name_th": "string",
     "sku": "string",
     "barcode": "string",
     "base_price": 25.5,
-    "image_url": ["string"],
-    "brand": "string",
+    "image_url": "string",
+    "brand": { "uid": "string", "name_en": "string", "name_th": "string" },
     "unit_name": "string"
   }
 }
@@ -77,7 +79,7 @@ Logic:
     - min: 1
     - required: true
     - If validation fails, throw [ValidationError.ErrInvalidRequest](../../../apiresponse/ValidationError.ts)
-- Find product by uid (path `id`) with its merchant (`merchant_uid`, `mid`)
+- Find product by uid (path `id`) with its merchant (`merchant_uid`, `mid` from `merchant_profile`) and brand
   - if not found, throw [ServiceError.ErrProductNotFound](../../../apiresponse/ServiceError.ts)
 - Check merchant ownership by role in access token
   - if role is `PRODUCT_OWNER`
@@ -87,4 +89,4 @@ Logic:
     - if not found or not equal to `merchant_uid` of the product, throw [ServiceError.ErrForbidden](../../../apiresponse/ServiceError.ts)
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response product follow these items (uid, merchant_uid, mid, name, sku, barcode, base_price, image_url, brand, unit_name)
+- response product follow these items (uid, merchant_uid, mid, name_en, name_th, sku, barcode, base_price, image_url, brand, unit_name)

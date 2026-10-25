@@ -28,23 +28,25 @@ request body:
 | key          | type               | required | description                                                                          |
 | ------------ | ------------------ | -------- | ------------------------------------------------------------------------------------ |
 | merchant_uid | string             | true     | merchant uid that owns the product, min length 1                                     |
-| name         | string             | true     | product name, trimmed, min length 1                                                  |
+| name_en      | string             | true     | product name (English), trimmed, min length 1, max length 255                        |
+| name_th      | string             | true     | product name (Thai), trimmed, min length 1, max length 255                           |
 | barcode      | string             | false    | product barcode. also used as `sku` (empty string if not provided)                   |
 | base_price   | number             | true     | base price, min 0 (coerce from string)                                               |
-| image_url    | string \| string[] | false    | image url, a single string is converted to an array of one item. default `[]`        |
-| brand        | string             | false    | brand name, default empty string                                                     |
-| unit_name    | string             | false    | unit name, default empty string                                                      |
+| image_url    | string             | false    | image url, max length 500, default null                                              |
+| brand_uid    | string             | false    | uid of an existing brand, default null                                               |
+| unit_name    | string             | false    | unit name, max length 50, default null                                               |
 
 example request body:
 
 ```json
 {
   "merchant_uid": "string",
-  "name": "string",
+  "name_en": "string",
+  "name_th": "string",
   "barcode": "string",
   "base_price": 25.5,
-  "image_url": ["string"],
-  "brand": "string",
+  "image_url": "string",
+  "brand_uid": "string",
   "unit_name": "string"
 }
 ```
@@ -57,13 +59,14 @@ same as [get product detail](get-product-detail.md)
 | ------------ | -------- | ------------------------------------------------- |
 | uid          | string   | product uid (generated)                           |
 | merchant_uid | string   | uid of the merchant that owns the product         |
-| mid          | string   | merchant id of the merchant that owns the product |
-| name         | string   | product name                                      |
+| mid          | string/null | merchant id of the merchant that owns the product |
+| name_en      | string   | product name (English)                            |
+| name_th      | string   | product name (Thai)                               |
 | sku          | string   | product sku (same as `barcode`)                   |
 | barcode      | string   | product barcode                                   |
 | base_price   | number   | base price                                        |
-| image_url    | string[] | list of image url                                 |
-| brand        | string   | brand name                                        |
+| image_url    | string   | image url, empty string if not set                |
+| brand        | object/null | brand `{ uid, name_en, name_th }`, null if not set |
 | unit_name    | string   | unit name                                         |
 
 example response body:
@@ -76,12 +79,13 @@ example response body:
     "uid": "string",
     "merchant_uid": "string",
     "mid": "string",
-    "name": "string",
+    "name_en": "string",
+    "name_th": "string",
     "sku": "string",
     "barcode": "string",
     "base_price": 25.5,
-    "image_url": ["string"],
-    "brand": "string",
+    "image_url": "string",
+    "brand": { "uid": "string", "name_en": "string", "name_th": "string" },
     "unit_name": "string"
   }
 }
@@ -101,20 +105,23 @@ Logic:
     - type: string
     - min: 1
     - required: true
-  - name
+  - name_en, name_th
     - type: string
     - trim: true
     - min: 1
+    - max: 255
     - required: true
-  - barcode, brand, unit_name
+  - barcode, brand_uid, unit_name
     - type: string
     - required: false
+    - `unit_name` max 50
   - base_price
     - type: number (coerce from string)
     - min: 0
     - required: true
   - image_url
-    - type: string or array of string
+    - type: string
+    - max: 500
     - required: false
   - If validation fails, throw [ValidationError.ErrInvalidRequest](../../../apiresponse/ValidationError.ts)
 - Check merchant ownership by role in access token
@@ -125,6 +132,8 @@ Logic:
     - if not found or not equal to `merchant_uid`, throw [ServiceError.ErrForbidden](../../../apiresponse/ServiceError.ts)
 - Find merchant by uid (`merchant_uid`)
   - if not found, throw [ServiceError.ErrMerchantNotFound](../../../apiresponse/ServiceError.ts)
+- if `brand_uid` is provided, find brand by uid
+  - if not found, throw [ValidationError.ErrInvalidRequest](../../../apiresponse/ValidationError.ts), `details` = `brand_uid: not found`
 - Generate product `uid` (uuid v4)
 - Check duplicate barcode (only if `barcode` is not empty)
   - Find product of the same merchant with the same `barcode`
@@ -132,12 +141,11 @@ Logic:
 - Normalize data
   - `sku` = `barcode` or empty string
   - `barcode` = `barcode` or empty string
-  - `image_url` = array of string (empty array if not provided)
-  - `brand`, `unit_name` = empty string if not provided
+  - `image_url`, `unit_name`, `brand_id` = null if not provided
 - Save product in database, in one transaction
-  - upsert product by `uid` (insert, or update when `uid` already exists)
-  - increase running number `product_version` by 1 (create the `product_version` row with number `1` if it does not exist yet)
-  - update `row_version` of every `store_product` of this product to the new `product_version` (so pos can sync the changed product)
+  - upsert product by `uid` (insert, or update when `uid` already exists) (merchant_id, brand_id, uid, name_en, name_th, sku, barcode, base_price, image_url, unit_name)
+  - increase running number `product_version` by 1 (create the `running_numbers` row of type `product_version` with number `1` if it does not exist yet)
+  - update `sync_version` of every `map_store_product` of this product to the new `product_version` (so pos can sync the changed product)
 - DTO Response
 - wrap the response with [Ok](../../../apiresponse/Ok.ts) (`res_code` `0000`), the response items below are `data`
-- response `201 Created` with product follow these items (uid, merchant_uid, mid, name, sku, barcode, base_price, image_url, brand, unit_name)
+- response `201 Created` with product follow these items (uid, merchant_uid, mid, name_en, name_th, sku, barcode, base_price, image_url, brand, unit_name)
