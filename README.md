@@ -21,7 +21,7 @@ rm -rf packages/database/drizzle
 pnpm --filter @pos-center/database db:generate
 pnpm --filter @pos-center/database db:migrate
 pnpm --filter @pos-center/database db:seed
-
+pnpm run dev
 
 ---
 

@@ -66,6 +66,7 @@ export default function LoginPage() {
               label={t.login.pin}
               value={pin}
               onChange={setPin}
+              masked
             />
 
             {error && <p style={{ color: '#f87171', fontSize: '0.8rem', marginBottom: '1rem' }}>{error}</p>}

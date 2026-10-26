@@ -9,7 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@apisit110/pos-ui": "^0.6.6",
+    "@apisit110/pos-ui": "^0.6.7",
     "axios": "^1.15.0",
     "dayjs": "^1.11.21",
     "exceljs": "^4.4.0",
