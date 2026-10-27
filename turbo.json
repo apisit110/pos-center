@@ -5,6 +5,9 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
+    "build:lambda": {
+      "outputs": ["dist-lambda/**"]
+    },
     "dev": {
       "cache": false,
       "persistent": true
