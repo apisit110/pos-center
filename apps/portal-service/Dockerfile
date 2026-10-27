@@ -23,7 +23,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
     pnpm install --frozen-lockfile --store-dir /pnpm/store
 
 COPY --from=pruner /app/out/full/ ./
-RUN pnpm turbo run build --filter=pos-center-portal-service
+RUN pnpm turbo run build --filter=portal-service
 
 # workspace packages point "main" at src/*.ts for dev; switch to compiled dist for runtime
 RUN for p in packages/*/package.json; do \

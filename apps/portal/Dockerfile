@@ -29,7 +29,7 @@ COPY --from=pruner /app/out/full/ ./
 # NEXT_PUBLIC_* is inlined into the client bundle at build time
 ARG NEXT_PUBLIC_API_URL=http://localhost:4001
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
-RUN pnpm turbo run build --filter=pos-center-portal
+RUN pnpm turbo run build --filter=portal
 
 # ---------- Stage 3: minimal runtime (bare Alpine + node binary only) ----------
 FROM alpine:${ALPINE_VERSION} AS runner

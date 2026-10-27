@@ -1,5 +1,5 @@
 {
-  "name": "pos-center-sync-service",
+  "name": "pos-sync-service",
   "version": "1.0.0",
   "description": "POS Sync Service",
   "main": "dist/index.js",

@@ -1,5 +1,5 @@
 {
-  "name": "pos-center-portal-service",
+  "name": "portal-service",
   "version": "1.0.0",
   "description": "Portal Service API",
   "main": "dist/index.js",
