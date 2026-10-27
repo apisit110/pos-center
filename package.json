@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "build": "turbo run build",
+    "build:portal": "turbo run build --filter=portal*",
+    "export:portal": "turbo run export --filter=portal",
     "dev": "turbo run dev",
     "dev:portal": "turbo run dev --filter=portal*",
     "dev:sync": "turbo run dev --filter=pos-sync*",

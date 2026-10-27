@@ -5,6 +5,10 @@
       "dependsOn": ["^build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
+    "export": {
+      "dependsOn": ["^build"],
+      "outputs": ["out/**"]
+    },
     "build:lambda": {
       "outputs": ["dist-lambda/**"]
     },
