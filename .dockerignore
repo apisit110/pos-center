@@ -1,0 +1,14 @@
+**/node_modules
+**/.next
+**/dist
+**/.turbo
+**/.env
+**/.env.*
+!**/.env.example
+**/*.tsbuildinfo
+.git
+.vscode
+.agents
+docs
+**/Dockerfile
+docker-compose*.yml
