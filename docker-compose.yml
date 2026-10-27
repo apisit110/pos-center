@@ -1,11 +1,3 @@
-# Production-like stack. Runtime env is written inline below (change the secrets before deploying).
-# From the shell: RELEASE (image tag, required) and NODE_AUTH_TOKEN (build only, github token with read:packages).
-#   RELEASE=1.0.0 NODE_AUTH_TOKEN=<github token with read:packages> docker compose build
-#   RELEASE=1.0.0 docker compose up -d postgres
-#   RELEASE=1.0.0 docker compose run --rm db-migrate
-#   RELEASE=1.0.0 docker compose run --rm db-seed      # first install / when seed data changes
-#   RELEASE=1.0.0 docker compose up -d
-
 x-database-url: &database-url postgres://postgres:change-me@postgres:5432/lightning_pos
 
 x-logging: &logging
@@ -31,15 +23,8 @@ services:
       retries: 10
     logging: *logging
 
-  # one-shot DB jobs, run manually (profile "tools" keeps them out of `up`):
-  #   RELEASE=1.0.0 docker compose run --rm db-migrate
-  #   RELEASE=1.0.0 docker compose run --rm db-seed
-  # reuses the portal-service image of the same release (ships packages/database/dist + drizzle/)
   db-migrate: &db-job
     image: pos-center/portal-service:${RELEASE:?set RELEASE e.g. RELEASE=1.0.0}
-    build:
-      context: .
-      dockerfile: apps/portal-service/Dockerfile
     profiles: ['tools']
     command: ['node', 'packages/database/dist/migrate.js']
     environment:
@@ -56,15 +41,11 @@ services:
 
   portal-service:
     image: pos-center/portal-service:${RELEASE:?set RELEASE e.g. RELEASE=1.0.0}
-    build:
-      context: .
-      dockerfile: apps/portal-service/Dockerfile
     restart: unless-stopped
     environment:
       PORT: 4001
       DATABASE_URL: *database-url
       JWT_SECRET: change-me
-      # browser origin of the portal (CORS)
       PORTAL_ORIGIN: http://localhost:4000
     ports:
       - '4001:4001'
@@ -75,9 +56,6 @@ services:
 
   pos-sync-service:
     image: pos-center/pos-sync-service:${RELEASE:?set RELEASE e.g. RELEASE=1.0.0}
-    build:
-      context: .
-      dockerfile: apps/pos-sync-service/Dockerfile
     restart: unless-stopped
     environment:
       PORT: 4002
@@ -92,14 +70,6 @@ services:
 
   portal:
     image: pos-center/portal:${RELEASE:?set RELEASE e.g. RELEASE=1.0.0}
-    build:
-      context: .
-      dockerfile: apps/portal/Dockerfile
-      args:
-        # called from the browser, so it must be a host-reachable URL
-        NEXT_PUBLIC_API_URL: http://localhost:4001
-      secrets:
-        - node_auth_token
     restart: unless-stopped
     ports:
       - '4000:4000'
@@ -107,10 +77,6 @@ services:
       portal-service:
         condition: service_healthy
     logging: *logging
-
-secrets:
-  node_auth_token:
-    environment: NODE_AUTH_TOKEN
 
 volumes:
   postgres_data:
