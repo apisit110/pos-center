@@ -17,7 +17,8 @@ export interface ApiErrorBody {
 export const DEFAULT_LANGUAGE = 'en';
 
 const ApiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001',
+  // an empty NEXT_PUBLIC_API_URL calls the api on the portal's own origin (CloudFront routes /api/* to Lambda)
+  baseURL: process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4001',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',

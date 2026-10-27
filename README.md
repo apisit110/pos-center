@@ -106,3 +106,14 @@ RELEASE=1.0.0 docker compose run --rm db-seed
 
 RELEASE=1.0.0 docker compose up -d
 ```
+
+
+---
+
+
+CloudFront
+Lambda Function URLs
+Supabase ใช้ HTTP-based API แทน TCP Connection
+
+
+---

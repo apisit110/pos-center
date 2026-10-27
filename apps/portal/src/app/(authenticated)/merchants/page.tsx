@@ -147,7 +147,7 @@ export default function MerchantsPage() {
         columns={columns}
         data={merchants}
         rowKey="uid"
-        onRowClick={(merchant) => router.push(`/merchants/${merchant.uid}`)}
+        onRowClick={(merchant) => router.push(`/merchants/detail?id=${merchant.uid}`)}
         totalItems={total}
         currentPage={page}
         pageSize={limit}

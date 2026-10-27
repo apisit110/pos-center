@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ApiMerchantRepository } from '../../../../infrastructure/repositories/ApiMerchantRepository';
 import { ApiStoreRepository } from '../../../../infrastructure/repositories/ApiStoreRepository';
 import { ApiStaffRepository } from '../../../../infrastructure/repositories/ApiStaffRepository';
@@ -252,8 +252,8 @@ const ErrorText = styled.div`
   font-size: 0.875rem;
 `;
 
-export default function MerchantDetailPage() {
-  const params = useParams();
+function MerchantDetailPageContent() {
+  const id = useSearchParams().get('id');
   const router = useRouter();
   const { t, language } = useTranslation();
   const [merchant, setMerchant] = useState<Merchant | null>(null);
@@ -269,7 +269,7 @@ export default function MerchantDetailPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!params.id) return;
+      if (!id) return;
 
       setLoading(true);
       setError(null);
@@ -281,7 +281,7 @@ export default function MerchantDetailPage() {
       const getStoresUseCase = new GetStoresUseCase(storeRepo);
       const getStaffUseCase = new GetStaffByMerchantUseCase(staffRepo);
 
-      const merchantId = params.id as string;
+      const merchantId = id;
       try {
         const [merchantData, storesData, staffData] = await Promise.all([
           getMerchantUseCase.execute(merchantId),
@@ -306,7 +306,7 @@ export default function MerchantDetailPage() {
     };
 
     fetchData();
-  }, [params.id]);
+  }, [id]);
 
   const storeColumns = [
     { header: t.merchantDetail.columnSid, key: 'sid', width: '150px' },
@@ -542,7 +542,7 @@ export default function MerchantDetailPage() {
             columns={storeColumns}
             data={stores}
             rowKey="uid"
-            onRowClick={(store) => router.push(`/stores/${store.uid}`)}
+            onRowClick={(store) => router.push(`/stores/detail?id=${store.uid}`)}
           />
         </Card>
 
@@ -558,7 +558,7 @@ export default function MerchantDetailPage() {
             data={terminals}
             rowKey="id"
             emptyMessage={t.merchantDetail.noTerminals}
-            onRowClick={(terminal) => router.push(`/stores/${terminal.storeId}`)}
+            onRowClick={(terminal) => router.push(`/stores/detail?id=${terminal.storeId}`)}
           />
         </Card>
 
@@ -576,5 +576,14 @@ export default function MerchantDetailPage() {
         </Card>
       </ContentGrid>
     </PageContainer>
+  );
+}
+
+// static export (S3) has no /merchants/[id] routes: the id comes from `?id=`, and useSearchParams needs a Suspense boundary
+export default function MerchantDetailPage() {
+  return (
+    <Suspense>
+      <MerchantDetailPageContent />
+    </Suspense>
   );
 }

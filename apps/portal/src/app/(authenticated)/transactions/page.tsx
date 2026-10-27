@@ -256,7 +256,7 @@ export default function TransactionsPage() {
         columns={columns}
         data={transactions}
         rowKey="id"
-        onRowClick={(tx) => router.push(`/transactions/${tx.id}`)}
+        onRowClick={(tx) => router.push(`/transactions/detail?id=${tx.id}`)}
         totalItems={total}
         currentPage={page}
         pageSize={limit}

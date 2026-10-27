@@ -26,6 +26,11 @@ export class SyncError extends Error {
     return new SyncError(403, 'Request does not match the token');
   }
 
+  /** the request did not come through CloudFront */
+  static forbiddenOrigin() {
+    return new SyncError(403, 'Forbidden');
+  }
+
   static terminalNotFound() {
     return new SyncError(404, 'Terminal not found');
   }

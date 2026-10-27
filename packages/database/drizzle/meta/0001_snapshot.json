@@ -1,0 +1,2669 @@
+{
+  "id": "4c503d39-1c74-4155-bcd9-3b81f8c8e1ec",
+  "prevId": "78d7c4db-f6bf-46ea-a33f-56cbf7464f3f",
+  "version": "6",
+  "dialect": "postgresql",
+  "tables": {
+    "public.merchant": {
+      "name": "merchant",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "uid": {
+          "name": "uid",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "partner_id": {
+          "name": "partner_id",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name_en": {
+          "name": "name_en",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name_th": {
+          "name": "name_th",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "merchant_uid_unique": {
+          "name": "merchant_uid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "uid"
+          ]
+        },
+        "merchant_partner_id_unique": {
+          "name": "merchant_partner_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "partner_id"
+          ]
+        }
+      }
+    },
+    "public.merchant_profile": {
+      "name": "merchant_profile",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "merchant_id": {
+          "name": "merchant_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mid": {
+          "name": "mid",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "merchant_profile_merchant_id_merchant_id_fk": {
+          "name": "merchant_profile_merchant_id_merchant_id_fk",
+          "tableFrom": "merchant_profile",
+          "tableTo": "merchant",
+          "columnsFrom": [
+            "merchant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "merchant_profile_mid_unique": {
+          "name": "merchant_profile_mid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "mid"
+          ]
+        }
+      }
+    },
+    "public.merchant_credential": {
+      "name": "merchant_credential",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "merchant_id": {
+          "name": "merchant_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider": {
+          "name": "provider",
+          "type": "merchant_credential_provider",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "client_id": {
+          "name": "client_id",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "client_secret": {
+          "name": "client_secret",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "merchant_credential_merchant_id_merchant_id_fk": {
+          "name": "merchant_credential_merchant_id_merchant_id_fk",
+          "tableFrom": "merchant_credential",
+          "tableTo": "merchant",
+          "columnsFrom": [
+            "merchant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "merchant_credential_client_id_unique": {
+          "name": "merchant_credential_client_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "client_id"
+          ]
+        },
+        "merchant_credential_merchant_provider_unique": {
+          "name": "merchant_credential_merchant_provider_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "merchant_id",
+            "provider"
+          ]
+        }
+      }
+    },
+    "public.master_provinces": {
+      "name": "master_provinces",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name_en": {
+          "name": "name_en",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name_th": {
+          "name": "name_th",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "master_provinces_code_unique": {
+          "name": "master_provinces_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        }
+      }
+    },
+    "public.master_districts": {
+      "name": "master_districts",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "province_id": {
+          "name": "province_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name_en": {
+          "name": "name_en",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name_th": {
+          "name": "name_th",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "master_districts_province_id_master_provinces_id_fk": {
+          "name": "master_districts_province_id_master_provinces_id_fk",
+          "tableFrom": "master_districts",
+          "tableTo": "master_provinces",
+          "columnsFrom": [
+            "province_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "master_districts_code_unique": {
+          "name": "master_districts_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        }
+      }
+    },
+    "public.master_sub_districts": {
+      "name": "master_sub_districts",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "district_id": {
+          "name": "district_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name_en": {
+          "name": "name_en",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name_th": {
+          "name": "name_th",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "latitude": {
+          "name": "latitude",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "longitude": {
+          "name": "longitude",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "master_sub_districts_district_id_master_districts_id_fk": {
+          "name": "master_sub_districts_district_id_master_districts_id_fk",
+          "tableFrom": "master_sub_districts",
+          "tableTo": "master_districts",
+          "columnsFrom": [
+            "district_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "master_sub_districts_code_unique": {
+          "name": "master_sub_districts_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        }
+      }
+    },
+    "public.master_postal_code": {
+      "name": "master_postal_code",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "sub_district_id": {
+          "name": "sub_district_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "code": {
+          "name": "code",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "master_postal_code_sub_district_id_master_sub_districts_id_fk": {
+          "name": "master_postal_code_sub_district_id_master_sub_districts_id_fk",
+          "tableFrom": "master_postal_code",
+          "tableTo": "master_sub_districts",
+          "columnsFrom": [
+            "sub_district_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "master_postal_code_sub_district_id_code_unique": {
+          "name": "master_postal_code_sub_district_id_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "sub_district_id",
+            "code"
+          ]
+        }
+      }
+    },
+    "public.address": {
+      "name": "address",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "province_id": {
+          "name": "province_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "district_id": {
+          "name": "district_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sub_district_id": {
+          "name": "sub_district_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "postal_code_id": {
+          "name": "postal_code_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address_1": {
+          "name": "address_1",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "latitude": {
+          "name": "latitude",
+          "type": "numeric(10, 7)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "longitude": {
+          "name": "longitude",
+          "type": "numeric(10, 7)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "address_province_id_master_provinces_id_fk": {
+          "name": "address_province_id_master_provinces_id_fk",
+          "tableFrom": "address",
+          "tableTo": "master_provinces",
+          "columnsFrom": [
+            "province_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "address_district_id_master_districts_id_fk": {
+          "name": "address_district_id_master_districts_id_fk",
+          "tableFrom": "address",
+          "tableTo": "master_districts",
+          "columnsFrom": [
+            "district_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "address_sub_district_id_master_sub_districts_id_fk": {
+          "name": "address_sub_district_id_master_sub_districts_id_fk",
+          "tableFrom": "address",
+          "tableTo": "master_sub_districts",
+          "columnsFrom": [
+            "sub_district_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "address_postal_code_id_master_postal_code_id_fk": {
+          "name": "address_postal_code_id_master_postal_code_id_fk",
+          "tableFrom": "address",
+          "tableTo": "master_postal_code",
+          "columnsFrom": [
+            "postal_code_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.map_store_address": {
+      "name": "map_store_address",
+      "schema": "",
+      "columns": {
+        "store_id": {
+          "name": "store_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address_id": {
+          "name": "address_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "address_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "map_store_address_store_id_store_id_fk": {
+          "name": "map_store_address_store_id_store_id_fk",
+          "tableFrom": "map_store_address",
+          "tableTo": "store",
+          "columnsFrom": [
+            "store_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "map_store_address_address_id_address_id_fk": {
+          "name": "map_store_address_address_id_address_id_fk",
+          "tableFrom": "map_store_address",
+          "tableTo": "address",
+          "columnsFrom": [
+            "address_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "map_store_address_store_id_address_id_pk": {
+          "name": "map_store_address_store_id_address_id_pk",
+          "columns": [
+            "store_id",
+            "address_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.store": {
+      "name": "store",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "merchant_id": {
+          "name": "merchant_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "uid": {
+          "name": "uid",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sid": {
+          "name": "sid",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name_en": {
+          "name": "name_en",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name_th": {
+          "name": "name_th",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "store_merchant_id_merchant_id_fk": {
+          "name": "store_merchant_id_merchant_id_fk",
+          "tableFrom": "store",
+          "tableTo": "merchant",
+          "columnsFrom": [
+            "merchant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "store_uid_unique": {
+          "name": "store_uid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "uid"
+          ]
+        },
+        "store_sid_unique": {
+          "name": "store_sid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "sid"
+          ]
+        }
+      }
+    },
+    "public.terminal": {
+      "name": "terminal",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "uid": {
+          "name": "uid",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "tid": {
+          "name": "tid",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name_en": {
+          "name": "name_en",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name_th": {
+          "name": "name_th",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "terminal_uid_unique": {
+          "name": "terminal_uid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "uid"
+          ]
+        },
+        "terminal_tid_unique": {
+          "name": "terminal_tid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "tid"
+          ]
+        }
+      }
+    },
+    "public.map_store_terminal": {
+      "name": "map_store_terminal",
+      "schema": "",
+      "columns": {
+        "store_id": {
+          "name": "store_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "terminal_id": {
+          "name": "terminal_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "map_store_terminal_store_id_store_id_fk": {
+          "name": "map_store_terminal_store_id_store_id_fk",
+          "tableFrom": "map_store_terminal",
+          "tableTo": "store",
+          "columnsFrom": [
+            "store_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "map_store_terminal_terminal_id_terminal_id_fk": {
+          "name": "map_store_terminal_terminal_id_terminal_id_fk",
+          "tableFrom": "map_store_terminal",
+          "tableTo": "terminal",
+          "columnsFrom": [
+            "terminal_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "map_store_terminal_store_id_terminal_id_pk": {
+          "name": "map_store_terminal_store_id_terminal_id_pk",
+          "columns": [
+            "store_id",
+            "terminal_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.brand": {
+      "name": "brand",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "uid": {
+          "name": "uid",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name_en": {
+          "name": "name_en",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name_th": {
+          "name": "name_th",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "brand_uid_unique": {
+          "name": "brand_uid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "uid"
+          ]
+        }
+      }
+    },
+    "public.product": {
+      "name": "product",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "merchant_id": {
+          "name": "merchant_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "brand_id": {
+          "name": "brand_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "uid": {
+          "name": "uid",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name_en": {
+          "name": "name_en",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name_th": {
+          "name": "name_th",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sku": {
+          "name": "sku",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "barcode": {
+          "name": "barcode",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "base_price": {
+          "name": "base_price",
+          "type": "numeric(10, 4)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image_url": {
+          "name": "image_url",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "unit_name": {
+          "name": "unit_name",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "product_merchant_id_merchant_id_fk": {
+          "name": "product_merchant_id_merchant_id_fk",
+          "tableFrom": "product",
+          "tableTo": "merchant",
+          "columnsFrom": [
+            "merchant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "product_brand_id_brand_id_fk": {
+          "name": "product_brand_id_brand_id_fk",
+          "tableFrom": "product",
+          "tableTo": "brand",
+          "columnsFrom": [
+            "brand_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "product_uid_unique": {
+          "name": "product_uid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "uid"
+          ]
+        }
+      }
+    },
+    "public.map_store_product": {
+      "name": "map_store_product",
+      "schema": "",
+      "columns": {
+        "store_id": {
+          "name": "store_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stock": {
+          "name": "stock",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price": {
+          "name": "price",
+          "type": "numeric(10, 4)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sync_version": {
+          "name": "sync_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "map_store_product_store_id_sync_version_idx": {
+          "name": "map_store_product_store_id_sync_version_idx",
+          "columns": [
+            "store_id",
+            "sync_version"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "map_store_product_store_id_store_id_fk": {
+          "name": "map_store_product_store_id_store_id_fk",
+          "tableFrom": "map_store_product",
+          "tableTo": "store",
+          "columnsFrom": [
+            "store_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "map_store_product_product_id_product_id_fk": {
+          "name": "map_store_product_product_id_product_id_fk",
+          "tableFrom": "map_store_product",
+          "tableTo": "product",
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "map_store_product_store_id_product_id_pk": {
+          "name": "map_store_product_store_id_product_id_pk",
+          "columns": [
+            "store_id",
+            "product_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.member": {
+      "name": "member",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "phone_no": {
+          "name": "phone_no",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "member_phone_no_unique": {
+          "name": "member_phone_no_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "phone_no"
+          ]
+        }
+      }
+    },
+    "public.wallet": {
+      "name": "wallet",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "balance": {
+          "name": "balance",
+          "type": "numeric(10, 4)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'0'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.map_member_wallet": {
+      "name": "map_member_wallet",
+      "schema": "",
+      "columns": {
+        "member_id": {
+          "name": "member_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wallet_id": {
+          "name": "wallet_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "wallet_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "map_member_wallet_member_id_member_id_fk": {
+          "name": "map_member_wallet_member_id_member_id_fk",
+          "tableFrom": "map_member_wallet",
+          "tableTo": "member",
+          "columnsFrom": [
+            "member_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "map_member_wallet_wallet_id_wallet_id_fk": {
+          "name": "map_member_wallet_wallet_id_wallet_id_fk",
+          "tableFrom": "map_member_wallet",
+          "tableTo": "wallet",
+          "columnsFrom": [
+            "wallet_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "map_member_wallet_member_id_wallet_id_pk": {
+          "name": "map_member_wallet_member_id_wallet_id_pk",
+          "columns": [
+            "member_id",
+            "wallet_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.center_staff": {
+      "name": "center_staff",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "uid": {
+          "name": "uid",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "full_name": {
+          "name": "full_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "center_staff_username_idx": {
+          "name": "center_staff_username_idx",
+          "columns": [
+            "username"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "center_staff_uid_unique": {
+          "name": "center_staff_uid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "uid"
+          ]
+        }
+      }
+    },
+    "public.pin": {
+      "name": "pin",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "uuid": {
+          "name": "uuid",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "app_id": {
+          "name": "app_id",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pin_hash": {
+          "name": "pin_hash",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pin_failed_attempts": {
+          "name": "pin_failed_attempts",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "pin_locked_until": {
+          "name": "pin_locked_until",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "pin_username_idx": {
+          "name": "pin_username_idx",
+          "columns": [
+            "username"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "pin_uuid_unique": {
+          "name": "pin_uuid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "uuid"
+          ]
+        }
+      }
+    },
+    "public.center_role": {
+      "name": "center_role",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.center_permission": {
+      "name": "center_permission",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.center_staff_role": {
+      "name": "center_staff_role",
+      "schema": "",
+      "columns": {
+        "staff_id": {
+          "name": "staff_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role_id": {
+          "name": "role_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "center_staff_role_staff_id_center_staff_id_fk": {
+          "name": "center_staff_role_staff_id_center_staff_id_fk",
+          "tableFrom": "center_staff_role",
+          "tableTo": "center_staff",
+          "columnsFrom": [
+            "staff_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "center_staff_role_role_id_center_role_id_fk": {
+          "name": "center_staff_role_role_id_center_role_id_fk",
+          "tableFrom": "center_staff_role",
+          "tableTo": "center_role",
+          "columnsFrom": [
+            "role_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "center_staff_role_staff_id_role_id_pk": {
+          "name": "center_staff_role_staff_id_role_id_pk",
+          "columns": [
+            "staff_id",
+            "role_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.center_role_permission": {
+      "name": "center_role_permission",
+      "schema": "",
+      "columns": {
+        "role_id": {
+          "name": "role_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "permission_id": {
+          "name": "permission_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "center_role_permission_role_id_center_role_id_fk": {
+          "name": "center_role_permission_role_id_center_role_id_fk",
+          "tableFrom": "center_role_permission",
+          "tableTo": "center_role",
+          "columnsFrom": [
+            "role_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "center_role_permission_permission_id_center_permission_id_fk": {
+          "name": "center_role_permission_permission_id_center_permission_id_fk",
+          "tableFrom": "center_role_permission",
+          "tableTo": "center_permission",
+          "columnsFrom": [
+            "permission_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "center_role_permission_role_id_permission_id_pk": {
+          "name": "center_role_permission_role_id_permission_id_pk",
+          "columns": [
+            "role_id",
+            "permission_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.cashier_staff": {
+      "name": "cashier_staff",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "merchant_id": {
+          "name": "merchant_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "uid": {
+          "name": "uid",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "username": {
+          "name": "username",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "full_name": {
+          "name": "full_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "cashier_staff_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sync_status": {
+          "name": "sync_status",
+          "type": "cashier_staff_sync_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "sync_id": {
+          "name": "sync_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "cashier_staff_username_idx": {
+          "name": "cashier_staff_username_idx",
+          "columns": [
+            "username"
+          ],
+          "isUnique": false
+        },
+        "cashier_staff_merchant_id_idx": {
+          "name": "cashier_staff_merchant_id_idx",
+          "columns": [
+            "merchant_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "cashier_staff_merchant_id_merchant_id_fk": {
+          "name": "cashier_staff_merchant_id_merchant_id_fk",
+          "tableFrom": "cashier_staff",
+          "tableTo": "merchant",
+          "columnsFrom": [
+            "merchant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "cashier_staff_uid_unique": {
+          "name": "cashier_staff_uid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "uid"
+          ]
+        }
+      }
+    },
+    "public.cashier_role": {
+      "name": "cashier_role",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.cashier_permission": {
+      "name": "cashier_permission",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.cashier_staff_role": {
+      "name": "cashier_staff_role",
+      "schema": "",
+      "columns": {
+        "staff_id": {
+          "name": "staff_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "role_id": {
+          "name": "role_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "cashier_staff_role_staff_id_cashier_staff_id_fk": {
+          "name": "cashier_staff_role_staff_id_cashier_staff_id_fk",
+          "tableFrom": "cashier_staff_role",
+          "tableTo": "cashier_staff",
+          "columnsFrom": [
+            "staff_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "cashier_staff_role_role_id_cashier_role_id_fk": {
+          "name": "cashier_staff_role_role_id_cashier_role_id_fk",
+          "tableFrom": "cashier_staff_role",
+          "tableTo": "cashier_role",
+          "columnsFrom": [
+            "role_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "cashier_staff_role_staff_id_role_id_pk": {
+          "name": "cashier_staff_role_staff_id_role_id_pk",
+          "columns": [
+            "staff_id",
+            "role_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {}
+    },
+    "public.cashier_role_permissions": {
+      "name": "cashier_role_permissions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "role_id": {
+          "name": "role_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "permission_key": {
+          "name": "permission_key",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_granted": {
+          "name": "is_granted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "cashier_role_permissions_role_id_cashier_role_id_fk": {
+          "name": "cashier_role_permissions_role_id_cashier_role_id_fk",
+          "tableFrom": "cashier_role_permissions",
+          "tableTo": "cashier_role",
+          "columnsFrom": [
+            "role_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.running_numbers": {
+      "name": "running_numbers",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "type": {
+          "name": "type",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "number": {
+          "name": "number",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "running_numbers_type_unique": {
+          "name": "running_numbers_type_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "type"
+          ]
+        }
+      }
+    },
+    "public.sync_metadata": {
+      "name": "sync_metadata",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "last_product_sync_version": {
+          "name": "last_product_sync_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "status": {
+          "name": "status",
+          "type": "sync_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'IDLE'"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.order": {
+      "name": "order",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "merchant_id": {
+          "name": "merchant_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "store_id": {
+          "name": "store_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "terminal_id": {
+          "name": "terminal_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "cashier_staff_id": {
+          "name": "cashier_staff_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "member_id": {
+          "name": "member_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "order_id": {
+          "name": "order_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "total_amount": {
+          "name": "total_amount",
+          "type": "numeric(10, 4)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_synced": {
+          "name": "is_synced",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "order_merchant_id_merchant_id_fk": {
+          "name": "order_merchant_id_merchant_id_fk",
+          "tableFrom": "order",
+          "tableTo": "merchant",
+          "columnsFrom": [
+            "merchant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "order_store_id_store_id_fk": {
+          "name": "order_store_id_store_id_fk",
+          "tableFrom": "order",
+          "tableTo": "store",
+          "columnsFrom": [
+            "store_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "order_terminal_id_terminal_id_fk": {
+          "name": "order_terminal_id_terminal_id_fk",
+          "tableFrom": "order",
+          "tableTo": "terminal",
+          "columnsFrom": [
+            "terminal_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "order_cashier_staff_id_cashier_staff_id_fk": {
+          "name": "order_cashier_staff_id_cashier_staff_id_fk",
+          "tableFrom": "order",
+          "tableTo": "cashier_staff",
+          "columnsFrom": [
+            "cashier_staff_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "order_member_id_member_id_fk": {
+          "name": "order_member_id_member_id_fk",
+          "tableFrom": "order",
+          "tableTo": "member",
+          "columnsFrom": [
+            "member_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "order_order_id_unique": {
+          "name": "order_order_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "order_id"
+          ]
+        }
+      }
+    },
+    "public.order_items": {
+      "name": "order_items",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "order_id": {
+          "name": "order_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "product_id": {
+          "name": "product_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price": {
+          "name": "price",
+          "type": "numeric(10, 4)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "order_items_order_id_order_id_fk": {
+          "name": "order_items_order_id_order_id_fk",
+          "tableFrom": "order_items",
+          "tableTo": "order",
+          "columnsFrom": [
+            "order_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "order_items_product_id_product_id_fk": {
+          "name": "order_items_product_id_product_id_fk",
+          "tableFrom": "order_items",
+          "tableTo": "product",
+          "columnsFrom": [
+            "product_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.order_sync_logs": {
+      "name": "order_sync_logs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "store_id": {
+          "name": "store_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "pos_temp_id": {
+          "name": "pos_temp_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "global_order_id": {
+          "name": "global_order_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "synced_at": {
+          "name": "synced_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "order_sync_logs_pos_temp_id_idx": {
+          "name": "order_sync_logs_pos_temp_id_idx",
+          "columns": [
+            "pos_temp_id"
+          ],
+          "isUnique": false
+        },
+        "order_sync_logs_global_order_id_idx": {
+          "name": "order_sync_logs_global_order_id_idx",
+          "columns": [
+            "global_order_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "order_sync_logs_store_id_store_id_fk": {
+          "name": "order_sync_logs_store_id_store_id_fk",
+          "tableFrom": "order_sync_logs",
+          "tableTo": "store",
+          "columnsFrom": [
+            "store_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.transactions": {
+      "name": "transactions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "uid": {
+          "name": "uid",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "order_id": {
+          "name": "order_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "merchant_id": {
+          "name": "merchant_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "store_id": {
+          "name": "store_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "terminal_id": {
+          "name": "terminal_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "amount": {
+          "name": "amount",
+          "type": "numeric(10, 4)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "received_amount": {
+          "name": "received_amount",
+          "type": "numeric(10, 4)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "change_amount": {
+          "name": "change_amount",
+          "type": "numeric(10, 4)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "payment_method": {
+          "name": "payment_method",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "staff_name": {
+          "name": "staff_name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "transactions_order_id_idx": {
+          "name": "transactions_order_id_idx",
+          "columns": [
+            "order_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "transactions_uid_unique": {
+          "name": "transactions_uid_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "uid"
+          ]
+        }
+      }
+    },
+    "public.transaction_sync_logs": {
+      "name": "transaction_sync_logs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "pos_temp_id": {
+          "name": "pos_temp_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "store_id": {
+          "name": "store_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "global_transaction_id": {
+          "name": "global_transaction_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "synced_at": {
+          "name": "synced_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "transaction_sync_logs_pos_temp_id_idx": {
+          "name": "transaction_sync_logs_pos_temp_id_idx",
+          "columns": [
+            "pos_temp_id"
+          ],
+          "isUnique": false
+        },
+        "transaction_sync_logs_global_transaction_id_idx": {
+          "name": "transaction_sync_logs_global_transaction_id_idx",
+          "columns": [
+            "global_transaction_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.rate_limits": {
+      "name": "rate_limits",
+      "schema": "",
+      "columns": {
+        "key": {
+          "name": "key",
+          "type": "varchar(255)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "hits": {
+          "name": "hits",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "reset_at": {
+          "name": "reset_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {
+    "public.merchant_credential_provider": {
+      "name": "merchant_credential_provider",
+      "schema": "public",
+      "values": [
+        "POS_CASHIER"
+      ]
+    },
+    "public.address_type": {
+      "name": "address_type",
+      "schema": "public",
+      "values": [
+        "REGISTERED",
+        "CONTRACT"
+      ]
+    },
+    "public.wallet_type": {
+      "name": "wallet_type",
+      "schema": "public",
+      "values": [
+        "POINT",
+        "CASH"
+      ]
+    },
+    "public.cashier_staff_status": {
+      "name": "cashier_staff_status",
+      "schema": "public",
+      "values": [
+        "PENDING",
+        "ACTIVE",
+        "SUSPENDED",
+        "INACTIVE"
+      ]
+    },
+    "public.cashier_staff_sync_status": {
+      "name": "cashier_staff_sync_status",
+      "schema": "public",
+      "values": [
+        "PENDING",
+        "SYNCED",
+        "ERROR"
+      ]
+    },
+    "public.sync_status": {
+      "name": "sync_status",
+      "schema": "public",
+      "values": [
+        "IDLE",
+        "SYNCING",
+        "ERROR",
+        "SUCCESS"
+      ]
+    }
+  },
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

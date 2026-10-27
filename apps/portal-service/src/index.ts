@@ -62,6 +62,7 @@ import { BrandController } from './presentation/controllers/BrandController';
 import { loggerMiddleware } from './presentation/middleware/LoggerMiddleware';
 import { errorMiddleware } from './presentation/middleware/ErrorMiddleware';
 import { serviceAuthMiddleware } from './presentation/middleware/AuthMiddleware';
+import { originSecretMiddleware } from './presentation/middleware/CloudFrontMiddleware';
 
 // Presentation: Routes
 import { authRoutes } from './presentation/routes/auth.routes';
@@ -142,6 +143,9 @@ app.use(loggerMiddleware);
 app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'ok' });
 });
+
+// serverless: only CloudFront may call the Lambda Function URL
+app.use(originSecretMiddleware(process.env.ORIGIN_SECRET));
 
 // Public routes
 app.use('/api/v1/auth', authRoutes(authController, JWT_SECRET));

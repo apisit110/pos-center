@@ -34,3 +34,4 @@ export * from './orderItems';
 export * from './orderSyncLogs';
 export * from './transactions';
 export * from './transactionSyncLogs';
+export * from './rateLimits';

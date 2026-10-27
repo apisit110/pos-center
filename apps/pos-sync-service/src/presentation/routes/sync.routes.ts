@@ -1,6 +1,8 @@
 import { RequestHandler, Router } from 'express';
 import rateLimit, { RateLimitInfo } from 'express-rate-limit';
+import { PostgresRateLimitStore } from '@pos-center/database';
 import { SyncError } from '../../application/errors/SyncError';
+import { clientIp } from '../middleware/CloudFrontMiddleware';
 import { ProductSyncController } from '../controllers/ProductSyncController';
 import { OrderSyncController } from '../controllers/OrderSyncController';
 import { TransactionSyncController } from '../controllers/TransactionSyncController';
@@ -13,8 +15,12 @@ const tokenRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 10,
   skipSuccessfulRequests: true,
-  // every terminal reaches the service through the docker gateway ip, so also key by client id
-  keyGenerator: (req) => `${req.ip}:${req.get('x-client-id') ?? ''}`,
+  // counted in postgres: every Lambda instance sees the same hits
+  store: new PostgresRateLimitStore('sync-token'),
+  // terminals of one shop share a public ip (and the docker gateway ip locally), so also key by client id
+  keyGenerator: (req) => `${clientIp(req)}:${req.get('x-client-id') ?? ''}`,
+  // X-Forwarded-For from CloudFront is expected and never trusted (clientIp reads CloudFront-Viewer-Address)
+  validate: { xForwardedForHeader: false },
   standardHeaders: true,
   legacyHeaders: false,
   handler: (req, res, next) => {

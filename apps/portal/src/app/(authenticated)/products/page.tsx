@@ -249,7 +249,7 @@ export default function ProductsPage() {
       <DataTable
         columns={columns}
         data={products}
-        onRowClick={(product) => router.push(`/products/${product.id}`)}
+        onRowClick={(product) => router.push(`/products/detail?id=${product.id}`)}
         totalItems={total}
         currentPage={page}
         pageSize={limit}

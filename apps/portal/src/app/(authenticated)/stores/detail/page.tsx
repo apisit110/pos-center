@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ApiStoreRepository } from '../../../../infrastructure/repositories/ApiStoreRepository';
 import { ApiTerminalRepository } from '../../../../infrastructure/repositories/ApiTerminalRepository';
 import { GetStoreDetailUseCase } from '../../../../domain/usecases/GetStoreDetailUseCase';
@@ -69,8 +69,8 @@ const SectionTitle = styled.h2`
   color: var(--text-main);
 `;
 
-export default function StoreDetailPage() {
-  const params = useParams();
+function StoreDetailPageContent() {
+  const id = useSearchParams().get('id');
   const router = useRouter();
   const { language } = useTranslation();
   const [store, setStore] = useState<Store | null>(null);
@@ -79,7 +79,7 @@ export default function StoreDetailPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (!params.id) return;
+      if (!id) return;
       
       setLoading(true);
       const storeRepo = new ApiStoreRepository();
@@ -88,7 +88,7 @@ export default function StoreDetailPage() {
       const getStoreDetailUseCase = new GetStoreDetailUseCase(storeRepo);
       const getTerminalsUseCase = new GetTerminalsByStoreUseCase(terminalRepo);
       
-      const storeId = params.id as string;
+      const storeId = id;
       const [storeData, terminalsData] = await Promise.all([
         getStoreDetailUseCase.execute(storeId),
         getTerminalsUseCase.execute(storeId)
@@ -100,7 +100,7 @@ export default function StoreDetailPage() {
     };
 
     fetchData();
-  }, [params.id]);
+  }, [id]);
 
   const terminalColumns = [
     { header: 'Terminal ID', key: 'tid' },
@@ -156,5 +156,14 @@ export default function StoreDetailPage() {
         data={terminals} 
       />
     </PageContainer>
+  );
+}
+
+// static export (S3) has no /stores/[id] routes: the id comes from `?id=`, and useSearchParams needs a Suspense boundary
+export default function StoreDetailPage() {
+  return (
+    <Suspense>
+      <StoreDetailPageContent />
+    </Suspense>
   );
 }

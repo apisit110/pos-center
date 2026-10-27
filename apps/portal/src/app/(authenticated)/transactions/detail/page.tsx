@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Button, DataTable, StatusTimeline } from '@apisit110/pos-ui';
 import type { TimelineStep } from '@apisit110/pos-ui';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { GetTransactionDetailUseCase } from '../../../../domain/usecases/GetTransactionDetailUseCase';
 import { ApiTransactionRepository } from '../../../../infrastructure/repositories/ApiTransactionRepository';
 import { TransactionDetail, TransactionItem } from '../../../../domain/entities/Transaction';
@@ -105,8 +105,8 @@ const LoadingSpinner = styled.div`
 
 const capitalize = (value: string) => (value ? value.charAt(0).toUpperCase() + value.slice(1).toLowerCase() : '-');
 
-export default function TransactionDetailPage() {
-  const params = useParams();
+function TransactionDetailPageContent() {
+  const id = useSearchParams().get('id');
   const router = useRouter();
   const { t, language } = useTranslation();
   const td = t.transactionDetail;
@@ -136,10 +136,10 @@ export default function TransactionDetailPage() {
     let cancelled = false;
 
     const load = async () => {
-      if (!params.id) return;
+      if (!id) return;
       try {
         const useCase = new GetTransactionDetailUseCase(new ApiTransactionRepository());
-        const result = await useCase.execute(params.id as string);
+        const result = await useCase.execute(id);
         if (!cancelled) setDetail(result);
       } catch {
         if (!cancelled) setDetail(null);
@@ -150,7 +150,7 @@ export default function TransactionDetailPage() {
 
     load();
     return () => { cancelled = true; };
-  }, [params.id]);
+  }, [id]);
 
   if (loading) return <LoadingSpinner />;
   if (!detail) return <div style={{ padding: '2rem', textAlign: 'center' }}>{td.notFound}</div>;
@@ -240,5 +240,14 @@ export default function TransactionDetailPage() {
         </TotalRow>
       </Card>
     </Container>
+  );
+}
+
+// static export (S3) has no /transactions/[id] routes: the id comes from `?id=`, and useSearchParams needs a Suspense boundary
+export default function TransactionDetailPage() {
+  return (
+    <Suspense>
+      <TransactionDetailPageContent />
+    </Suspense>
   );
 }

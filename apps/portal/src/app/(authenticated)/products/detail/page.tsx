@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Button } from '@apisit110/pos-ui';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { GetProductUseCase } from '../../../../domain/usecases/GetProductUseCase';
 import { ApiProductRepository } from '../../../../infrastructure/repositories/ApiProductRepository';
 import { Product } from '../../../../domain/entities/Product';
@@ -240,8 +240,8 @@ const NavButton = styled.button`
   }
 `;
 
-export default function ProductDetailPage() {
-  const params = useParams();
+function ProductDetailPageContent() {
+  const id = useSearchParams().get('id');
   const router = useRouter();
   const { t, language } = useTranslation();
   const td = t.productDetail;
@@ -262,18 +262,18 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      if (!params.id) return;
+      if (!id) return;
       
       const repository = new ApiProductRepository();
       const useCase = new GetProductUseCase(repository);
-      const result = await useCase.execute(params.id as string);
+      const result = await useCase.execute(id);
       
       setProduct(result);
       setLoading(false);
     };
 
     fetchProduct();
-  }, [params.id]);
+  }, [id]);
 
   if (loading) return <LoadingSpinner />;
   if (!product) return <div style={{ padding: '2rem', textAlign: 'center' }}>{td.notFound}</div>;
@@ -405,5 +405,14 @@ export default function ProductDetailPage() {
         </div>
       </Card>
     </Container>
+  );
+}
+
+// static export (S3) has no /products/[id] routes: the id comes from `?id=`, and useSearchParams needs a Suspense boundary
+export default function ProductDetailPage() {
+  return (
+    <Suspense>
+      <ProductDetailPageContent />
+    </Suspense>
   );
 }

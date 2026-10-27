@@ -32,6 +32,7 @@ import { createSyncRouter } from './presentation/routes/sync.routes';
 import { loggerMiddleware } from './presentation/middleware/LoggerMiddleware';
 import { errorMiddleware } from './presentation/middleware/ErrorMiddleware';
 import { syncTokenMiddleware } from './presentation/middleware/SyncTokenMiddleware';
+import { originSecretMiddleware } from './presentation/middleware/CloudFrontMiddleware';
 
 const app = express();
 const port = process.env.PORT || 4002;
@@ -44,6 +45,8 @@ if (!SYNC_JWT_SECRET) {
 app.use(cors());
 app.use(express.json());
 app.use(loggerMiddleware);
+// serverless: only CloudFront may call the Lambda Function URL (/health stays open)
+app.use(originSecretMiddleware(process.env.ORIGIN_SECRET));
 
 // Initialize Infrastructure (repositories)
 const productRepo = new DrizzleProductRepository();

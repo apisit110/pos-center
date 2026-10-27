@@ -39,9 +39,12 @@ FROM alpine:${ALPINE_VERSION} AS runner
 RUN apk add --no-cache libstdc++ tini && \
     addgroup -S app && adduser -S app -G app
 COPY --from=builder /usr/local/bin/node /usr/local/bin/node
+# AWS Lambda Web Adapter: on Lambda it turns invocations into HTTP requests to the express server on $PORT;
+# outside Lambda (docker compose) the extension is never started
+COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.9.1 /lambda-adapter /opt/extensions/lambda-adapter
 
 WORKDIR /app
-ENV NODE_ENV=production PORT=4002
+ENV NODE_ENV=production PORT=4002 AWS_LWA_READINESS_CHECK_PATH=/health
 
 COPY --from=builder --chown=app:app /app/node_modules ./node_modules
 COPY --from=builder --chown=app:app /app/packages ./packages
