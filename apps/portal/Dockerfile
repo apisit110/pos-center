@@ -9,7 +9,7 @@ FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS pruner
 WORKDIR /app
 RUN npm install -g turbo@2.9.6
 COPY . .
-RUN turbo prune pos-center-portal --docker
+RUN turbo prune portal --docker
 
 # ---------- Stage 2: install + next build (standalone output) ----------
 FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS builder
