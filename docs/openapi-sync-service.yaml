@@ -14,6 +14,8 @@ info:
        -> { access_token, token_type: "Bearer", expires_in: 3600 }
     2) every other sync api           Authorization: Bearer <access_token>
     3) 401 "Token expired"            -> request a new token (step 1) and retry
+    4) 401 / 429 from step 1          -> do not retry right away: wait `Retry-After` (429) or back off,
+                                         keep unsynced data for later instead of counting it as failed
     ```
 
     The token belongs to one terminal (claims `sub` = tid, `mid` = partner_id, `sid` = store sid).
@@ -71,6 +73,10 @@ paths:
         then signs a JWT (HS256, `iss` = `pos-sync-service`, `aud` = `pos-cashier`, expires in 3600 seconds).
 
         `401 Invalid credential` is the same for wrong partner id, client id or client secret.
+
+        **Rate limit**: at most 10 failed requests (any 4xx / 5xx) per 15 minutes per client IP + `x-client-id`,
+        successful requests are not counted. Over the limit every request (even with a correct credential)
+        gets `429` until the window ends.
       security: []
       parameters:
         - name: x-partner-id
@@ -143,6 +149,34 @@ paths:
                 request_id: da8e72fa-34c7-419e-932a-c3436fdad704
         '404':
           $ref: '#/components/responses/TerminalNotFound'
+        '429':
+          description: Too many failed token requests, wait `Retry-After` seconds before requesting again
+          headers:
+            Retry-After:
+              description: Seconds until the rate limit window ends
+              schema:
+                type: integer
+                example: 840
+            RateLimit-Limit:
+              schema:
+                type: integer
+                example: 10
+            RateLimit-Remaining:
+              schema:
+                type: integer
+                example: 0
+            RateLimit-Reset:
+              description: Seconds until the rate limit window ends
+              schema:
+                type: integer
+                example: 840
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                message: Too many failed token requests
+                request_id: da8e72fa-34c7-419e-932a-c3436fdad704
         '500':
           $ref: '#/components/responses/InternalServerError'
 

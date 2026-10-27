@@ -1,10 +1,29 @@
 import { RequestHandler, Router } from 'express';
+import rateLimit, { RateLimitInfo } from 'express-rate-limit';
+import { SyncError } from '../../application/errors/SyncError';
 import { ProductSyncController } from '../controllers/ProductSyncController';
 import { OrderSyncController } from '../controllers/OrderSyncController';
 import { TransactionSyncController } from '../controllers/TransactionSyncController';
 import { CashierProfileSyncController } from '../controllers/CashierProfileSyncController';
 import { SyncAuthController } from '../controllers/SyncAuthController';
 import { SyncStateController } from '../controllers/SyncStateController';
+
+// only failed requests count: guards the client secret against brute force and buggy clients retrying forever
+const tokenRateLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 10,
+  skipSuccessfulRequests: true,
+  // every terminal reaches the service through the docker gateway ip, so also key by client id
+  keyGenerator: (req) => `${req.ip}:${req.get('x-client-id') ?? ''}`,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res, next) => {
+    // the client waits this long before requesting a token again
+    const resetTime = (req as typeof req & { rateLimit?: RateLimitInfo }).rateLimit?.resetTime?.getTime();
+    if (resetTime) res.set('Retry-After', String(Math.max(1, Math.ceil((resetTime - Date.now()) / 1000))));
+    next(SyncError.tooManyTokenRequests());
+  },
+});
 
 export const createSyncRouter = (
   productSyncController: ProductSyncController,
@@ -18,7 +37,7 @@ export const createSyncRouter = (
   const router = Router();
 
   // merchant credential -> access token, the only api that receives the client secret
-  router.post('/api/v1/sync/auth/token', (req, res, next) => syncAuthController.issueToken(req, res, next));
+  router.post('/api/v1/sync/auth/token', tokenRateLimiter, (req, res, next) => syncAuthController.issueToken(req, res, next));
 
   // every other sync api requires the access token, sets req.syncAuth
   const auth = syncTokenMiddleware;

@@ -18,6 +18,10 @@ export class SyncError extends Error {
     return new SyncError(401, 'Token expired');
   }
 
+  static tooManyTokenRequests() {
+    return new SyncError(429, 'Too many failed token requests');
+  }
+
   static tokenScopeMismatch() {
     return new SyncError(403, 'Request does not match the token');
   }
