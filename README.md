@@ -98,3 +98,11 @@ Migrate & Seed
 ```bash
 docker compose -f ./docker-compose-dev.yml up
 ```
+
+
+```bash
+RELEASE=1.0.0 docker compose run --rm db-migrate
+RELEASE=1.0.0 docker compose run --rm db-seed
+
+RELEASE=1.0.0 docker compose up -d
+```

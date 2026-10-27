@@ -1,3 +1,5 @@
+name: pos-center
+
 x-database-url: &database-url postgres://postgres:change-me@postgres:5432/lightning_pos
 
 x-logging: &logging
