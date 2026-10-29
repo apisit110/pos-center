@@ -1,0 +1,36 @@
+# syntax=docker/dockerfile:1
+# AWS Lambda deployment zip (esbuild bundle of src/lambda.ts), built inside a pinned node image so CI needs no local node.
+# Build context: repo root  ->
+#   docker build -f apps/portal-service/Dockerfile.lambda \
+#     --output type=local,dest=apps/portal-service/dist-lambda .
+# -> apps/portal-service/dist-lambda/portal-service.zip  (Lambda runtime nodejs22.x, handler index.handler)
+
+ARG NODE_VERSION=22.22.2
+ARG ALPINE_VERSION=3.22
+
+# ---------- Stage 1: prune monorepo to this app + its workspace deps ----------
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS pruner
+WORKDIR /app
+RUN npm install -g turbo@2.9.6
+COPY . .
+RUN turbo prune portal-service --docker
+
+# ---------- Stage 2: install + bundle + zip ----------
+FROM node:${NODE_VERSION}-alpine${ALPINE_VERSION} AS builder
+WORKDIR /app
+RUN apk add --no-cache zip && corepack enable
+ENV PNPM_HOME=/pnpm CI=true
+
+COPY .npmrc ./
+COPY --from=pruner /app/out/json/ ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile --store-dir /pnpm/store
+
+COPY --from=pruner /app/out/full/ ./
+# esbuild bundles the workspace packages from source, so they need no separate build
+RUN pnpm turbo run build:lambda --filter=portal-service && \
+    cd apps/portal-service/dist-lambda && zip -qr /portal-service.zip index.js index.js.map
+
+# ---------- Stage 3: only the zip, copied out by --output ----------
+FROM scratch AS export
+COPY --from=builder /portal-service.zip /

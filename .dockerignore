@@ -2,6 +2,7 @@
 **/.next
 **/out
 **/dist
+**/dist-lambda
 **/.turbo
 **/.env
 **/.env.*
