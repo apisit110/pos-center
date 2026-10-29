@@ -13,8 +13,9 @@ const matches = (value: string, expected: string): boolean => {
 }
 
 /**
- * Rejects requests that skip CloudFront and call the Lambda Function URL directly:
- * CloudFront adds `x-origin-secret` as an origin custom header. Off when `secret` is unset (docker / local).
+ * Rejects requests to the Lambda Function URL without the shared `x-origin-secret` header.
+ * There is no CloudFront in front of pos-sync-service, so the cashier sends it on every request.
+ * Off when `secret` is unset (docker / local).
  */
 export const originSecretMiddleware = (secret?: string): RequestHandler =>
   (req: Request, _res: Response, next: NextFunction) => {
